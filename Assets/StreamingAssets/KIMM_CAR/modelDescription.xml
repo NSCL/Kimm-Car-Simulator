@@ -1,0 +1,6591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+  fmiVersion="2.0"
+  modelName="KIMM_CAR"
+  guid="{879ffc5b-6fb2-4cc0-8758-488c2f6bd8ea}"
+  description=""
+  generationTool="OpenModelica Compiler OpenModelica v1.19.2 (64-bit)"
+  generationDateAndTime="2023-12-08T14:48:03Z"
+  variableNamingConvention="structured"
+  numberOfEventIndicators="26">
+  <ModelExchange
+    modelIdentifier="KIMM_CAR">
+    <SourceFiles>
+      <File name="KIMM_CAR.c" />
+      <File name="KIMM_CAR_functions.c" />
+      <File name="KIMM_CAR_records.c" />
+      <File name="KIMM_CAR_01exo.c" />
+      <File name="KIMM_CAR_02nls.c" />
+      <File name="KIMM_CAR_03lsy.c" />
+      <File name="KIMM_CAR_04set.c" />
+      <File name="KIMM_CAR_05evt.c" />
+      <File name="KIMM_CAR_06inz.c" />
+      <File name="KIMM_CAR_07dly.c" />
+      <File name="KIMM_CAR_08bnd.c" />
+      <File name="KIMM_CAR_09alg.c" />
+      <File name="KIMM_CAR_10asr.c" />
+      <File name="KIMM_CAR_11mix.c" />
+      <File name="KIMM_CAR_12jac.c" />
+      <File name="KIMM_CAR_13opt.c" />
+      <File name="KIMM_CAR_14lnz.c" />
+      <File name="KIMM_CAR_15syn.c" />
+      <File name="KIMM_CAR_16dae.c" />
+      <File name="KIMM_CAR_17inl.c" />
+      <File name="KIMM_CAR_18spd.c" />
+      <File name="KIMM_CAR_init_fmu.c" />
+      <File name="KIMM_CAR_FMU.c" />
+      <File name="gc/memory_pool.c" />
+      <File name="gc/omc_gc.c" />
+      <File name="./util/base_array.c" />
+      <File name="./util/boolean_array.c" />
+      <File name="./util/division.c" />
+      <File name="./util/doubleEndedList.c" />
+      <File name="./util/generic_array.c" />
+      <File name="./util/index_spec.c" />
+      <File name="./util/integer_array.c" />
+      <File name="./util/jacobian_util.c" />
+      <File name="./util/list.c" />
+      <File name="./util/modelica_string_lit.c" />
+      <File name="./util/modelica_string.c" />
+      <File name="./util/ModelicaUtilities.c" />
+      <File name="./util/omc_error.c" />
+      <File name="./util/omc_file.c" />
+      <File name="./util/omc_init.c" />
+      <File name="./util/omc_mmap.c" />
+      <File name="./util/omc_msvc.c" />
+      <File name="./util/omc_numbers.c" />
+      <File name="./util/parallel_helper.c" />
+      <File name="./util/rational.c" />
+      <File name="./util/real_array.c" />
+      <File name="./util/ringbuffer.c" />
+      <File name="./util/simulation_options.c" />
+      <File name="./util/string_array.c" />
+      <File name="./util/utility.c" />
+      <File name="./util/varinfo.c" />
+      <File name="./math-support/pivot.c" />
+      <File name="./simulation/omc_simulation_util.c" />
+      <File name="./simulation/options.c" />
+      <File name="./simulation/simulation_info_json.c" />
+      <File name="./simulation/simulation_omc_assert.c" />
+      <File name="./simulation/solver/delay.c" />
+      <File name="./simulation/solver/fmi_events.c" />
+      <File name="./simulation/solver/model_help.c" />
+      <File name="./simulation/solver/omc_math.c" />
+      <File name="./simulation/solver/spatialDistribution.c" />
+      <File name="./simulation/solver/stateset.c" />
+      <File name="./simulation/solver/synchronous.c" />
+      <File name="./simulation/solver/initialization/initialization.c" />
+      <File name="./meta/meta_modelica_catch.c" />
+    </SourceFiles>
+  </ModelExchange>
+  <CoSimulation
+    modelIdentifier="KIMM_CAR"
+    needsExecutionTool="false"
+    canHandleVariableCommunicationStepSize="true"
+    canInterpolateInputs="true"
+    maxOutputDerivativeOrder="1"
+    canRunAsynchronuously = "false"
+    canBeInstantiatedOnlyOncePerProcess="false"
+    canNotUseMemoryManagementFunctions="false"
+    canGetAndSetFMUstate="false"
+    canSerializeFMUstate="false"
+    providesDirectionalDerivative="false">
+    <SourceFiles>
+      <File name="KIMM_CAR.c" />
+      <File name="KIMM_CAR_functions.c" />
+      <File name="KIMM_CAR_records.c" />
+      <File name="KIMM_CAR_01exo.c" />
+      <File name="KIMM_CAR_02nls.c" />
+      <File name="KIMM_CAR_03lsy.c" />
+      <File name="KIMM_CAR_04set.c" />
+      <File name="KIMM_CAR_05evt.c" />
+      <File name="KIMM_CAR_06inz.c" />
+      <File name="KIMM_CAR_07dly.c" />
+      <File name="KIMM_CAR_08bnd.c" />
+      <File name="KIMM_CAR_09alg.c" />
+      <File name="KIMM_CAR_10asr.c" />
+      <File name="KIMM_CAR_11mix.c" />
+      <File name="KIMM_CAR_12jac.c" />
+      <File name="KIMM_CAR_13opt.c" />
+      <File name="KIMM_CAR_14lnz.c" />
+      <File name="KIMM_CAR_15syn.c" />
+      <File name="KIMM_CAR_16dae.c" />
+      <File name="KIMM_CAR_17inl.c" />
+      <File name="KIMM_CAR_18spd.c" />
+      <File name="KIMM_CAR_init_fmu.c" />
+      <File name="KIMM_CAR_FMU.c" />
+      <File name="gc/memory_pool.c" />
+      <File name="gc/omc_gc.c" />
+      <File name="./util/base_array.c" />
+      <File name="./util/boolean_array.c" />
+      <File name="./util/division.c" />
+      <File name="./util/doubleEndedList.c" />
+      <File name="./util/generic_array.c" />
+      <File name="./util/index_spec.c" />
+      <File name="./util/integer_array.c" />
+      <File name="./util/jacobian_util.c" />
+      <File name="./util/list.c" />
+      <File name="./util/modelica_string_lit.c" />
+      <File name="./util/modelica_string.c" />
+      <File name="./util/ModelicaUtilities.c" />
+      <File name="./util/omc_error.c" />
+      <File name="./util/omc_file.c" />
+      <File name="./util/omc_init.c" />
+      <File name="./util/omc_mmap.c" />
+      <File name="./util/omc_msvc.c" />
+      <File name="./util/omc_numbers.c" />
+      <File name="./util/parallel_helper.c" />
+      <File name="./util/rational.c" />
+      <File name="./util/real_array.c" />
+      <File name="./util/ringbuffer.c" />
+      <File name="./util/simulation_options.c" />
+      <File name="./util/string_array.c" />
+      <File name="./util/utility.c" />
+      <File name="./util/varinfo.c" />
+      <File name="./math-support/pivot.c" />
+      <File name="./simulation/omc_simulation_util.c" />
+      <File name="./simulation/options.c" />
+      <File name="./simulation/simulation_info_json.c" />
+      <File name="./simulation/simulation_omc_assert.c" />
+      <File name="./simulation/solver/delay.c" />
+      <File name="./simulation/solver/fmi_events.c" />
+      <File name="./simulation/solver/model_help.c" />
+      <File name="./simulation/solver/omc_math.c" />
+      <File name="./simulation/solver/spatialDistribution.c" />
+      <File name="./simulation/solver/stateset.c" />
+      <File name="./simulation/solver/synchronous.c" />
+      <File name="./simulation/solver/initialization/initialization.c" />
+      <File name="./meta/meta_modelica_catch.c" />
+    </SourceFiles>
+  </CoSimulation>
+  <LogCategories>
+    <Category name="logEvents" />
+    <Category name="logSingularLinearSystems" />
+    <Category name="logNonlinearSystems" />
+    <Category name="logDynamicStateSelection" />
+    <Category name="logStatusWarning" />
+    <Category name="logStatusDiscard" />
+    <Category name="logStatusError" />
+    <Category name="logStatusFatal" />
+    <Category name="logStatusPending" />
+    <Category name="logAll" />
+    <Category name="logFmi2Call" />
+  </LogCategories>
+  <DefaultExperiment startTime="0.0" stopTime="1.0" tolerance="1e-06"/>
+  <ModelVariables>
+  <!-- Index of variable = "1" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.d_theta"
+    valueReference="0"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "2" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.theta"
+    valueReference="1"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "3" -->
+  <ScalarVariable
+    name="body_Model.d_pitch"
+    valueReference="2"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "4" -->
+  <ScalarVariable
+    name="body_Model.d_roll"
+    valueReference="3"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "5" -->
+  <ScalarVariable
+    name="body_Model.d_yaw"
+    valueReference="4"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "6" -->
+  <ScalarVariable
+    name="body_Model.dx"
+    valueReference="5"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "7" -->
+  <ScalarVariable
+    name="body_Model.dy"
+    valueReference="6"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "8" -->
+  <ScalarVariable
+    name="body_Model.dz"
+    valueReference="7"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "9" -->
+  <ScalarVariable
+    name="body_Model.pitch"
+    valueReference="8"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "10" -->
+  <ScalarVariable
+    name="body_Model.roll"
+    valueReference="9"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "11" -->
+  <ScalarVariable
+    name="body_Model.x"
+    valueReference="10"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "12" -->
+  <ScalarVariable
+    name="body_Model.y"
+    valueReference="11"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "13" -->
+  <ScalarVariable
+    name="body_Model.yaw"
+    valueReference="12"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "14" -->
+  <ScalarVariable
+    name="body_Model.z"
+    valueReference="13"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "15" -->
+  <ScalarVariable
+    name="suspension_front_left.tire_z_pos"
+    valueReference="14"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "16" -->
+  <ScalarVariable
+    name="suspension_front_right.tire_z_pos"
+    valueReference="15"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "17" -->
+  <ScalarVariable
+    name="suspension_rear_left.tire_z_pos"
+    valueReference="16"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "18" -->
+  <ScalarVariable
+    name="suspension_rear_right.tire_z_pos"
+    valueReference="17"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "19" -->
+  <ScalarVariable
+    name="tire_front_left.brake"
+    valueReference="18"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "20" -->
+  <ScalarVariable
+    name="tire_front_left.d_brake"
+    valueReference="19"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "21" -->
+  <ScalarVariable
+    name="tire_front_left.d_roll"
+    valueReference="20"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "22" -->
+  <ScalarVariable
+    name="tire_front_left.dz"
+    valueReference="21"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "23" -->
+  <ScalarVariable
+    name="tire_front_left.roll"
+    valueReference="22"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "24" -->
+  <ScalarVariable
+    name="tire_front_right.brake"
+    valueReference="23"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "25" -->
+  <ScalarVariable
+    name="tire_front_right.d_brake"
+    valueReference="24"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "26" -->
+  <ScalarVariable
+    name="tire_front_right.d_roll"
+    valueReference="25"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "27" -->
+  <ScalarVariable
+    name="tire_front_right.dz"
+    valueReference="26"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "28" -->
+  <ScalarVariable
+    name="tire_front_right.roll"
+    valueReference="27"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "29" -->
+  <ScalarVariable
+    name="tire_rear_left.brake"
+    valueReference="28"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "30" -->
+  <ScalarVariable
+    name="tire_rear_left.d_brake"
+    valueReference="29"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "31" -->
+  <ScalarVariable
+    name="tire_rear_left.d_roll"
+    valueReference="30"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "32" -->
+  <ScalarVariable
+    name="tire_rear_left.dz"
+    valueReference="31"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "33" -->
+  <ScalarVariable
+    name="tire_rear_left.roll"
+    valueReference="32"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "34" -->
+  <ScalarVariable
+    name="tire_rear_right.brake"
+    valueReference="33"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "35" -->
+  <ScalarVariable
+    name="tire_rear_right.d_brake"
+    valueReference="34"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "36" -->
+  <ScalarVariable
+    name="tire_rear_right.d_roll"
+    valueReference="35"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "37" -->
+  <ScalarVariable
+    name="tire_rear_right.dz"
+    valueReference="36"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "38" -->
+  <ScalarVariable
+    name="tire_rear_right.roll"
+    valueReference="37"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "39" -->
+  <ScalarVariable
+    name="der(ackerman_Steering_Model.d_theta)"
+    valueReference="38"
+    >
+    <Real derivative="1"/>
+  </ScalarVariable>
+  <!-- Index of variable = "40" -->
+  <ScalarVariable
+    name="der(ackerman_Steering_Model.theta)"
+    valueReference="39"
+    >
+    <Real derivative="2"/>
+  </ScalarVariable>
+  <!-- Index of variable = "41" -->
+  <ScalarVariable
+    name="der(body_Model.d_pitch)"
+    valueReference="40"
+    >
+    <Real derivative="3"/>
+  </ScalarVariable>
+  <!-- Index of variable = "42" -->
+  <ScalarVariable
+    name="der(body_Model.d_roll)"
+    valueReference="41"
+    >
+    <Real derivative="4"/>
+  </ScalarVariable>
+  <!-- Index of variable = "43" -->
+  <ScalarVariable
+    name="der(body_Model.d_yaw)"
+    valueReference="42"
+    >
+    <Real derivative="5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "44" -->
+  <ScalarVariable
+    name="der(body_Model.dx)"
+    valueReference="43"
+    >
+    <Real derivative="6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "45" -->
+  <ScalarVariable
+    name="der(body_Model.dy)"
+    valueReference="44"
+    >
+    <Real derivative="7"/>
+  </ScalarVariable>
+  <!-- Index of variable = "46" -->
+  <ScalarVariable
+    name="der(body_Model.dz)"
+    valueReference="45"
+    >
+    <Real derivative="8"/>
+  </ScalarVariable>
+  <!-- Index of variable = "47" -->
+  <ScalarVariable
+    name="der(body_Model.pitch)"
+    valueReference="46"
+    >
+    <Real derivative="9"/>
+  </ScalarVariable>
+  <!-- Index of variable = "48" -->
+  <ScalarVariable
+    name="der(body_Model.roll)"
+    valueReference="47"
+    >
+    <Real derivative="10"/>
+  </ScalarVariable>
+  <!-- Index of variable = "49" -->
+  <ScalarVariable
+    name="der(body_Model.x)"
+    valueReference="48"
+    >
+    <Real derivative="11"/>
+  </ScalarVariable>
+  <!-- Index of variable = "50" -->
+  <ScalarVariable
+    name="der(body_Model.y)"
+    valueReference="49"
+    >
+    <Real derivative="12"/>
+  </ScalarVariable>
+  <!-- Index of variable = "51" -->
+  <ScalarVariable
+    name="der(body_Model.yaw)"
+    valueReference="50"
+    >
+    <Real derivative="13"/>
+  </ScalarVariable>
+  <!-- Index of variable = "52" -->
+  <ScalarVariable
+    name="der(body_Model.z)"
+    valueReference="51"
+    >
+    <Real derivative="14"/>
+  </ScalarVariable>
+  <!-- Index of variable = "53" -->
+  <ScalarVariable
+    name="der(suspension_front_left.tire_z_pos)"
+    valueReference="52"
+    >
+    <Real derivative="15"/>
+  </ScalarVariable>
+  <!-- Index of variable = "54" -->
+  <ScalarVariable
+    name="der(suspension_front_right.tire_z_pos)"
+    valueReference="53"
+    >
+    <Real derivative="16"/>
+  </ScalarVariable>
+  <!-- Index of variable = "55" -->
+  <ScalarVariable
+    name="der(suspension_rear_left.tire_z_pos)"
+    valueReference="54"
+    >
+    <Real derivative="17"/>
+  </ScalarVariable>
+  <!-- Index of variable = "56" -->
+  <ScalarVariable
+    name="der(suspension_rear_right.tire_z_pos)"
+    valueReference="55"
+    >
+    <Real derivative="18"/>
+  </ScalarVariable>
+  <!-- Index of variable = "57" -->
+  <ScalarVariable
+    name="der(tire_front_left.brake)"
+    valueReference="56"
+    >
+    <Real derivative="19"/>
+  </ScalarVariable>
+  <!-- Index of variable = "58" -->
+  <ScalarVariable
+    name="der(tire_front_left.d_brake)"
+    valueReference="57"
+    >
+    <Real derivative="20"/>
+  </ScalarVariable>
+  <!-- Index of variable = "59" -->
+  <ScalarVariable
+    name="der(tire_front_left.d_roll)"
+    valueReference="58"
+    >
+    <Real derivative="21"/>
+  </ScalarVariable>
+  <!-- Index of variable = "60" -->
+  <ScalarVariable
+    name="der(tire_front_left.dz)"
+    valueReference="59"
+    >
+    <Real derivative="22"/>
+  </ScalarVariable>
+  <!-- Index of variable = "61" -->
+  <ScalarVariable
+    name="der(tire_front_left.roll)"
+    valueReference="60"
+    >
+    <Real derivative="23"/>
+  </ScalarVariable>
+  <!-- Index of variable = "62" -->
+  <ScalarVariable
+    name="der(tire_front_right.brake)"
+    valueReference="61"
+    >
+    <Real derivative="24"/>
+  </ScalarVariable>
+  <!-- Index of variable = "63" -->
+  <ScalarVariable
+    name="der(tire_front_right.d_brake)"
+    valueReference="62"
+    >
+    <Real derivative="25"/>
+  </ScalarVariable>
+  <!-- Index of variable = "64" -->
+  <ScalarVariable
+    name="der(tire_front_right.d_roll)"
+    valueReference="63"
+    >
+    <Real derivative="26"/>
+  </ScalarVariable>
+  <!-- Index of variable = "65" -->
+  <ScalarVariable
+    name="der(tire_front_right.dz)"
+    valueReference="64"
+    >
+    <Real derivative="27"/>
+  </ScalarVariable>
+  <!-- Index of variable = "66" -->
+  <ScalarVariable
+    name="der(tire_front_right.roll)"
+    valueReference="65"
+    >
+    <Real derivative="28"/>
+  </ScalarVariable>
+  <!-- Index of variable = "67" -->
+  <ScalarVariable
+    name="der(tire_rear_left.brake)"
+    valueReference="66"
+    >
+    <Real derivative="29"/>
+  </ScalarVariable>
+  <!-- Index of variable = "68" -->
+  <ScalarVariable
+    name="der(tire_rear_left.d_brake)"
+    valueReference="67"
+    >
+    <Real derivative="30"/>
+  </ScalarVariable>
+  <!-- Index of variable = "69" -->
+  <ScalarVariable
+    name="der(tire_rear_left.d_roll)"
+    valueReference="68"
+    >
+    <Real derivative="31"/>
+  </ScalarVariable>
+  <!-- Index of variable = "70" -->
+  <ScalarVariable
+    name="der(tire_rear_left.dz)"
+    valueReference="69"
+    >
+    <Real derivative="32"/>
+  </ScalarVariable>
+  <!-- Index of variable = "71" -->
+  <ScalarVariable
+    name="der(tire_rear_left.roll)"
+    valueReference="70"
+    >
+    <Real derivative="33"/>
+  </ScalarVariable>
+  <!-- Index of variable = "72" -->
+  <ScalarVariable
+    name="der(tire_rear_right.brake)"
+    valueReference="71"
+    >
+    <Real derivative="34"/>
+  </ScalarVariable>
+  <!-- Index of variable = "73" -->
+  <ScalarVariable
+    name="der(tire_rear_right.d_brake)"
+    valueReference="72"
+    >
+    <Real derivative="35"/>
+  </ScalarVariable>
+  <!-- Index of variable = "74" -->
+  <ScalarVariable
+    name="der(tire_rear_right.d_roll)"
+    valueReference="73"
+    >
+    <Real derivative="36"/>
+  </ScalarVariable>
+  <!-- Index of variable = "75" -->
+  <ScalarVariable
+    name="der(tire_rear_right.dz)"
+    valueReference="74"
+    >
+    <Real derivative="37"/>
+  </ScalarVariable>
+  <!-- Index of variable = "76" -->
+  <ScalarVariable
+    name="der(tire_rear_right.roll)"
+    valueReference="75"
+    >
+    <Real derivative="38"/>
+  </ScalarVariable>
+  <!-- Index of variable = "77" -->
+  <ScalarVariable
+    name="der(body_Model.body_fixed_dx)"
+    valueReference="76"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "78" -->
+  <ScalarVariable
+    name="der(body_Model.body_fixed_dy)"
+    valueReference="77"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "79" -->
+  <ScalarVariable
+    name="der(body_Model.body_fixed_dz)"
+    valueReference="78"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "80" -->
+  <ScalarVariable
+    name="der(body_Model.rear_left_body_z_pos)"
+    valueReference="79"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "81" -->
+  <ScalarVariable
+    name="der(body_Model.rear_right_body_z_pos)"
+    valueReference="80"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "82" -->
+  <ScalarVariable
+    name="der(suspension_front_left.body_z_pos)"
+    valueReference="81"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "83" -->
+  <ScalarVariable
+    name="der(suspension_front_right.body_z_pos)"
+    valueReference="82"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "84" -->
+  <ScalarVariable
+    name="der(tire_front_left.gap)"
+    valueReference="83"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "85" -->
+  <ScalarVariable
+    name="der(tire_front_right.gap)"
+    valueReference="84"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "86" -->
+  <ScalarVariable
+    name="der(tire_rear_left.gap)"
+    valueReference="85"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "87" -->
+  <ScalarVariable
+    name="der(tire_rear_right.gap)"
+    valueReference="86"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "88" -->
+  <ScalarVariable
+    name="_D_cse1"
+    valueReference="87"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "89" -->
+  <ScalarVariable
+    name="_D_cse10"
+    valueReference="88"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "90" -->
+  <ScalarVariable
+    name="_D_cse11"
+    valueReference="89"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "91" -->
+  <ScalarVariable
+    name="_D_cse12"
+    valueReference="90"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "92" -->
+  <ScalarVariable
+    name="_D_cse13"
+    valueReference="91"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "93" -->
+  <ScalarVariable
+    name="_D_cse14"
+    valueReference="92"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "94" -->
+  <ScalarVariable
+    name="_D_cse15"
+    valueReference="93"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "95" -->
+  <ScalarVariable
+    name="_D_cse16"
+    valueReference="94"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "96" -->
+  <ScalarVariable
+    name="_D_cse17"
+    valueReference="95"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "97" -->
+  <ScalarVariable
+    name="_D_cse18"
+    valueReference="96"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "98" -->
+  <ScalarVariable
+    name="_D_cse19"
+    valueReference="97"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "99" -->
+  <ScalarVariable
+    name="_D_cse2"
+    valueReference="98"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "100" -->
+  <ScalarVariable
+    name="_D_cse20"
+    valueReference="99"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "101" -->
+  <ScalarVariable
+    name="_D_cse21"
+    valueReference="100"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "102" -->
+  <ScalarVariable
+    name="_D_cse22"
+    valueReference="101"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "103" -->
+  <ScalarVariable
+    name="_D_cse23"
+    valueReference="102"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "104" -->
+  <ScalarVariable
+    name="_D_cse24"
+    valueReference="103"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "105" -->
+  <ScalarVariable
+    name="_D_cse25"
+    valueReference="104"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "106" -->
+  <ScalarVariable
+    name="_D_cse26"
+    valueReference="105"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "107" -->
+  <ScalarVariable
+    name="_D_cse27"
+    valueReference="106"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "108" -->
+  <ScalarVariable
+    name="_D_cse28"
+    valueReference="107"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "109" -->
+  <ScalarVariable
+    name="_D_cse29"
+    valueReference="108"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "110" -->
+  <ScalarVariable
+    name="_D_cse3"
+    valueReference="109"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "111" -->
+  <ScalarVariable
+    name="_D_cse30"
+    valueReference="110"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "112" -->
+  <ScalarVariable
+    name="_D_cse4"
+    valueReference="111"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "113" -->
+  <ScalarVariable
+    name="_D_cse5"
+    valueReference="112"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "114" -->
+  <ScalarVariable
+    name="_D_cse6"
+    valueReference="113"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "115" -->
+  <ScalarVariable
+    name="_D_cse7"
+    valueReference="114"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "116" -->
+  <ScalarVariable
+    name="_D_cse8"
+    valueReference="115"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "117" -->
+  <ScalarVariable
+    name="_D_cse9"
+    valueReference="116"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "118" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.D"
+    valueReference="117"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "119" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.delta_P"
+    valueReference="118"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "120" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_1_left"
+    valueReference="119"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "121" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_1_right"
+    valueReference="120"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "122" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_2_left"
+    valueReference="121"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "123" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_2_right"
+    valueReference="122"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "124" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_arm"
+    valueReference="123"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "125" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_rack"
+    valueReference="124"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "126" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.l_rod"
+    valueReference="125"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "127" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.left_steer_angle"
+    valueReference="126"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "128" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.neutral_tilt_angle"
+    valueReference="127"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "129" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.pi"
+    valueReference="128"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "130" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.pinion_radius"
+    valueReference="129"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "131" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.right_steer_angle"
+    valueReference="130"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "132" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.rotation_radius_min"
+    valueReference="131"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "133" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.steer_damper_coefficient"
+    valueReference="132"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "134" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.steer_inertia"
+    valueReference="133"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "135" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.steer_spring_coefficient"
+    valueReference="134"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "136" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.tmp_left"
+    valueReference="135"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "137" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.tmp_right"
+    valueReference="136"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "138" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.tread_front"
+    valueReference="137"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "139" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.tread_rear"
+    valueReference="138"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "140" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.wheel_base"
+    valueReference="139"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "141" -->
+  <ScalarVariable
+    name="body_Model.B_coord[1,1]"
+    valueReference="140"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "142" -->
+  <ScalarVariable
+    name="body_Model.B_coord[1,2]"
+    valueReference="141"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "143" -->
+  <ScalarVariable
+    name="body_Model.B_coord[1,3]"
+    valueReference="142"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "144" -->
+  <ScalarVariable
+    name="body_Model.B_coord[2,1]"
+    valueReference="143"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "145" -->
+  <ScalarVariable
+    name="body_Model.B_coord[2,2]"
+    valueReference="144"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "146" -->
+  <ScalarVariable
+    name="body_Model.B_coord[2,3]"
+    valueReference="145"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "147" -->
+  <ScalarVariable
+    name="body_Model.B_coord[3,1]"
+    valueReference="146"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "148" -->
+  <ScalarVariable
+    name="body_Model.B_coord[3,2]"
+    valueReference="147"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "149" -->
+  <ScalarVariable
+    name="body_Model.B_coord[3,3]"
+    valueReference="148"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "150" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_FL[1,1]"
+    valueReference="149"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "151" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_FL[2,1]"
+    valueReference="150"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "152" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_FL[3,1]"
+    valueReference="151"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "153" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_FR[1,1]"
+    valueReference="152"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "154" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_FR[2,1]"
+    valueReference="153"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "155" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_FR[3,1]"
+    valueReference="154"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "156" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_RL[1,1]"
+    valueReference="155"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "157" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_RL[2,1]"
+    valueReference="156"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "158" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_RL[3,1]"
+    valueReference="157"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "159" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_RR[1,1]"
+    valueReference="158"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "160" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_RR[2,1]"
+    valueReference="159"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "161" -->
+  <ScalarVariable
+    name="body_Model.B_force_vector_RR[3,1]"
+    valueReference="160"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "162" -->
+  <ScalarVariable
+    name="body_Model.Drag_force_vector[1,1]"
+    valueReference="161"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "163" -->
+  <ScalarVariable
+    name="body_Model.Drag_force_vector[2,1]"
+    valueReference="162"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "164" -->
+  <ScalarVariable
+    name="body_Model.Drag_force_vector[3,1]"
+    valueReference="163"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "165" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[1,1]"
+    valueReference="164"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "166" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[1,2]"
+    valueReference="165"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "167" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[1,3]"
+    valueReference="166"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "168" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[2,1]"
+    valueReference="167"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "169" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[2,2]"
+    valueReference="168"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "170" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[2,3]"
+    valueReference="169"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "171" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[3,1]"
+    valueReference="170"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "172" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[3,2]"
+    valueReference="171"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "173" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FL[3,3]"
+    valueReference="172"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "174" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[1,1]"
+    valueReference="173"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "175" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[1,2]"
+    valueReference="174"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "176" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[1,3]"
+    valueReference="175"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "177" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[2,1]"
+    valueReference="176"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "178" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[2,2]"
+    valueReference="177"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "179" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[2,3]"
+    valueReference="178"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "180" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[3,1]"
+    valueReference="179"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "181" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[3,2]"
+    valueReference="180"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "182" -->
+  <ScalarVariable
+    name="body_Model.T_coord_FR[3,3]"
+    valueReference="181"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "183" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[1,1]"
+    valueReference="182"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "184" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[1,2]"
+    valueReference="183"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "185" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[1,3]"
+    valueReference="184"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "186" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[2,1]"
+    valueReference="185"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "187" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[2,2]"
+    valueReference="186"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "188" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[2,3]"
+    valueReference="187"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "189" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[3,1]"
+    valueReference="188"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "190" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[3,2]"
+    valueReference="189"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "191" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RL[3,3]"
+    valueReference="190"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "192" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[1,1]"
+    valueReference="191"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "193" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[1,2]"
+    valueReference="192"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "194" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[1,3]"
+    valueReference="193"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "195" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[2,1]"
+    valueReference="194"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "196" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[2,2]"
+    valueReference="195"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "197" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[2,3]"
+    valueReference="196"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "198" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[3,1]"
+    valueReference="197"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "199" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[3,2]"
+    valueReference="198"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "200" -->
+  <ScalarVariable
+    name="body_Model.T_coord_RR[3,3]"
+    valueReference="199"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "201" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_FL[1,1]"
+    valueReference="200"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "202" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_FL[2,1]"
+    valueReference="201"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "203" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_FL[3,1]"
+    valueReference="202"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "204" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_FR[1,1]"
+    valueReference="203"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "205" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_FR[2,1]"
+    valueReference="204"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "206" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_FR[3,1]"
+    valueReference="205"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "207" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_RL[1,1]"
+    valueReference="206"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "208" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_RL[2,1]"
+    valueReference="207"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "209" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_RL[3,1]"
+    valueReference="208"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "210" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_RR[1,1]"
+    valueReference="209"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "211" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_RR[2,1]"
+    valueReference="210"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "212" -->
+  <ScalarVariable
+    name="body_Model.T_force_vector_RR[3,1]"
+    valueReference="211"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "213" -->
+  <ScalarVariable
+    name="body_Model.body_fixed_ddx"
+    valueReference="212"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "214" -->
+  <ScalarVariable
+    name="body_Model.body_fixed_ddy"
+    valueReference="213"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "215" -->
+  <ScalarVariable
+    name="body_Model.body_fixed_ddz"
+    valueReference="214"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "216" -->
+  <ScalarVariable
+    name="body_Model.body_fixed_dx"
+    valueReference="215"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "217" -->
+  <ScalarVariable
+    name="body_Model.body_fixed_dy"
+    valueReference="216"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "218" -->
+  <ScalarVariable
+    name="body_Model.body_fixed_dz"
+    valueReference="217"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "219" -->
+  <ScalarVariable
+    name="body_Model.body_vx_km_per_hour"
+    valueReference="218"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "220" -->
+  <ScalarVariable
+    name="body_Model.cg_to_front_angle"
+    valueReference="219"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "221" -->
+  <ScalarVariable
+    name="body_Model.cg_to_front_wheel"
+    valueReference="220"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "222" -->
+  <ScalarVariable
+    name="body_Model.cg_to_rear_angle"
+    valueReference="221"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "223" -->
+  <ScalarVariable
+    name="body_Model.cg_to_rear_wheel"
+    valueReference="222"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "224" -->
+  <ScalarVariable
+    name="body_Model.dd_yaw"
+    valueReference="223"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "225" -->
+  <ScalarVariable
+    name="body_Model.ddx"
+    valueReference="224"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "226" -->
+  <ScalarVariable
+    name="body_Model.ddy"
+    valueReference="225"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "227" -->
+  <ScalarVariable
+    name="body_Model.ddz"
+    valueReference="226"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "228" -->
+  <ScalarVariable
+    name="body_Model.front_left_body_z_vel"
+    valueReference="227"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "229" -->
+  <ScalarVariable
+    name="body_Model.front_left_slip_angle"
+    valueReference="228"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "230" -->
+  <ScalarVariable
+    name="body_Model.front_left_vx"
+    valueReference="229"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "231" -->
+  <ScalarVariable
+    name="body_Model.front_left_vy"
+    valueReference="230"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "232" -->
+  <ScalarVariable
+    name="body_Model.front_right_body_z_vel"
+    valueReference="231"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "233" -->
+  <ScalarVariable
+    name="body_Model.front_right_dy"
+    valueReference="232"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "234" -->
+  <ScalarVariable
+    name="body_Model.front_right_slip_angle"
+    valueReference="233"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "235" -->
+  <ScalarVariable
+    name="body_Model.front_right_vx"
+    valueReference="234"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "236" -->
+  <ScalarVariable
+    name="body_Model.front_right_vy"
+    valueReference="235"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "237" -->
+  <ScalarVariable
+    name="body_Model.gnd_pitch_FL"
+    valueReference="236"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "238" -->
+  <ScalarVariable
+    name="body_Model.gnd_pitch_FR"
+    valueReference="237"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "239" -->
+  <ScalarVariable
+    name="body_Model.gnd_pitch_RL"
+    valueReference="238"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "240" -->
+  <ScalarVariable
+    name="body_Model.gnd_pitch_RR"
+    valueReference="239"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "241" -->
+  <ScalarVariable
+    name="body_Model.mass_total"
+    valueReference="240"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "242" -->
+  <ScalarVariable
+    name="body_Model.net_force[1,1]"
+    valueReference="241"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "243" -->
+  <ScalarVariable
+    name="body_Model.net_force[2,1]"
+    valueReference="242"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "244" -->
+  <ScalarVariable
+    name="body_Model.net_force[3,1]"
+    valueReference="243"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "245" -->
+  <ScalarVariable
+    name="body_Model.rear_left_body_z_pos"
+    valueReference="244"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "246" -->
+  <ScalarVariable
+    name="body_Model.rear_left_dx"
+    valueReference="245"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "247" -->
+  <ScalarVariable
+    name="body_Model.rear_left_dy"
+    valueReference="246"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "248" -->
+  <ScalarVariable
+    name="body_Model.rear_left_slip_angle"
+    valueReference="247"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "249" -->
+  <ScalarVariable
+    name="body_Model.rear_right_body_z_pos"
+    valueReference="248"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "250" -->
+  <ScalarVariable
+    name="body_Model.rear_right_dx"
+    valueReference="249"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "251" -->
+  <ScalarVariable
+    name="body_Model.rear_right_slip_angle"
+    valueReference="250"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "252" -->
+  <ScalarVariable
+    name="body_Model.z_out"
+    valueReference="251"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "253" -->
+  <ScalarVariable
+    name="ev_motor_model.Torque_engine_max"
+    valueReference="252"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "254" -->
+  <ScalarVariable
+    name="ev_motor_model.motor_torque_out"
+    valueReference="253"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "255" -->
+  <ScalarVariable
+    name="realExpression4.y"
+    valueReference="254"
+    description="Value of Real output"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "256" -->
+  <ScalarVariable
+    name="realExpression5.y"
+    valueReference="255"
+    description="Value of Real output"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "257" -->
+  <ScalarVariable
+    name="rear_open_differential.Gear_Ratio"
+    valueReference="256"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "258" -->
+  <ScalarVariable
+    name="rear_open_differential.motor_shaft_rotation_speed"
+    valueReference="257"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "259" -->
+  <ScalarVariable
+    name="rear_open_differential.rad_per_sec_to_rpm"
+    valueReference="258"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "260" -->
+  <ScalarVariable
+    name="rear_open_differential.torque_to_right"
+    valueReference="259"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "261" -->
+  <ScalarVariable
+    name="suspension_front_left.body_z_pos"
+    valueReference="260"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "262" -->
+  <ScalarVariable
+    name="suspension_front_left.suspension_comp_dist"
+    valueReference="261"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "263" -->
+  <ScalarVariable
+    name="suspension_front_left.suspension_force"
+    valueReference="262"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "264" -->
+  <ScalarVariable
+    name="suspension_front_right.body_z_pos"
+    valueReference="263"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "265" -->
+  <ScalarVariable
+    name="suspension_front_right.suspension_comp_dist"
+    valueReference="264"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "266" -->
+  <ScalarVariable
+    name="suspension_front_right.suspension_force"
+    valueReference="265"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "267" -->
+  <ScalarVariable
+    name="suspension_rear_left.body_z_vel"
+    valueReference="266"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "268" -->
+  <ScalarVariable
+    name="suspension_rear_left.suspension_comp_dist"
+    valueReference="267"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "269" -->
+  <ScalarVariable
+    name="suspension_rear_left.suspension_force"
+    valueReference="268"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "270" -->
+  <ScalarVariable
+    name="suspension_rear_right.body_z_vel"
+    valueReference="269"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "271" -->
+  <ScalarVariable
+    name="suspension_rear_right.suspension_comp_dist"
+    valueReference="270"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "272" -->
+  <ScalarVariable
+    name="suspension_rear_right.suspension_force"
+    valueReference="271"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "273" -->
+  <ScalarVariable
+    name="tire_front_left.Bx"
+    valueReference="272"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "274" -->
+  <ScalarVariable
+    name="tire_front_left.Bxa"
+    valueReference="273"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "275" -->
+  <ScalarVariable
+    name="tire_front_left.By"
+    valueReference="274"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "276" -->
+  <ScalarVariable
+    name="tire_front_left.Byk"
+    valueReference="275"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "277" -->
+  <ScalarVariable
+    name="tire_front_left.Cx"
+    valueReference="276"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "278" -->
+  <ScalarVariable
+    name="tire_front_left.Cxa"
+    valueReference="277"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "279" -->
+  <ScalarVariable
+    name="tire_front_left.Cy"
+    valueReference="278"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "280" -->
+  <ScalarVariable
+    name="tire_front_left.Cyk"
+    valueReference="279"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "281" -->
+  <ScalarVariable
+    name="tire_front_left.Dx"
+    valueReference="280"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "282" -->
+  <ScalarVariable
+    name="tire_front_left.Dy"
+    valueReference="281"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "283" -->
+  <ScalarVariable
+    name="tire_front_left.Ex"
+    valueReference="282"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "284" -->
+  <ScalarVariable
+    name="tire_front_left.Ey"
+    valueReference="283"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "285" -->
+  <ScalarVariable
+    name="tire_front_left.N2lb"
+    valueReference="284"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "286" -->
+  <ScalarVariable
+    name="tire_front_left.brake_damper_coefficient"
+    valueReference="285"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "287" -->
+  <ScalarVariable
+    name="tire_front_left.brake_force"
+    valueReference="286"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "288" -->
+  <ScalarVariable
+    name="tire_front_left.brake_mass"
+    valueReference="287"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "289" -->
+  <ScalarVariable
+    name="tire_front_left.brake_out"
+    valueReference="288"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "290" -->
+  <ScalarVariable
+    name="tire_front_left.brake_spring_coefficient"
+    valueReference="289"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "291" -->
+  <ScalarVariable
+    name="tire_front_left.d_gap"
+    valueReference="290"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "292" -->
+  <ScalarVariable
+    name="tire_front_left.dd_roll"
+    valueReference="291"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "293" -->
+  <ScalarVariable
+    name="tire_front_left.ddz"
+    valueReference="292"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "294" -->
+  <ScalarVariable
+    name="tire_front_left.dfz"
+    valueReference="293"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "295" -->
+  <ScalarVariable
+    name="tire_front_left.gap"
+    valueReference="294"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "296" -->
+  <ScalarVariable
+    name="tire_front_left.inch2m"
+    valueReference="295"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "297" -->
+  <ScalarVariable
+    name="tire_front_left.longitudinal_force"
+    valueReference="296"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "298" -->
+  <ScalarVariable
+    name="tire_front_left.longitudinal_slip_ratio"
+    valueReference="297"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "299" -->
+  <ScalarVariable
+    name="tire_front_left.mu_k"
+    valueReference="298"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "300" -->
+  <ScalarVariable
+    name="tire_front_left.mu_s"
+    valueReference="299"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "301" -->
+  <ScalarVariable
+    name="tire_front_left.net_lateral_force"
+    valueReference="300"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "302" -->
+  <ScalarVariable
+    name="tire_front_left.pi"
+    valueReference="301"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "303" -->
+  <ScalarVariable
+    name="tire_front_left.rad2deg"
+    valueReference="302"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "304" -->
+  <ScalarVariable
+    name="tire_front_left.side_slip"
+    valueReference="303"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "305" -->
+  <ScalarVariable
+    name="tire_front_left.slip_ratio"
+    valueReference="304"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "306" -->
+  <ScalarVariable
+    name="tire_front_left.tire_normal_force"
+    valueReference="305"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "307" -->
+  <ScalarVariable
+    name="tire_front_right.Bx"
+    valueReference="306"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "308" -->
+  <ScalarVariable
+    name="tire_front_right.Bxa"
+    valueReference="307"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "309" -->
+  <ScalarVariable
+    name="tire_front_right.By"
+    valueReference="308"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "310" -->
+  <ScalarVariable
+    name="tire_front_right.Byk"
+    valueReference="309"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "311" -->
+  <ScalarVariable
+    name="tire_front_right.Cx"
+    valueReference="310"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "312" -->
+  <ScalarVariable
+    name="tire_front_right.Cxa"
+    valueReference="311"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "313" -->
+  <ScalarVariable
+    name="tire_front_right.Cy"
+    valueReference="312"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "314" -->
+  <ScalarVariable
+    name="tire_front_right.Cyk"
+    valueReference="313"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "315" -->
+  <ScalarVariable
+    name="tire_front_right.Dx"
+    valueReference="314"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "316" -->
+  <ScalarVariable
+    name="tire_front_right.Dy"
+    valueReference="315"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "317" -->
+  <ScalarVariable
+    name="tire_front_right.Ex"
+    valueReference="316"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "318" -->
+  <ScalarVariable
+    name="tire_front_right.Ey"
+    valueReference="317"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "319" -->
+  <ScalarVariable
+    name="tire_front_right.N2lb"
+    valueReference="318"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "320" -->
+  <ScalarVariable
+    name="tire_front_right.brake_damper_coefficient"
+    valueReference="319"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "321" -->
+  <ScalarVariable
+    name="tire_front_right.brake_force"
+    valueReference="320"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "322" -->
+  <ScalarVariable
+    name="tire_front_right.brake_mass"
+    valueReference="321"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "323" -->
+  <ScalarVariable
+    name="tire_front_right.brake_out"
+    valueReference="322"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "324" -->
+  <ScalarVariable
+    name="tire_front_right.brake_spring_coefficient"
+    valueReference="323"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "325" -->
+  <ScalarVariable
+    name="tire_front_right.d_gap"
+    valueReference="324"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "326" -->
+  <ScalarVariable
+    name="tire_front_right.dd_roll"
+    valueReference="325"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "327" -->
+  <ScalarVariable
+    name="tire_front_right.ddz"
+    valueReference="326"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "328" -->
+  <ScalarVariable
+    name="tire_front_right.dfz"
+    valueReference="327"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "329" -->
+  <ScalarVariable
+    name="tire_front_right.gap"
+    valueReference="328"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "330" -->
+  <ScalarVariable
+    name="tire_front_right.inch2m"
+    valueReference="329"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "331" -->
+  <ScalarVariable
+    name="tire_front_right.longitudinal_force"
+    valueReference="330"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "332" -->
+  <ScalarVariable
+    name="tire_front_right.longitudinal_slip_ratio"
+    valueReference="331"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "333" -->
+  <ScalarVariable
+    name="tire_front_right.mu_k"
+    valueReference="332"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "334" -->
+  <ScalarVariable
+    name="tire_front_right.mu_s"
+    valueReference="333"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "335" -->
+  <ScalarVariable
+    name="tire_front_right.net_lateral_force"
+    valueReference="334"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "336" -->
+  <ScalarVariable
+    name="tire_front_right.pi"
+    valueReference="335"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "337" -->
+  <ScalarVariable
+    name="tire_front_right.rad2deg"
+    valueReference="336"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "338" -->
+  <ScalarVariable
+    name="tire_front_right.side_slip"
+    valueReference="337"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "339" -->
+  <ScalarVariable
+    name="tire_front_right.slip_ratio"
+    valueReference="338"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "340" -->
+  <ScalarVariable
+    name="tire_front_right.tire_normal_force"
+    valueReference="339"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "341" -->
+  <ScalarVariable
+    name="tire_rear_left.Bx"
+    valueReference="340"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "342" -->
+  <ScalarVariable
+    name="tire_rear_left.Bxa"
+    valueReference="341"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "343" -->
+  <ScalarVariable
+    name="tire_rear_left.By"
+    valueReference="342"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "344" -->
+  <ScalarVariable
+    name="tire_rear_left.Byk"
+    valueReference="343"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "345" -->
+  <ScalarVariable
+    name="tire_rear_left.Cx"
+    valueReference="344"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "346" -->
+  <ScalarVariable
+    name="tire_rear_left.Cxa"
+    valueReference="345"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "347" -->
+  <ScalarVariable
+    name="tire_rear_left.Cy"
+    valueReference="346"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "348" -->
+  <ScalarVariable
+    name="tire_rear_left.Cyk"
+    valueReference="347"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "349" -->
+  <ScalarVariable
+    name="tire_rear_left.Dx"
+    valueReference="348"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "350" -->
+  <ScalarVariable
+    name="tire_rear_left.Dy"
+    valueReference="349"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "351" -->
+  <ScalarVariable
+    name="tire_rear_left.Ex"
+    valueReference="350"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "352" -->
+  <ScalarVariable
+    name="tire_rear_left.Ey"
+    valueReference="351"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "353" -->
+  <ScalarVariable
+    name="tire_rear_left.N2lb"
+    valueReference="352"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "354" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_damper_coefficient"
+    valueReference="353"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "355" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_force"
+    valueReference="354"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "356" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_mass"
+    valueReference="355"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "357" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_out"
+    valueReference="356"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "358" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_spring_coefficient"
+    valueReference="357"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "359" -->
+  <ScalarVariable
+    name="tire_rear_left.d_gap"
+    valueReference="358"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "360" -->
+  <ScalarVariable
+    name="tire_rear_left.dd_roll"
+    valueReference="359"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "361" -->
+  <ScalarVariable
+    name="tire_rear_left.ddz"
+    valueReference="360"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "362" -->
+  <ScalarVariable
+    name="tire_rear_left.dfz"
+    valueReference="361"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "363" -->
+  <ScalarVariable
+    name="tire_rear_left.gap"
+    valueReference="362"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "364" -->
+  <ScalarVariable
+    name="tire_rear_left.inch2m"
+    valueReference="363"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "365" -->
+  <ScalarVariable
+    name="tire_rear_left.longitudinal_force"
+    valueReference="364"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "366" -->
+  <ScalarVariable
+    name="tire_rear_left.longitudinal_slip_ratio"
+    valueReference="365"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "367" -->
+  <ScalarVariable
+    name="tire_rear_left.mu_k"
+    valueReference="366"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "368" -->
+  <ScalarVariable
+    name="tire_rear_left.mu_s"
+    valueReference="367"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "369" -->
+  <ScalarVariable
+    name="tire_rear_left.net_lateral_force"
+    valueReference="368"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "370" -->
+  <ScalarVariable
+    name="tire_rear_left.pi"
+    valueReference="369"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "371" -->
+  <ScalarVariable
+    name="tire_rear_left.rad2deg"
+    valueReference="370"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "372" -->
+  <ScalarVariable
+    name="tire_rear_left.side_slip"
+    valueReference="371"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "373" -->
+  <ScalarVariable
+    name="tire_rear_left.slip_ratio"
+    valueReference="372"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "374" -->
+  <ScalarVariable
+    name="tire_rear_left.tire_normal_force"
+    valueReference="373"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "375" -->
+  <ScalarVariable
+    name="tire_rear_right.Bx"
+    valueReference="374"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "376" -->
+  <ScalarVariable
+    name="tire_rear_right.Bxa"
+    valueReference="375"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "377" -->
+  <ScalarVariable
+    name="tire_rear_right.By"
+    valueReference="376"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "378" -->
+  <ScalarVariable
+    name="tire_rear_right.Byk"
+    valueReference="377"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "379" -->
+  <ScalarVariable
+    name="tire_rear_right.Cx"
+    valueReference="378"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "380" -->
+  <ScalarVariable
+    name="tire_rear_right.Cxa"
+    valueReference="379"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "381" -->
+  <ScalarVariable
+    name="tire_rear_right.Cy"
+    valueReference="380"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "382" -->
+  <ScalarVariable
+    name="tire_rear_right.Cyk"
+    valueReference="381"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "383" -->
+  <ScalarVariable
+    name="tire_rear_right.Dx"
+    valueReference="382"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "384" -->
+  <ScalarVariable
+    name="tire_rear_right.Dy"
+    valueReference="383"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "385" -->
+  <ScalarVariable
+    name="tire_rear_right.Ex"
+    valueReference="384"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "386" -->
+  <ScalarVariable
+    name="tire_rear_right.Ey"
+    valueReference="385"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "387" -->
+  <ScalarVariable
+    name="tire_rear_right.N2lb"
+    valueReference="386"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "388" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_damper_coefficient"
+    valueReference="387"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "389" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_force"
+    valueReference="388"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "390" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_mass"
+    valueReference="389"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "391" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_out"
+    valueReference="390"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "392" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_spring_coefficient"
+    valueReference="391"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "393" -->
+  <ScalarVariable
+    name="tire_rear_right.d_gap"
+    valueReference="392"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "394" -->
+  <ScalarVariable
+    name="tire_rear_right.dd_roll"
+    valueReference="393"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "395" -->
+  <ScalarVariable
+    name="tire_rear_right.ddz"
+    valueReference="394"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "396" -->
+  <ScalarVariable
+    name="tire_rear_right.dfz"
+    valueReference="395"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "397" -->
+  <ScalarVariable
+    name="tire_rear_right.gap"
+    valueReference="396"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "398" -->
+  <ScalarVariable
+    name="tire_rear_right.inch2m"
+    valueReference="397"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "399" -->
+  <ScalarVariable
+    name="tire_rear_right.longitudinal_force"
+    valueReference="398"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "400" -->
+  <ScalarVariable
+    name="tire_rear_right.longitudinal_slip_ratio"
+    valueReference="399"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "401" -->
+  <ScalarVariable
+    name="tire_rear_right.mu_k"
+    valueReference="400"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "402" -->
+  <ScalarVariable
+    name="tire_rear_right.mu_s"
+    valueReference="401"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "403" -->
+  <ScalarVariable
+    name="tire_rear_right.net_lateral_force"
+    valueReference="402"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "404" -->
+  <ScalarVariable
+    name="tire_rear_right.pi"
+    valueReference="403"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "405" -->
+  <ScalarVariable
+    name="tire_rear_right.rad2deg"
+    valueReference="404"
+    initial="exact">
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "406" -->
+  <ScalarVariable
+    name="tire_rear_right.side_slip"
+    valueReference="405"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "407" -->
+  <ScalarVariable
+    name="tire_rear_right.slip_ratio"
+    valueReference="406"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "408" -->
+  <ScalarVariable
+    name="tire_rear_right.tire_normal_force"
+    valueReference="407"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "409" -->
+  <ScalarVariable
+    name="acceleration.k"
+    valueReference="408"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "410" -->
+  <ScalarVariable
+    name="acceleration.y"
+    valueReference="409"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "411" -->
+  <ScalarVariable
+    name="ackerman_Steering_Model.steer_angle"
+    valueReference="410"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "412" -->
+  <ScalarVariable
+    name="angle_steer.k"
+    valueReference="411"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "413" -->
+  <ScalarVariable
+    name="angle_steer.y"
+    valueReference="412"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "414" -->
+  <ScalarVariable
+    name="body_Model.Cd"
+    valueReference="413"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.288"/>
+  </ScalarVariable>
+  <!-- Index of variable = "415" -->
+  <ScalarVariable
+    name="body_Model.I_x"
+    valueReference="414"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="835.53408"/>
+  </ScalarVariable>
+  <!-- Index of variable = "416" -->
+  <ScalarVariable
+    name="body_Model.I_y"
+    valueReference="415"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1500.865"/>
+  </ScalarVariable>
+  <!-- Index of variable = "417" -->
+  <ScalarVariable
+    name="body_Model.I_z"
+    valueReference="416"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="2200.865"/>
+  </ScalarVariable>
+  <!-- Index of variable = "418" -->
+  <ScalarVariable
+    name="body_Model.chassis_to_body_distance"
+    valueReference="417"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.3677536"/>
+  </ScalarVariable>
+  <!-- Index of variable = "419" -->
+  <ScalarVariable
+    name="body_Model.distance_chassis"
+    valueReference="418"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.3677536"/>
+  </ScalarVariable>
+  <!-- Index of variable = "420" -->
+  <ScalarVariable
+    name="body_Model.distance_front"
+    valueReference="419"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "421" -->
+  <ScalarVariable
+    name="body_Model.distance_left"
+    valueReference="420"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.819"/>
+  </ScalarVariable>
+  <!-- Index of variable = "422" -->
+  <ScalarVariable
+    name="body_Model.distance_rear"
+    valueReference="421"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.4"/>
+  </ScalarVariable>
+  <!-- Index of variable = "423" -->
+  <ScalarVariable
+    name="body_Model.distance_right"
+    valueReference="422"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.819"/>
+  </ScalarVariable>
+  <!-- Index of variable = "424" -->
+  <ScalarVariable
+    name="body_Model.mass_body"
+    valueReference="423"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1830.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "425" -->
+  <ScalarVariable
+    name="body_Model.mass_tire"
+    valueReference="424"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="20.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "426" -->
+  <ScalarVariable
+    name="body_Model.pi"
+    valueReference="425"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="3.14159265358979"/>
+  </ScalarVariable>
+  <!-- Index of variable = "427" -->
+  <ScalarVariable
+    name="body_Model.tread_front"
+    valueReference="426"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.638"/>
+  </ScalarVariable>
+  <!-- Index of variable = "428" -->
+  <ScalarVariable
+    name="body_Model.tread_rear"
+    valueReference="427"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.647"/>
+  </ScalarVariable>
+  <!-- Index of variable = "429" -->
+  <ScalarVariable
+    name="body_Model.vectors_FL[1]"
+    valueReference="428"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "430" -->
+  <ScalarVariable
+    name="body_Model.vectors_FL[2]"
+    valueReference="429"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "431" -->
+  <ScalarVariable
+    name="body_Model.vectors_FL[3]"
+    valueReference="430"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "432" -->
+  <ScalarVariable
+    name="body_Model.vectors_FL[4]"
+    valueReference="431"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "433" -->
+  <ScalarVariable
+    name="body_Model.vectors_FL[5]"
+    valueReference="432"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "434" -->
+  <ScalarVariable
+    name="body_Model.vectors_FL[6]"
+    valueReference="433"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "435" -->
+  <ScalarVariable
+    name="body_Model.vectors_FR[1]"
+    valueReference="434"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "436" -->
+  <ScalarVariable
+    name="body_Model.vectors_FR[2]"
+    valueReference="435"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "437" -->
+  <ScalarVariable
+    name="body_Model.vectors_FR[3]"
+    valueReference="436"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "438" -->
+  <ScalarVariable
+    name="body_Model.vectors_FR[4]"
+    valueReference="437"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "439" -->
+  <ScalarVariable
+    name="body_Model.vectors_FR[5]"
+    valueReference="438"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "440" -->
+  <ScalarVariable
+    name="body_Model.vectors_FR[6]"
+    valueReference="439"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "441" -->
+  <ScalarVariable
+    name="body_Model.vectors_RL[1]"
+    valueReference="440"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "442" -->
+  <ScalarVariable
+    name="body_Model.vectors_RL[2]"
+    valueReference="441"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "443" -->
+  <ScalarVariable
+    name="body_Model.vectors_RL[3]"
+    valueReference="442"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "444" -->
+  <ScalarVariable
+    name="body_Model.vectors_RL[4]"
+    valueReference="443"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "445" -->
+  <ScalarVariable
+    name="body_Model.vectors_RL[5]"
+    valueReference="444"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "446" -->
+  <ScalarVariable
+    name="body_Model.vectors_RL[6]"
+    valueReference="445"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "447" -->
+  <ScalarVariable
+    name="body_Model.vectors_RR[1]"
+    valueReference="446"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "448" -->
+  <ScalarVariable
+    name="body_Model.vectors_RR[2]"
+    valueReference="447"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "449" -->
+  <ScalarVariable
+    name="body_Model.vectors_RR[3]"
+    valueReference="448"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "450" -->
+  <ScalarVariable
+    name="body_Model.vectors_RR[4]"
+    valueReference="449"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "451" -->
+  <ScalarVariable
+    name="body_Model.vectors_RR[5]"
+    valueReference="450"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "452" -->
+  <ScalarVariable
+    name="body_Model.vectors_RR[6]"
+    valueReference="451"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "453" -->
+  <ScalarVariable
+    name="body_Model.wheel_base"
+    valueReference="452"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="3.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "454" -->
+  <ScalarVariable
+    name="brake.k"
+    valueReference="453"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "455" -->
+  <ScalarVariable
+    name="brake.y"
+    valueReference="454"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "456" -->
+  <ScalarVariable
+    name="ev_motor_model.acceleration"
+    valueReference="455"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "457" -->
+  <ScalarVariable
+    name="ev_motor_model.transmission"
+    valueReference="456"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "458" -->
+  <ScalarVariable
+    name="front_x_fl.k"
+    valueReference="457"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "459" -->
+  <ScalarVariable
+    name="front_x_fl.y"
+    valueReference="458"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "460" -->
+  <ScalarVariable
+    name="front_x_fr.k"
+    valueReference="459"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "461" -->
+  <ScalarVariable
+    name="front_x_fr.y"
+    valueReference="460"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "462" -->
+  <ScalarVariable
+    name="front_x_rl.k"
+    valueReference="461"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "463" -->
+  <ScalarVariable
+    name="front_x_rl.y"
+    valueReference="462"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "464" -->
+  <ScalarVariable
+    name="front_x_rr.k"
+    valueReference="463"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "465" -->
+  <ScalarVariable
+    name="front_x_rr.y"
+    valueReference="464"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "466" -->
+  <ScalarVariable
+    name="front_y_fl.k"
+    valueReference="465"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "467" -->
+  <ScalarVariable
+    name="front_y_fl.y"
+    valueReference="466"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "468" -->
+  <ScalarVariable
+    name="front_y_fr.k"
+    valueReference="467"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "469" -->
+  <ScalarVariable
+    name="front_y_fr.y"
+    valueReference="468"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "470" -->
+  <ScalarVariable
+    name="front_y_rl.k"
+    valueReference="469"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "471" -->
+  <ScalarVariable
+    name="front_y_rl.y"
+    valueReference="470"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "472" -->
+  <ScalarVariable
+    name="front_y_rr.k"
+    valueReference="471"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "473" -->
+  <ScalarVariable
+    name="front_y_rr.y"
+    valueReference="472"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "474" -->
+  <ScalarVariable
+    name="front_z_fl.k"
+    valueReference="473"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "475" -->
+  <ScalarVariable
+    name="front_z_fl.y"
+    valueReference="474"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "476" -->
+  <ScalarVariable
+    name="front_z_fr.k"
+    valueReference="475"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "477" -->
+  <ScalarVariable
+    name="front_z_fr.y"
+    valueReference="476"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "478" -->
+  <ScalarVariable
+    name="front_z_rl.k"
+    valueReference="477"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "479" -->
+  <ScalarVariable
+    name="front_z_rl.y"
+    valueReference="478"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "480" -->
+  <ScalarVariable
+    name="front_z_rr.k"
+    valueReference="479"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "481" -->
+  <ScalarVariable
+    name="front_z_rr.y"
+    valueReference="480"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "482" -->
+  <ScalarVariable
+    name="left_x_fl.k"
+    valueReference="481"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "483" -->
+  <ScalarVariable
+    name="left_x_fl.y"
+    valueReference="482"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "484" -->
+  <ScalarVariable
+    name="left_x_fr.k"
+    valueReference="483"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "485" -->
+  <ScalarVariable
+    name="left_x_fr.y"
+    valueReference="484"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "486" -->
+  <ScalarVariable
+    name="left_x_rl.k"
+    valueReference="485"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "487" -->
+  <ScalarVariable
+    name="left_x_rl.y"
+    valueReference="486"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "488" -->
+  <ScalarVariable
+    name="left_x_rr.k"
+    valueReference="487"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "489" -->
+  <ScalarVariable
+    name="left_x_rr.y"
+    valueReference="488"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "490" -->
+  <ScalarVariable
+    name="left_y_fl.k"
+    valueReference="489"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "491" -->
+  <ScalarVariable
+    name="left_y_fl.y"
+    valueReference="490"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "492" -->
+  <ScalarVariable
+    name="left_y_fr.k"
+    valueReference="491"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "493" -->
+  <ScalarVariable
+    name="left_y_fr.y"
+    valueReference="492"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "494" -->
+  <ScalarVariable
+    name="left_y_rl.k"
+    valueReference="493"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "495" -->
+  <ScalarVariable
+    name="left_y_rl.y"
+    valueReference="494"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "496" -->
+  <ScalarVariable
+    name="left_y_rr.k"
+    valueReference="495"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "497" -->
+  <ScalarVariable
+    name="left_y_rr.y"
+    valueReference="496"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "498" -->
+  <ScalarVariable
+    name="left_z_fl.k"
+    valueReference="497"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "499" -->
+  <ScalarVariable
+    name="left_z_fl.y"
+    valueReference="498"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "500" -->
+  <ScalarVariable
+    name="left_z_fr.k"
+    valueReference="499"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "501" -->
+  <ScalarVariable
+    name="left_z_fr.y"
+    valueReference="500"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "502" -->
+  <ScalarVariable
+    name="left_z_rl.k"
+    valueReference="501"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "503" -->
+  <ScalarVariable
+    name="left_z_rl.y"
+    valueReference="502"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "504" -->
+  <ScalarVariable
+    name="left_z_rr.k"
+    valueReference="503"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "505" -->
+  <ScalarVariable
+    name="left_z_rr.y"
+    valueReference="504"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "506" -->
+  <ScalarVariable
+    name="multiplex_fl.u1[1]"
+    valueReference="505"
+    description="Connector of Real input signals 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "507" -->
+  <ScalarVariable
+    name="multiplex_fl.u2[1]"
+    valueReference="506"
+    description="Connector of Real input signals 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "508" -->
+  <ScalarVariable
+    name="multiplex_fl.u3[1]"
+    valueReference="507"
+    description="Connector of Real input signals 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "509" -->
+  <ScalarVariable
+    name="multiplex_fl.u4[1]"
+    valueReference="508"
+    description="Connector of Real input signals 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "510" -->
+  <ScalarVariable
+    name="multiplex_fl.u5[1]"
+    valueReference="509"
+    description="Connector of Real input signals 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "511" -->
+  <ScalarVariable
+    name="multiplex_fl.u6[1]"
+    valueReference="510"
+    description="Connector of Real input signals 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "512" -->
+  <ScalarVariable
+    name="multiplex_fl.y[1]"
+    valueReference="511"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "513" -->
+  <ScalarVariable
+    name="multiplex_fl.y[2]"
+    valueReference="512"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "514" -->
+  <ScalarVariable
+    name="multiplex_fl.y[3]"
+    valueReference="513"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "515" -->
+  <ScalarVariable
+    name="multiplex_fl.y[4]"
+    valueReference="514"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "516" -->
+  <ScalarVariable
+    name="multiplex_fl.y[5]"
+    valueReference="515"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "517" -->
+  <ScalarVariable
+    name="multiplex_fl.y[6]"
+    valueReference="516"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "518" -->
+  <ScalarVariable
+    name="multiplex_fr.u1[1]"
+    valueReference="517"
+    description="Connector of Real input signals 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "519" -->
+  <ScalarVariable
+    name="multiplex_fr.u2[1]"
+    valueReference="518"
+    description="Connector of Real input signals 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "520" -->
+  <ScalarVariable
+    name="multiplex_fr.u3[1]"
+    valueReference="519"
+    description="Connector of Real input signals 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "521" -->
+  <ScalarVariable
+    name="multiplex_fr.u4[1]"
+    valueReference="520"
+    description="Connector of Real input signals 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "522" -->
+  <ScalarVariable
+    name="multiplex_fr.u5[1]"
+    valueReference="521"
+    description="Connector of Real input signals 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "523" -->
+  <ScalarVariable
+    name="multiplex_fr.u6[1]"
+    valueReference="522"
+    description="Connector of Real input signals 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "524" -->
+  <ScalarVariable
+    name="multiplex_fr.y[1]"
+    valueReference="523"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "525" -->
+  <ScalarVariable
+    name="multiplex_fr.y[2]"
+    valueReference="524"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "526" -->
+  <ScalarVariable
+    name="multiplex_fr.y[3]"
+    valueReference="525"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "527" -->
+  <ScalarVariable
+    name="multiplex_fr.y[4]"
+    valueReference="526"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "528" -->
+  <ScalarVariable
+    name="multiplex_fr.y[5]"
+    valueReference="527"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "529" -->
+  <ScalarVariable
+    name="multiplex_fr.y[6]"
+    valueReference="528"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "530" -->
+  <ScalarVariable
+    name="multiplex_rl.u1[1]"
+    valueReference="529"
+    description="Connector of Real input signals 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "531" -->
+  <ScalarVariable
+    name="multiplex_rl.u2[1]"
+    valueReference="530"
+    description="Connector of Real input signals 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "532" -->
+  <ScalarVariable
+    name="multiplex_rl.u3[1]"
+    valueReference="531"
+    description="Connector of Real input signals 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "533" -->
+  <ScalarVariable
+    name="multiplex_rl.u4[1]"
+    valueReference="532"
+    description="Connector of Real input signals 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "534" -->
+  <ScalarVariable
+    name="multiplex_rl.u5[1]"
+    valueReference="533"
+    description="Connector of Real input signals 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "535" -->
+  <ScalarVariable
+    name="multiplex_rl.u6[1]"
+    valueReference="534"
+    description="Connector of Real input signals 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "536" -->
+  <ScalarVariable
+    name="multiplex_rl.y[1]"
+    valueReference="535"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "537" -->
+  <ScalarVariable
+    name="multiplex_rl.y[2]"
+    valueReference="536"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "538" -->
+  <ScalarVariable
+    name="multiplex_rl.y[3]"
+    valueReference="537"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "539" -->
+  <ScalarVariable
+    name="multiplex_rl.y[4]"
+    valueReference="538"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "540" -->
+  <ScalarVariable
+    name="multiplex_rl.y[5]"
+    valueReference="539"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "541" -->
+  <ScalarVariable
+    name="multiplex_rl.y[6]"
+    valueReference="540"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "542" -->
+  <ScalarVariable
+    name="multiplex_rr.u1[1]"
+    valueReference="541"
+    description="Connector of Real input signals 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "543" -->
+  <ScalarVariable
+    name="multiplex_rr.u2[1]"
+    valueReference="542"
+    description="Connector of Real input signals 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "544" -->
+  <ScalarVariable
+    name="multiplex_rr.u3[1]"
+    valueReference="543"
+    description="Connector of Real input signals 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "545" -->
+  <ScalarVariable
+    name="multiplex_rr.u4[1]"
+    valueReference="544"
+    description="Connector of Real input signals 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "546" -->
+  <ScalarVariable
+    name="multiplex_rr.u5[1]"
+    valueReference="545"
+    description="Connector of Real input signals 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "547" -->
+  <ScalarVariable
+    name="multiplex_rr.u6[1]"
+    valueReference="546"
+    description="Connector of Real input signals 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "548" -->
+  <ScalarVariable
+    name="multiplex_rr.y[1]"
+    valueReference="547"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "549" -->
+  <ScalarVariable
+    name="multiplex_rr.y[2]"
+    valueReference="548"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "550" -->
+  <ScalarVariable
+    name="multiplex_rr.y[3]"
+    valueReference="549"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "551" -->
+  <ScalarVariable
+    name="multiplex_rr.y[4]"
+    valueReference="550"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "552" -->
+  <ScalarVariable
+    name="multiplex_rr.y[5]"
+    valueReference="551"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "553" -->
+  <ScalarVariable
+    name="multiplex_rr.y[6]"
+    valueReference="552"
+    description="Connector of Real output signals"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "554" -->
+  <ScalarVariable
+    name="ray_front_left.k"
+    valueReference="553"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="-0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "555" -->
+  <ScalarVariable
+    name="ray_front_left.y"
+    valueReference="554"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "556" -->
+  <ScalarVariable
+    name="ray_front_right.k"
+    valueReference="555"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="-0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "557" -->
+  <ScalarVariable
+    name="ray_front_right.y"
+    valueReference="556"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "558" -->
+  <ScalarVariable
+    name="ray_rear_left.k"
+    valueReference="557"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="-0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "559" -->
+  <ScalarVariable
+    name="ray_rear_left.y"
+    valueReference="558"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "560" -->
+  <ScalarVariable
+    name="ray_rear_right.k"
+    valueReference="559"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="-0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "561" -->
+  <ScalarVariable
+    name="ray_rear_right.y"
+    valueReference="560"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "562" -->
+  <ScalarVariable
+    name="realExpression.y"
+    valueReference="561"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "563" -->
+  <ScalarVariable
+    name="realExpression1.y"
+    valueReference="562"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "564" -->
+  <ScalarVariable
+    name="realExpression10.y"
+    valueReference="563"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "565" -->
+  <ScalarVariable
+    name="realExpression11.y"
+    valueReference="564"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "566" -->
+  <ScalarVariable
+    name="realExpression12.y"
+    valueReference="565"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "567" -->
+  <ScalarVariable
+    name="realExpression2.y"
+    valueReference="566"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "568" -->
+  <ScalarVariable
+    name="realExpression3.y"
+    valueReference="567"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "569" -->
+  <ScalarVariable
+    name="realExpression6.y"
+    valueReference="568"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "570" -->
+  <ScalarVariable
+    name="realExpression7.y"
+    valueReference="569"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "571" -->
+  <ScalarVariable
+    name="realExpression9.y"
+    valueReference="570"
+    description="Value of Real output"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "572" -->
+  <ScalarVariable
+    name="suspension_front_left.suspension_damper_stiff"
+    valueReference="571"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5500.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "573" -->
+  <ScalarVariable
+    name="suspension_front_left.suspension_distance"
+    valueReference="572"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "574" -->
+  <ScalarVariable
+    name="suspension_front_left.suspension_spring_stiff"
+    valueReference="573"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="92000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "575" -->
+  <ScalarVariable
+    name="suspension_front_right.suspension_damper_stiff"
+    valueReference="574"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5500.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "576" -->
+  <ScalarVariable
+    name="suspension_front_right.suspension_distance"
+    valueReference="575"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "577" -->
+  <ScalarVariable
+    name="suspension_front_right.suspension_spring_stiff"
+    valueReference="576"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="92000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "578" -->
+  <ScalarVariable
+    name="suspension_rear_left.suspension_damper_stiff"
+    valueReference="577"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5500.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "579" -->
+  <ScalarVariable
+    name="suspension_rear_left.suspension_distance"
+    valueReference="578"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "580" -->
+  <ScalarVariable
+    name="suspension_rear_left.suspension_spring_stiff"
+    valueReference="579"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="92000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "581" -->
+  <ScalarVariable
+    name="suspension_rear_right.suspension_damper_stiff"
+    valueReference="580"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5500.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "582" -->
+  <ScalarVariable
+    name="suspension_rear_right.suspension_distance"
+    valueReference="581"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.5"/>
+  </ScalarVariable>
+  <!-- Index of variable = "583" -->
+  <ScalarVariable
+    name="suspension_rear_right.suspension_spring_stiff"
+    valueReference="582"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="92000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "584" -->
+  <ScalarVariable
+    name="tire_front_left.Ka"
+    valueReference="583"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.05"/>
+  </ScalarVariable>
+  <!-- Index of variable = "585" -->
+  <ScalarVariable
+    name="tire_front_left.brake_force_max"
+    valueReference="584"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4400.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "586" -->
+  <ScalarVariable
+    name="tire_front_left.brake_in"
+    valueReference="585"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "587" -->
+  <ScalarVariable
+    name="tire_front_left.cornering_stiffness"
+    valueReference="586"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5200000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "588" -->
+  <ScalarVariable
+    name="tire_front_left.inertia"
+    valueReference="587"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4.569"/>
+  </ScalarVariable>
+  <!-- Index of variable = "589" -->
+  <ScalarVariable
+    name="tire_front_left.longitudinal_stiffness"
+    valueReference="588"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1800000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "590" -->
+  <ScalarVariable
+    name="tire_front_left.magic_B"
+    valueReference="589"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.25"/>
+  </ScalarVariable>
+  <!-- Index of variable = "591" -->
+  <ScalarVariable
+    name="tire_front_left.magic_C"
+    valueReference="590"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "592" -->
+  <ScalarVariable
+    name="tire_front_left.magic_E"
+    valueReference="591"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.7"/>
+  </ScalarVariable>
+  <!-- Index of variable = "593" -->
+  <ScalarVariable
+    name="tire_front_left.mass"
+    valueReference="592"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="20.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "594" -->
+  <ScalarVariable
+    name="tire_front_left.radius"
+    valueReference="593"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.4826"/>
+  </ScalarVariable>
+  <!-- Index of variable = "595" -->
+  <ScalarVariable
+    name="tire_front_left.ray_in"
+    valueReference="594"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "596" -->
+  <ScalarVariable
+    name="tire_front_left.rolling_resistance_coefficient"
+    valueReference="595"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.005"/>
+  </ScalarVariable>
+  <!-- Index of variable = "597" -->
+  <ScalarVariable
+    name="tire_front_left.tire_design_load"
+    valueReference="596"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="337213.61925"/>
+  </ScalarVariable>
+  <!-- Index of variable = "598" -->
+  <ScalarVariable
+    name="tire_front_left.tire_pressure"
+    valueReference="597"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="35.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "599" -->
+  <ScalarVariable
+    name="tire_front_left.tread_width"
+    valueReference="598"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9.25197"/>
+  </ScalarVariable>
+  <!-- Index of variable = "600" -->
+  <ScalarVariable
+    name="tire_front_left.wheel_damper_stiff"
+    valueReference="599"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9750.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "601" -->
+  <ScalarVariable
+    name="tire_front_left.wheel_spring_stiff"
+    valueReference="600"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="950000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "602" -->
+  <ScalarVariable
+    name="tire_front_right.Ka"
+    valueReference="601"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.05"/>
+  </ScalarVariable>
+  <!-- Index of variable = "603" -->
+  <ScalarVariable
+    name="tire_front_right.brake_force_max"
+    valueReference="602"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4400.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "604" -->
+  <ScalarVariable
+    name="tire_front_right.brake_in"
+    valueReference="603"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "605" -->
+  <ScalarVariable
+    name="tire_front_right.cornering_stiffness"
+    valueReference="604"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5200000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "606" -->
+  <ScalarVariable
+    name="tire_front_right.inertia"
+    valueReference="605"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4.569"/>
+  </ScalarVariable>
+  <!-- Index of variable = "607" -->
+  <ScalarVariable
+    name="tire_front_right.longitudinal_stiffness"
+    valueReference="606"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1800000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "608" -->
+  <ScalarVariable
+    name="tire_front_right.magic_B"
+    valueReference="607"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.25"/>
+  </ScalarVariable>
+  <!-- Index of variable = "609" -->
+  <ScalarVariable
+    name="tire_front_right.magic_C"
+    valueReference="608"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "610" -->
+  <ScalarVariable
+    name="tire_front_right.magic_E"
+    valueReference="609"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.7"/>
+  </ScalarVariable>
+  <!-- Index of variable = "611" -->
+  <ScalarVariable
+    name="tire_front_right.mass"
+    valueReference="610"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="20.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "612" -->
+  <ScalarVariable
+    name="tire_front_right.radius"
+    valueReference="611"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.4826"/>
+  </ScalarVariable>
+  <!-- Index of variable = "613" -->
+  <ScalarVariable
+    name="tire_front_right.ray_in"
+    valueReference="612"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "614" -->
+  <ScalarVariable
+    name="tire_front_right.rolling_resistance_coefficient"
+    valueReference="613"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.005"/>
+  </ScalarVariable>
+  <!-- Index of variable = "615" -->
+  <ScalarVariable
+    name="tire_front_right.tire_design_load"
+    valueReference="614"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="337213.61925"/>
+  </ScalarVariable>
+  <!-- Index of variable = "616" -->
+  <ScalarVariable
+    name="tire_front_right.tire_pressure"
+    valueReference="615"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="35.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "617" -->
+  <ScalarVariable
+    name="tire_front_right.tread_width"
+    valueReference="616"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9.25197"/>
+  </ScalarVariable>
+  <!-- Index of variable = "618" -->
+  <ScalarVariable
+    name="tire_front_right.wheel_damper_stiff"
+    valueReference="617"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9750.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "619" -->
+  <ScalarVariable
+    name="tire_front_right.wheel_spring_stiff"
+    valueReference="618"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="950000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "620" -->
+  <ScalarVariable
+    name="tire_rear_left.Ka"
+    valueReference="619"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.05"/>
+  </ScalarVariable>
+  <!-- Index of variable = "621" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_force_max"
+    valueReference="620"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4400.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "622" -->
+  <ScalarVariable
+    name="tire_rear_left.brake_in"
+    valueReference="621"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "623" -->
+  <ScalarVariable
+    name="tire_rear_left.cornering_stiffness"
+    valueReference="622"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5200000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "624" -->
+  <ScalarVariable
+    name="tire_rear_left.inertia"
+    valueReference="623"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4.569"/>
+  </ScalarVariable>
+  <!-- Index of variable = "625" -->
+  <ScalarVariable
+    name="tire_rear_left.longitudinal_stiffness"
+    valueReference="624"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1800000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "626" -->
+  <ScalarVariable
+    name="tire_rear_left.magic_B"
+    valueReference="625"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.25"/>
+  </ScalarVariable>
+  <!-- Index of variable = "627" -->
+  <ScalarVariable
+    name="tire_rear_left.magic_C"
+    valueReference="626"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "628" -->
+  <ScalarVariable
+    name="tire_rear_left.magic_E"
+    valueReference="627"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.7"/>
+  </ScalarVariable>
+  <!-- Index of variable = "629" -->
+  <ScalarVariable
+    name="tire_rear_left.mass"
+    valueReference="628"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="20.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "630" -->
+  <ScalarVariable
+    name="tire_rear_left.radius"
+    valueReference="629"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.508"/>
+  </ScalarVariable>
+  <!-- Index of variable = "631" -->
+  <ScalarVariable
+    name="tire_rear_left.ray_in"
+    valueReference="630"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "632" -->
+  <ScalarVariable
+    name="tire_rear_left.rolling_resistance_coefficient"
+    valueReference="631"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.005"/>
+  </ScalarVariable>
+  <!-- Index of variable = "633" -->
+  <ScalarVariable
+    name="tire_rear_left.tire_design_load"
+    valueReference="632"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="337213.61925"/>
+  </ScalarVariable>
+  <!-- Index of variable = "634" -->
+  <ScalarVariable
+    name="tire_rear_left.tire_pressure"
+    valueReference="633"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="35.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "635" -->
+  <ScalarVariable
+    name="tire_rear_left.tread_width"
+    valueReference="634"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9.25197"/>
+  </ScalarVariable>
+  <!-- Index of variable = "636" -->
+  <ScalarVariable
+    name="tire_rear_left.wheel_damper_stiff"
+    valueReference="635"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9750.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "637" -->
+  <ScalarVariable
+    name="tire_rear_left.wheel_spring_stiff"
+    valueReference="636"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="950000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "638" -->
+  <ScalarVariable
+    name="tire_rear_right.Ka"
+    valueReference="637"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.05"/>
+  </ScalarVariable>
+  <!-- Index of variable = "639" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_force_max"
+    valueReference="638"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4400.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "640" -->
+  <ScalarVariable
+    name="tire_rear_right.brake_in"
+    valueReference="639"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "641" -->
+  <ScalarVariable
+    name="tire_rear_right.cornering_stiffness"
+    valueReference="640"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="5200000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "642" -->
+  <ScalarVariable
+    name="tire_rear_right.inertia"
+    valueReference="641"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="4.569"/>
+  </ScalarVariable>
+  <!-- Index of variable = "643" -->
+  <ScalarVariable
+    name="tire_rear_right.longitudinal_stiffness"
+    valueReference="642"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1800000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "644" -->
+  <ScalarVariable
+    name="tire_rear_right.magic_B"
+    valueReference="643"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.25"/>
+  </ScalarVariable>
+  <!-- Index of variable = "645" -->
+  <ScalarVariable
+    name="tire_rear_right.magic_C"
+    valueReference="644"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="1.6"/>
+  </ScalarVariable>
+  <!-- Index of variable = "646" -->
+  <ScalarVariable
+    name="tire_rear_right.magic_E"
+    valueReference="645"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.7"/>
+  </ScalarVariable>
+  <!-- Index of variable = "647" -->
+  <ScalarVariable
+    name="tire_rear_right.mass"
+    valueReference="646"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="20.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "648" -->
+  <ScalarVariable
+    name="tire_rear_right.radius"
+    valueReference="647"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.508"/>
+  </ScalarVariable>
+  <!-- Index of variable = "649" -->
+  <ScalarVariable
+    name="tire_rear_right.ray_in"
+    valueReference="648"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "650" -->
+  <ScalarVariable
+    name="tire_rear_right.rolling_resistance_coefficient"
+    valueReference="649"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.005"/>
+  </ScalarVariable>
+  <!-- Index of variable = "651" -->
+  <ScalarVariable
+    name="tire_rear_right.tire_design_load"
+    valueReference="650"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="337213.61925"/>
+  </ScalarVariable>
+  <!-- Index of variable = "652" -->
+  <ScalarVariable
+    name="tire_rear_right.tire_pressure"
+    valueReference="651"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="35.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "653" -->
+  <ScalarVariable
+    name="tire_rear_right.tread_width"
+    valueReference="652"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9.25197"/>
+  </ScalarVariable>
+  <!-- Index of variable = "654" -->
+  <ScalarVariable
+    name="tire_rear_right.wheel_damper_stiff"
+    valueReference="653"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="9750.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "655" -->
+  <ScalarVariable
+    name="tire_rear_right.wheel_spring_stiff"
+    valueReference="654"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="950000.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "656" -->
+  <ScalarVariable
+    name="transmission.k"
+    valueReference="655"
+    description="Constant output value"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Real start="0.0"/>
+  </ScalarVariable>
+  <!-- Index of variable = "657" -->
+  <ScalarVariable
+    name="transmission.y"
+    valueReference="656"
+    description="Connector of Real output signal"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "658" -->
+  <ScalarVariable
+    name="body_Model.body_pitch"
+    valueReference="8"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "659" -->
+  <ScalarVariable
+    name="body_Model.body_roll"
+    valueReference="9"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "660" -->
+  <ScalarVariable
+    name="body_Model.body_x_vel"
+    valueReference="5"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "661" -->
+  <ScalarVariable
+    name="body_Model.body_y_vel"
+    valueReference="6"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "662" -->
+  <ScalarVariable
+    name="body_Model.front_left_body_z_pos"
+    valueReference="260"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "663" -->
+  <ScalarVariable
+    name="body_Model.front_left_dx"
+    valueReference="245"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "664" -->
+  <ScalarVariable
+    name="body_Model.front_left_dy"
+    valueReference="232"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "665" -->
+  <ScalarVariable
+    name="body_Model.front_left_suspension_force"
+    valueReference="262"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "666" -->
+  <ScalarVariable
+    name="body_Model.front_left_tire_lateral_force"
+    valueReference="300"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "667" -->
+  <ScalarVariable
+    name="body_Model.front_left_traction_force"
+    valueReference="296"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "668" -->
+  <ScalarVariable
+    name="body_Model.front_right_body_z_pos"
+    valueReference="263"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "669" -->
+  <ScalarVariable
+    name="body_Model.front_right_dx"
+    valueReference="249"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "670" -->
+  <ScalarVariable
+    name="body_Model.front_right_suspension_force"
+    valueReference="265"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "671" -->
+  <ScalarVariable
+    name="body_Model.front_right_tire_lateral_force"
+    valueReference="334"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "672" -->
+  <ScalarVariable
+    name="body_Model.front_right_traction_force"
+    valueReference="330"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "673" -->
+  <ScalarVariable
+    name="body_Model.left_steer_angle"
+    valueReference="126"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "674" -->
+  <ScalarVariable
+    name="body_Model.rear_left_body_z_vel"
+    valueReference="266"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "675" -->
+  <ScalarVariable
+    name="body_Model.rear_left_suspension_force"
+    valueReference="268"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "676" -->
+  <ScalarVariable
+    name="body_Model.rear_left_tire_lateral_force"
+    valueReference="368"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "677" -->
+  <ScalarVariable
+    name="body_Model.rear_left_traction_force"
+    valueReference="364"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "678" -->
+  <ScalarVariable
+    name="body_Model.rear_left_vx"
+    valueReference="245"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "679" -->
+  <ScalarVariable
+    name="body_Model.rear_left_vy"
+    valueReference="246"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "680" -->
+  <ScalarVariable
+    name="body_Model.rear_right_body_z_vel"
+    valueReference="269"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "681" -->
+  <ScalarVariable
+    name="body_Model.rear_right_dy"
+    valueReference="246"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "682" -->
+  <ScalarVariable
+    name="body_Model.rear_right_suspension_force"
+    valueReference="271"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "683" -->
+  <ScalarVariable
+    name="body_Model.rear_right_tire_lateral_force"
+    valueReference="402"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "684" -->
+  <ScalarVariable
+    name="body_Model.rear_right_traction_force"
+    valueReference="398"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "685" -->
+  <ScalarVariable
+    name="body_Model.rear_right_vx"
+    valueReference="249"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "686" -->
+  <ScalarVariable
+    name="body_Model.rear_right_vy"
+    valueReference="246"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "687" -->
+  <ScalarVariable
+    name="body_Model.right_steer_angle"
+    valueReference="130"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "688" -->
+  <ScalarVariable
+    name="ev_motor_model.shaft_rotation_speed"
+    valueReference="257"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "689" -->
+  <ScalarVariable
+    name="realExpression13.y"
+    valueReference="9"
+    description="Value of Real output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "690" -->
+  <ScalarVariable
+    name="realExpression14.y"
+    valueReference="8"
+    description="Value of Real output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "691" -->
+  <ScalarVariable
+    name="realExpression15.y"
+    valueReference="8"
+    description="Value of Real output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "692" -->
+  <ScalarVariable
+    name="realExpression8.y"
+    valueReference="9"
+    description="Value of Real output"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "693" -->
+  <ScalarVariable
+    name="rear_open_differential.motor_torque"
+    valueReference="253"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "694" -->
+  <ScalarVariable
+    name="rear_open_differential.torque_to_left"
+    valueReference="259"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "695" -->
+  <ScalarVariable
+    name="rear_open_differential.w_left"
+    valueReference="30"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "696" -->
+  <ScalarVariable
+    name="rear_open_differential.w_right"
+    valueReference="35"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "697" -->
+  <ScalarVariable
+    name="suspension_front_left.body_z_vel"
+    valueReference="227"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "698" -->
+  <ScalarVariable
+    name="suspension_front_left.tire_z_vel"
+    valueReference="21"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "699" -->
+  <ScalarVariable
+    name="suspension_front_right.body_z_vel"
+    valueReference="231"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "700" -->
+  <ScalarVariable
+    name="suspension_front_right.tire_z_vel"
+    valueReference="26"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "701" -->
+  <ScalarVariable
+    name="suspension_rear_left.body_z_pos"
+    valueReference="244"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "702" -->
+  <ScalarVariable
+    name="suspension_rear_left.tire_z_vel"
+    valueReference="31"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "703" -->
+  <ScalarVariable
+    name="suspension_rear_right.body_z_pos"
+    valueReference="248"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "704" -->
+  <ScalarVariable
+    name="suspension_rear_right.tire_z_vel"
+    valueReference="36"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "705" -->
+  <ScalarVariable
+    name="tire_front_left.body_pitch"
+    valueReference="8"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "706" -->
+  <ScalarVariable
+    name="tire_front_left.body_roll"
+    valueReference="9"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "707" -->
+  <ScalarVariable
+    name="tire_front_left.body_vx"
+    valueReference="229"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "708" -->
+  <ScalarVariable
+    name="tire_front_left.body_vy"
+    valueReference="230"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "709" -->
+  <ScalarVariable
+    name="tire_front_left.drive_torque"
+    valueReference="254"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "710" -->
+  <ScalarVariable
+    name="tire_front_left.gnd_pitch"
+    valueReference="236"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "711" -->
+  <ScalarVariable
+    name="tire_front_left.slip_angle"
+    valueReference="228"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "712" -->
+  <ScalarVariable
+    name="tire_front_left.suspension_force"
+    valueReference="262"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "713" -->
+  <ScalarVariable
+    name="tire_front_left.tire_z_pos"
+    valueReference="14"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "714" -->
+  <ScalarVariable
+    name="tire_front_left.traction_force"
+    valueReference="296"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "715" -->
+  <ScalarVariable
+    name="tire_front_left.z"
+    valueReference="14"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "716" -->
+  <ScalarVariable
+    name="tire_front_right.body_pitch"
+    valueReference="8"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "717" -->
+  <ScalarVariable
+    name="tire_front_right.body_roll"
+    valueReference="9"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "718" -->
+  <ScalarVariable
+    name="tire_front_right.body_vx"
+    valueReference="234"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "719" -->
+  <ScalarVariable
+    name="tire_front_right.body_vy"
+    valueReference="235"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "720" -->
+  <ScalarVariable
+    name="tire_front_right.drive_torque"
+    valueReference="255"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "721" -->
+  <ScalarVariable
+    name="tire_front_right.gnd_pitch"
+    valueReference="237"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "722" -->
+  <ScalarVariable
+    name="tire_front_right.slip_angle"
+    valueReference="233"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "723" -->
+  <ScalarVariable
+    name="tire_front_right.suspension_force"
+    valueReference="265"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "724" -->
+  <ScalarVariable
+    name="tire_front_right.tire_z_pos"
+    valueReference="15"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "725" -->
+  <ScalarVariable
+    name="tire_front_right.traction_force"
+    valueReference="330"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "726" -->
+  <ScalarVariable
+    name="tire_front_right.z"
+    valueReference="15"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "727" -->
+  <ScalarVariable
+    name="tire_rear_left.body_pitch"
+    valueReference="8"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "728" -->
+  <ScalarVariable
+    name="tire_rear_left.body_roll"
+    valueReference="9"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "729" -->
+  <ScalarVariable
+    name="tire_rear_left.body_vx"
+    valueReference="245"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "730" -->
+  <ScalarVariable
+    name="tire_rear_left.body_vy"
+    valueReference="246"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "731" -->
+  <ScalarVariable
+    name="tire_rear_left.drive_torque"
+    valueReference="259"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "732" -->
+  <ScalarVariable
+    name="tire_rear_left.gnd_pitch"
+    valueReference="238"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "733" -->
+  <ScalarVariable
+    name="tire_rear_left.slip_angle"
+    valueReference="247"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "734" -->
+  <ScalarVariable
+    name="tire_rear_left.suspension_force"
+    valueReference="268"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "735" -->
+  <ScalarVariable
+    name="tire_rear_left.tire_z_pos"
+    valueReference="16"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "736" -->
+  <ScalarVariable
+    name="tire_rear_left.traction_force"
+    valueReference="364"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "737" -->
+  <ScalarVariable
+    name="tire_rear_left.z"
+    valueReference="16"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "738" -->
+  <ScalarVariable
+    name="tire_rear_right.body_pitch"
+    valueReference="8"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "739" -->
+  <ScalarVariable
+    name="tire_rear_right.body_roll"
+    valueReference="9"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "740" -->
+  <ScalarVariable
+    name="tire_rear_right.body_vx"
+    valueReference="249"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "741" -->
+  <ScalarVariable
+    name="tire_rear_right.body_vy"
+    valueReference="246"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "742" -->
+  <ScalarVariable
+    name="tire_rear_right.drive_torque"
+    valueReference="259"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "743" -->
+  <ScalarVariable
+    name="tire_rear_right.gnd_pitch"
+    valueReference="239"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "744" -->
+  <ScalarVariable
+    name="tire_rear_right.slip_angle"
+    valueReference="250"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "745" -->
+  <ScalarVariable
+    name="tire_rear_right.suspension_force"
+    valueReference="271"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "746" -->
+  <ScalarVariable
+    name="tire_rear_right.tire_z_pos"
+    valueReference="17"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "747" -->
+  <ScalarVariable
+    name="tire_rear_right.traction_force"
+    valueReference="398"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "748" -->
+  <ScalarVariable
+    name="tire_rear_right.z"
+    valueReference="17"
+    >
+    <Real/>
+  </ScalarVariable>
+  <!-- Index of variable = "749" -->
+  <ScalarVariable
+    name="multiplex_fl.n1"
+    valueReference="0"
+    description="Dimension of input signal connector 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "750" -->
+  <ScalarVariable
+    name="multiplex_fl.n2"
+    valueReference="1"
+    description="Dimension of input signal connector 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "751" -->
+  <ScalarVariable
+    name="multiplex_fl.n3"
+    valueReference="2"
+    description="Dimension of input signal connector 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "752" -->
+  <ScalarVariable
+    name="multiplex_fl.n4"
+    valueReference="3"
+    description="Dimension of input signal connector 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "753" -->
+  <ScalarVariable
+    name="multiplex_fl.n5"
+    valueReference="4"
+    description="Dimension of input signal connector 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "754" -->
+  <ScalarVariable
+    name="multiplex_fl.n6"
+    valueReference="5"
+    description="Dimension of input signal connector 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "755" -->
+  <ScalarVariable
+    name="multiplex_fr.n1"
+    valueReference="6"
+    description="Dimension of input signal connector 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "756" -->
+  <ScalarVariable
+    name="multiplex_fr.n2"
+    valueReference="7"
+    description="Dimension of input signal connector 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "757" -->
+  <ScalarVariable
+    name="multiplex_fr.n3"
+    valueReference="8"
+    description="Dimension of input signal connector 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "758" -->
+  <ScalarVariable
+    name="multiplex_fr.n4"
+    valueReference="9"
+    description="Dimension of input signal connector 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "759" -->
+  <ScalarVariable
+    name="multiplex_fr.n5"
+    valueReference="10"
+    description="Dimension of input signal connector 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "760" -->
+  <ScalarVariable
+    name="multiplex_fr.n6"
+    valueReference="11"
+    description="Dimension of input signal connector 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "761" -->
+  <ScalarVariable
+    name="multiplex_rl.n1"
+    valueReference="12"
+    description="Dimension of input signal connector 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "762" -->
+  <ScalarVariable
+    name="multiplex_rl.n2"
+    valueReference="13"
+    description="Dimension of input signal connector 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "763" -->
+  <ScalarVariable
+    name="multiplex_rl.n3"
+    valueReference="14"
+    description="Dimension of input signal connector 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "764" -->
+  <ScalarVariable
+    name="multiplex_rl.n4"
+    valueReference="15"
+    description="Dimension of input signal connector 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "765" -->
+  <ScalarVariable
+    name="multiplex_rl.n5"
+    valueReference="16"
+    description="Dimension of input signal connector 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "766" -->
+  <ScalarVariable
+    name="multiplex_rl.n6"
+    valueReference="17"
+    description="Dimension of input signal connector 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "767" -->
+  <ScalarVariable
+    name="multiplex_rr.n1"
+    valueReference="18"
+    description="Dimension of input signal connector 1"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "768" -->
+  <ScalarVariable
+    name="multiplex_rr.n2"
+    valueReference="19"
+    description="Dimension of input signal connector 2"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "769" -->
+  <ScalarVariable
+    name="multiplex_rr.n3"
+    valueReference="20"
+    description="Dimension of input signal connector 3"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "770" -->
+  <ScalarVariable
+    name="multiplex_rr.n4"
+    valueReference="21"
+    description="Dimension of input signal connector 4"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "771" -->
+  <ScalarVariable
+    name="multiplex_rr.n5"
+    valueReference="22"
+    description="Dimension of input signal connector 5"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "772" -->
+  <ScalarVariable
+    name="multiplex_rr.n6"
+    valueReference="23"
+    description="Dimension of input signal connector 6"
+    variability="fixed"
+    causality="calculatedParameter"
+    >
+    <Integer/>
+  </ScalarVariable>
+  <!-- Index of variable = "773" -->
+  <ScalarVariable
+    name="_D_whenCondition1"
+    valueReference="0"
+    description="abs(body_Model.body_fixed_dx) &lt; 0.05 and abs(body_Model.body_fixed_dy) &lt; 0.05"
+    variability="discrete"
+    initial="exact">
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "774" -->
+  <ScalarVariable
+    name="_D_whenCondition2"
+    valueReference="1"
+    description="abs(body_Model.front_left_vx) &lt; 0.05 and abs(tire_front_left.radius * tire_front_left.d_roll) &lt; 0.08"
+    variability="discrete"
+    initial="exact">
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "775" -->
+  <ScalarVariable
+    name="_D_whenCondition3"
+    valueReference="2"
+    description="abs(body_Model.front_right_vx) &lt; 0.05 and abs(tire_front_right.radius * tire_front_right.d_roll) &lt; 0.08"
+    variability="discrete"
+    initial="exact">
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "776" -->
+  <ScalarVariable
+    name="_D_whenCondition4"
+    valueReference="3"
+    description="abs(body_Model.rear_right_dx) &lt; 0.05 and abs(tire_rear_right.radius * tire_rear_right.d_roll) &lt; 0.08"
+    variability="discrete"
+    initial="exact">
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "777" -->
+  <ScalarVariable
+    name="_D_whenCondition5"
+    valueReference="4"
+    description="abs(body_Model.rear_left_dx) &lt; 0.05 and abs(tire_rear_left.radius * tire_rear_left.d_roll) &lt; 0.08"
+    variability="discrete"
+    initial="exact">
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "778" -->
+  <ScalarVariable
+    name="tire_front_left.is_tractive"
+    valueReference="5"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "779" -->
+  <ScalarVariable
+    name="tire_front_right.is_tractive"
+    valueReference="6"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Boolean start="false"/>
+  </ScalarVariable>
+  <!-- Index of variable = "780" -->
+  <ScalarVariable
+    name="tire_rear_left.is_tractive"
+    valueReference="7"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Boolean start="true"/>
+  </ScalarVariable>
+  <!-- Index of variable = "781" -->
+  <ScalarVariable
+    name="tire_rear_right.is_tractive"
+    valueReference="8"
+    variability="fixed"
+    causality="parameter"
+    >
+    <Boolean start="true"/>
+  </ScalarVariable>
+  </ModelVariables>
+  <ModelStructure>
+    <Derivatives>
+      <Unknown index="39" dependencies="1 2" dependenciesKind="dependent dependent" />
+      <Unknown index="40" dependencies="1" dependenciesKind="dependent" />
+      <Unknown index="41" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="42" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="43" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="44" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="45" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="46" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="47" dependencies="3" dependenciesKind="dependent" />
+      <Unknown index="48" dependencies="4" dependenciesKind="dependent" />
+      <Unknown index="49" dependencies="6" dependenciesKind="dependent" />
+      <Unknown index="50" dependencies="7" dependenciesKind="dependent" />
+      <Unknown index="51" dependencies="5" dependenciesKind="dependent" />
+      <Unknown index="52" dependencies="8" dependenciesKind="dependent" />
+      <Unknown index="53" dependencies="22" dependenciesKind="dependent" />
+      <Unknown index="54" dependencies="27" dependenciesKind="dependent" />
+      <Unknown index="55" dependencies="32" dependenciesKind="dependent" />
+      <Unknown index="56" dependencies="37" dependenciesKind="dependent" />
+      <Unknown index="57" dependencies="20" dependenciesKind="dependent" />
+      <Unknown index="58" dependencies="19 20" dependenciesKind="dependent dependent" />
+      <Unknown index="59" dependencies="2 3 5 6 7 8 9 10 13 15 19 21 22" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="60" dependencies="3 4 8 9 10 14 15 22" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="61" dependencies="21" dependenciesKind="dependent" />
+      <Unknown index="62" dependencies="25" dependenciesKind="dependent" />
+      <Unknown index="63" dependencies="24 25" dependenciesKind="dependent dependent" />
+      <Unknown index="64" dependencies="2 3 5 6 7 8 9 10 13 16 24 26 27" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="65" dependencies="3 4 8 9 10 14 16 27" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="66" dependencies="26" dependenciesKind="dependent" />
+      <Unknown index="67" dependencies="30" dependenciesKind="dependent" />
+      <Unknown index="68" dependencies="29 30" dependenciesKind="dependent dependent" />
+      <Unknown index="69" dependencies="3 5 6 7 8 9 10 13 17 29 31 32 36" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="70" dependencies="3 4 8 9 10 14 17 32" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="71" dependencies="31" dependenciesKind="dependent" />
+      <Unknown index="72" dependencies="35" dependenciesKind="dependent" />
+      <Unknown index="73" dependencies="34 35" dependenciesKind="dependent dependent" />
+      <Unknown index="74" dependencies="3 5 6 7 8 9 10 13 18 31 34 36 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="75" dependencies="3 4 8 9 10 14 18 37" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="76" dependencies="36" dependenciesKind="dependent" />
+    </Derivatives>
+    <InitialUnknowns>
+      <Unknown index="39" dependencies="1 2 412" dependenciesKind="dependent dependent dependent" />
+      <Unknown index="40" dependencies="1" dependenciesKind="dependent" />
+      <Unknown index="41" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37 416 419 420 421 422 423 426 458 460 462 464 466 468 470 472 474 476 478 480 482 484 486 488 490 492 494 496 498 500 502 504 554 556 558 560 572 574 575 577 578 580 581 583 594 600 601 612 618 619 630 636 637 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="42" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37 415 419 420 421 422 423 426 458 460 462 464 466 468 470 472 474 476 478 480 482 484 486 488 490 492 494 496 498 500 502 504 554 556 558 560 572 574 575 577 578 580 581 583 594 600 601 612 618 619 630 636 637 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="43" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37 417 420 421 422 423 426 458 460 462 464 466 468 470 472 474 476 478 480 482 484 486 488 490 492 494 496 498 500 502 504 554 556 558 560 572 574 575 577 578 580 581 583 594 600 601 612 618 619 630 636 637 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="44" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37 414 420 421 422 423 424 425 426 458 460 462 464 466 468 470 472 474 476 478 480 482 484 486 488 490 492 494 496 498 500 502 504 554 556 558 560 572 574 575 577 578 580 581 583 594 600 601 612 618 619 630 636 637 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="45" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37 414 420 421 422 423 424 425 426 458 460 462 464 466 468 470 472 474 476 478 480 482 484 486 488 490 492 494 496 498 500 502 504 554 556 558 560 572 574 575 577 578 580 581 583 594 600 601 612 618 619 630 636 637 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="46" dependencies="2 3 4 5 6 7 8 9 10 13 14 15 16 17 18 21 22 26 27 31 32 36 37 414 420 421 422 423 424 425 426 458 460 462 464 466 468 470 472 474 476 478 480 482 484 486 488 490 492 494 496 498 500 502 504 554 556 558 560 572 574 575 577 578 580 581 583 594 600 601 612 618 619 630 636 637 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="47" dependencies="3" dependenciesKind="dependent" />
+      <Unknown index="48" dependencies="4" dependenciesKind="dependent" />
+      <Unknown index="49" dependencies="6" dependenciesKind="dependent" />
+      <Unknown index="50" dependencies="7" dependenciesKind="dependent" />
+      <Unknown index="51" dependencies="5" dependenciesKind="dependent" />
+      <Unknown index="52" dependencies="8" dependenciesKind="dependent" />
+      <Unknown index="53" dependencies="22" dependenciesKind="dependent" />
+      <Unknown index="54" dependencies="27" dependenciesKind="dependent" />
+      <Unknown index="55" dependencies="32" dependenciesKind="dependent" />
+      <Unknown index="56" dependencies="37" dependenciesKind="dependent" />
+      <Unknown index="57" dependencies="20" dependenciesKind="dependent" />
+      <Unknown index="58" dependencies="19 20 454" dependenciesKind="dependent dependent dependent" />
+      <Unknown index="59" dependencies="2 3 5 6 7 8 9 10 13 15 19 21 22 420 421 426 474 554 585 588 590 591 592 594 600 601" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="60" dependencies="3 4 8 9 10 14 15 22 420 421 474 554 572 574 593 594 600 601" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="61" dependencies="21" dependenciesKind="dependent" />
+      <Unknown index="62" dependencies="25" dependenciesKind="dependent" />
+      <Unknown index="63" dependencies="24 25 454" dependenciesKind="dependent dependent dependent" />
+      <Unknown index="64" dependencies="2 3 5 6 7 8 9 10 13 16 24 26 27 420 423 426 476 556 603 606 608 609 610 612 618 619" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="65" dependencies="3 4 8 9 10 14 16 27 420 423 476 556 575 577 611 612 618 619" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="66" dependencies="26" dependenciesKind="dependent" />
+      <Unknown index="67" dependencies="30" dependenciesKind="dependent" />
+      <Unknown index="68" dependencies="29 30 454" dependenciesKind="dependent dependent dependent" />
+      <Unknown index="69" dependencies="3 5 6 7 8 9 10 13 17 29 31 32 36 409 421 422 426 478 558 621 624 626 627 628 630 636 637 656" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="70" dependencies="3 4 8 9 10 14 17 32 421 422 478 558 578 580 629 630 636 637" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="71" dependencies="31" dependenciesKind="dependent" />
+      <Unknown index="72" dependencies="35" dependenciesKind="dependent" />
+      <Unknown index="73" dependencies="34 35 454" dependenciesKind="dependent dependent dependent" />
+      <Unknown index="74" dependencies="3 5 6 7 8 9 10 13 18 31 34 36 37 409 422 423 426 480 560 639 642 644 645 646 648 654 655 656" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="75" dependencies="3 4 8 9 10 14 18 37 422 423 480 560 581 583 647 648 654 655" dependenciesKind="dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent dependent" />
+      <Unknown index="76" dependencies="36" dependenciesKind="dependent" />
+      <Unknown index="410" dependencies="409" dependenciesKind="dependent" />
+      <Unknown index="411" dependencies="412" dependenciesKind="dependent" />
+      <Unknown index="413" dependencies="412" dependenciesKind="dependent" />
+      <Unknown index="429" dependencies="458" dependenciesKind="dependent" />
+      <Unknown index="430" dependencies="466" dependenciesKind="dependent" />
+      <Unknown index="431" dependencies="474" dependenciesKind="dependent" />
+      <Unknown index="432" dependencies="482" dependenciesKind="dependent" />
+      <Unknown index="433" dependencies="490" dependenciesKind="dependent" />
+      <Unknown index="434" dependencies="498" dependenciesKind="dependent" />
+      <Unknown index="435" dependencies="460" dependenciesKind="dependent" />
+      <Unknown index="436" dependencies="468" dependenciesKind="dependent" />
+      <Unknown index="437" dependencies="476" dependenciesKind="dependent" />
+      <Unknown index="438" dependencies="484" dependenciesKind="dependent" />
+      <Unknown index="439" dependencies="492" dependenciesKind="dependent" />
+      <Unknown index="440" dependencies="500" dependenciesKind="dependent" />
+      <Unknown index="441" dependencies="462" dependenciesKind="dependent" />
+      <Unknown index="442" dependencies="470" dependenciesKind="dependent" />
+      <Unknown index="443" dependencies="478" dependenciesKind="dependent" />
+      <Unknown index="444" dependencies="486" dependenciesKind="dependent" />
+      <Unknown index="445" dependencies="494" dependenciesKind="dependent" />
+      <Unknown index="446" dependencies="502" dependenciesKind="dependent" />
+      <Unknown index="447" dependencies="464" dependenciesKind="dependent" />
+      <Unknown index="448" dependencies="472" dependenciesKind="dependent" />
+      <Unknown index="449" dependencies="480" dependenciesKind="dependent" />
+      <Unknown index="450" dependencies="488" dependenciesKind="dependent" />
+      <Unknown index="451" dependencies="496" dependenciesKind="dependent" />
+      <Unknown index="452" dependencies="504" dependenciesKind="dependent" />
+      <Unknown index="455" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="456" dependencies="409" dependenciesKind="dependent" />
+      <Unknown index="457" dependencies="656" dependenciesKind="dependent" />
+      <Unknown index="459" dependencies="458" dependenciesKind="dependent" />
+      <Unknown index="461" dependencies="460" dependenciesKind="dependent" />
+      <Unknown index="463" dependencies="462" dependenciesKind="dependent" />
+      <Unknown index="465" dependencies="464" dependenciesKind="dependent" />
+      <Unknown index="467" dependencies="466" dependenciesKind="dependent" />
+      <Unknown index="469" dependencies="468" dependenciesKind="dependent" />
+      <Unknown index="471" dependencies="470" dependenciesKind="dependent" />
+      <Unknown index="473" dependencies="472" dependenciesKind="dependent" />
+      <Unknown index="475" dependencies="474" dependenciesKind="dependent" />
+      <Unknown index="477" dependencies="476" dependenciesKind="dependent" />
+      <Unknown index="479" dependencies="478" dependenciesKind="dependent" />
+      <Unknown index="481" dependencies="480" dependenciesKind="dependent" />
+      <Unknown index="483" dependencies="482" dependenciesKind="dependent" />
+      <Unknown index="485" dependencies="484" dependenciesKind="dependent" />
+      <Unknown index="487" dependencies="486" dependenciesKind="dependent" />
+      <Unknown index="489" dependencies="488" dependenciesKind="dependent" />
+      <Unknown index="491" dependencies="490" dependenciesKind="dependent" />
+      <Unknown index="493" dependencies="492" dependenciesKind="dependent" />
+      <Unknown index="495" dependencies="494" dependenciesKind="dependent" />
+      <Unknown index="497" dependencies="496" dependenciesKind="dependent" />
+      <Unknown index="499" dependencies="498" dependenciesKind="dependent" />
+      <Unknown index="501" dependencies="500" dependenciesKind="dependent" />
+      <Unknown index="503" dependencies="502" dependenciesKind="dependent" />
+      <Unknown index="505" dependencies="504" dependenciesKind="dependent" />
+      <Unknown index="506" dependencies="458" dependenciesKind="dependent" />
+      <Unknown index="507" dependencies="466" dependenciesKind="dependent" />
+      <Unknown index="508" dependencies="474" dependenciesKind="dependent" />
+      <Unknown index="509" dependencies="482" dependenciesKind="dependent" />
+      <Unknown index="510" dependencies="490" dependenciesKind="dependent" />
+      <Unknown index="511" dependencies="498" dependenciesKind="dependent" />
+      <Unknown index="512" dependencies="458" dependenciesKind="dependent" />
+      <Unknown index="513" dependencies="466" dependenciesKind="dependent" />
+      <Unknown index="514" dependencies="474" dependenciesKind="dependent" />
+      <Unknown index="515" dependencies="482" dependenciesKind="dependent" />
+      <Unknown index="516" dependencies="490" dependenciesKind="dependent" />
+      <Unknown index="517" dependencies="498" dependenciesKind="dependent" />
+      <Unknown index="518" dependencies="460" dependenciesKind="dependent" />
+      <Unknown index="519" dependencies="468" dependenciesKind="dependent" />
+      <Unknown index="520" dependencies="476" dependenciesKind="dependent" />
+      <Unknown index="521" dependencies="484" dependenciesKind="dependent" />
+      <Unknown index="522" dependencies="492" dependenciesKind="dependent" />
+      <Unknown index="523" dependencies="500" dependenciesKind="dependent" />
+      <Unknown index="524" dependencies="460" dependenciesKind="dependent" />
+      <Unknown index="525" dependencies="468" dependenciesKind="dependent" />
+      <Unknown index="526" dependencies="476" dependenciesKind="dependent" />
+      <Unknown index="527" dependencies="484" dependenciesKind="dependent" />
+      <Unknown index="528" dependencies="492" dependenciesKind="dependent" />
+      <Unknown index="529" dependencies="500" dependenciesKind="dependent" />
+      <Unknown index="530" dependencies="462" dependenciesKind="dependent" />
+      <Unknown index="531" dependencies="470" dependenciesKind="dependent" />
+      <Unknown index="532" dependencies="478" dependenciesKind="dependent" />
+      <Unknown index="533" dependencies="486" dependenciesKind="dependent" />
+      <Unknown index="534" dependencies="494" dependenciesKind="dependent" />
+      <Unknown index="535" dependencies="502" dependenciesKind="dependent" />
+      <Unknown index="536" dependencies="462" dependenciesKind="dependent" />
+      <Unknown index="537" dependencies="470" dependenciesKind="dependent" />
+      <Unknown index="538" dependencies="478" dependenciesKind="dependent" />
+      <Unknown index="539" dependencies="486" dependenciesKind="dependent" />
+      <Unknown index="540" dependencies="494" dependenciesKind="dependent" />
+      <Unknown index="541" dependencies="502" dependenciesKind="dependent" />
+      <Unknown index="542" dependencies="464" dependenciesKind="dependent" />
+      <Unknown index="543" dependencies="472" dependenciesKind="dependent" />
+      <Unknown index="544" dependencies="480" dependenciesKind="dependent" />
+      <Unknown index="545" dependencies="488" dependenciesKind="dependent" />
+      <Unknown index="546" dependencies="496" dependenciesKind="dependent" />
+      <Unknown index="547" dependencies="504" dependenciesKind="dependent" />
+      <Unknown index="548" dependencies="464" dependenciesKind="dependent" />
+      <Unknown index="549" dependencies="472" dependenciesKind="dependent" />
+      <Unknown index="550" dependencies="480" dependenciesKind="dependent" />
+      <Unknown index="551" dependencies="488" dependenciesKind="dependent" />
+      <Unknown index="552" dependencies="496" dependenciesKind="dependent" />
+      <Unknown index="553" dependencies="504" dependenciesKind="dependent" />
+      <Unknown index="555" dependencies="554" dependenciesKind="dependent" />
+      <Unknown index="557" dependencies="556" dependenciesKind="dependent" />
+      <Unknown index="559" dependencies="558" dependenciesKind="dependent" />
+      <Unknown index="561" dependencies="560" dependenciesKind="dependent" />
+      <Unknown index="562" dependencies="554" dependenciesKind="dependent" />
+      <Unknown index="563" dependencies="558" dependenciesKind="dependent" />
+      <Unknown index="564" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="565" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="566" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="567" dependencies="556" dependenciesKind="dependent" />
+      <Unknown index="568" dependencies="560" dependenciesKind="dependent" />
+      <Unknown index="569" dependencies="409" dependenciesKind="dependent" />
+      <Unknown index="570" dependencies="656" dependenciesKind="dependent" />
+      <Unknown index="571" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="586" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="595" dependencies="554" dependenciesKind="dependent" />
+      <Unknown index="604" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="613" dependencies="556" dependenciesKind="dependent" />
+      <Unknown index="622" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="631" dependencies="558" dependenciesKind="dependent" />
+      <Unknown index="640" dependencies="454" dependenciesKind="dependent" />
+      <Unknown index="649" dependencies="560" dependenciesKind="dependent" />
+      <Unknown index="657" dependencies="656" dependenciesKind="dependent" />
+      <Unknown index="749" dependencies="" dependenciesKind="" />
+      <Unknown index="750" dependencies="" dependenciesKind="" />
+      <Unknown index="751" dependencies="" dependenciesKind="" />
+      <Unknown index="752" dependencies="" dependenciesKind="" />
+      <Unknown index="753" dependencies="" dependenciesKind="" />
+      <Unknown index="754" dependencies="" dependenciesKind="" />
+      <Unknown index="755" dependencies="" dependenciesKind="" />
+      <Unknown index="756" dependencies="" dependenciesKind="" />
+      <Unknown index="757" dependencies="" dependenciesKind="" />
+      <Unknown index="758" dependencies="" dependenciesKind="" />
+      <Unknown index="759" dependencies="" dependenciesKind="" />
+      <Unknown index="760" dependencies="" dependenciesKind="" />
+      <Unknown index="761" dependencies="" dependenciesKind="" />
+      <Unknown index="762" dependencies="" dependenciesKind="" />
+      <Unknown index="763" dependencies="" dependenciesKind="" />
+      <Unknown index="764" dependencies="" dependenciesKind="" />
+      <Unknown index="765" dependencies="" dependenciesKind="" />
+      <Unknown index="766" dependencies="" dependenciesKind="" />
+      <Unknown index="767" dependencies="" dependenciesKind="" />
+      <Unknown index="768" dependencies="" dependenciesKind="" />
+      <Unknown index="769" dependencies="" dependenciesKind="" />
+      <Unknown index="770" dependencies="" dependenciesKind="" />
+      <Unknown index="771" dependencies="" dependenciesKind="" />
+      <Unknown index="772" dependencies="" dependenciesKind="" />
+    </InitialUnknowns>
+  </ModelStructure>
+</fmiModelDescription>
