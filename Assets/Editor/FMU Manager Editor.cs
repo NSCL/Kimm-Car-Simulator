@@ -59,7 +59,7 @@ public class FMUManagerEditor : Editor
                     if (v.causality == "input")
                     {
                         // 변수 이름이 너무 길면 잘릴 수 있으니 툴팁 추가 등 가능
-                        v.value = EditorGUILayout.FloatField(v.name, v.value);
+                        v.value = EditorGUILayout.DoubleField(v.name, v.value);
                     }
                 }
                 EditorGUI.indentLevel--; // 들여쓰기 원상복구
@@ -82,7 +82,7 @@ public class FMUManagerEditor : Editor
                 {
                     if (v.causality == "output")
                     {
-                        EditorGUILayout.FloatField(v.name, v.value);
+                        EditorGUILayout.DoubleField(v.name, v.value);
                     }
                 }
 

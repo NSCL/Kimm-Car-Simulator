@@ -17,7 +17,7 @@ public class VehicleInputManager : MonoBehaviour
     [SerializeField] private GearState currentGear = GearState.Neutral; // 기어 상태
     [SerializeField] private bool isUsingKeyboard = false; // 현재 키보드 모드인지 확인용
 
-    [Header("FMU Input")]
+    [Header("Current Value")]
     [SerializeField] private float currentSteering;
     [SerializeField] private float currentAccel;
     [SerializeField] private float currentBrake;
