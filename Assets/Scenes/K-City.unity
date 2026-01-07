@@ -15177,6 +15177,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05cbf214a89bca6478faaf739af6a0df, type: 3}
+--- !u!1 &2120043239
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2120043240}
+  m_Layer: 0
+  m_Name: Spawn Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2120043240
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120043239}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 536.62427, y: 3.75, z: 473.7287}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &391397314871401872
 GameObject:
   m_ObjectHideFlags: 0
@@ -15336,47 +15367,77 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VehicleController
   inputManager: {fileID: 1815478316}
   fmuManager: {fileID: 1815478317}
+  spawnPoint: {fileID: 2120043240}
   maxMotorSpeed: 50
-  out_Pos_X: Position_x
-  out_Pos_Y: Position_y
-  out_Pos_Z: Position_z
-  out_Rot_X: 'Orientation[1,1]'
-  out_Rot_Y: 'Orientation[2,1]'
-  out_Rot_Z: 'Orientation[3,1]'
-  out_Rot_W: 'Orientation[4,1]'
+  var_Steer_In: qWhl
+  out_ChassisPos_X: Position_x
+  out_ChassisPos_Y: Position_y
+  out_ChassisPos_Z: Position_z
+  out_ChassisRot_X: 'Orientation[1,1]'
+  out_ChassisRot_Y: 'Orientation[2,1]'
+  out_ChassisRot_Z: 'Orientation[3,1]'
+  out_ChassisRot_W: 'Orientation[4,1]'
+  out_Toe_Left: ToeLeft
+  out_Toe_Right: ToeRight
   wheels:
   - id: FL
     wheelRoot: {fileID: 1326229849}
     wheelVisual: {fileID: 580311280016134596}
     sensor: {fileID: 1326229848}
-    var_WheelOmega_In: 
-    var_GroundDist_In: 
-    var_WheelPos_Out: 
-    var_WheelSpin_Out: 
+    var_WheelOmega_In: FLWIn
+    var_GroundDist_In: FL_gz
+    var_WheelPos_X: FL_x
+    var_WheelPos_Y: FL_y
+    var_WheelPos_Z: FL_z
+    var_WheelRot_X: 'FL_q[1,1]'
+    var_WheelRot_Y: 'FL_q[2,1]'
+    var_WheelRot_Z: 'FL_q[3,1]'
+    var_WheelRot_W: 'FL_q[4,1]'
+    var_WheelSpin_Out: FLWheelOutput
   - id: FR
-    wheelRoot: {fileID: 0}
-    wheelVisual: {fileID: 0}
-    sensor: {fileID: 0}
-    var_WheelOmega_In: 
-    var_GroundDist_In: 
-    var_WheelPos_Out: 
-    var_WheelSpin_Out: 
+    wheelRoot: {fileID: 1002873612}
+    wheelVisual: {fileID: 3570975275397642228}
+    sensor: {fileID: 1002873613}
+    var_WheelOmega_In: FRWIn
+    var_GroundDist_In: FR_gz
+    var_WheelPos_X: FR_x
+    var_WheelPos_Y: FR_y
+    var_WheelPos_Z: FR_z
+    var_WheelRot_X: 'FR_q[1,1]'
+    var_WheelRot_Y: 'FR_q[2,1]'
+    var_WheelRot_Z: 'FR_q[3,1]'
+    var_WheelRot_W: 'FR_q[4,1]'
+    var_WheelSpin_Out: FRWheelOutput
   - id: RL
-    wheelRoot: {fileID: 0}
-    wheelVisual: {fileID: 0}
-    sensor: {fileID: 0}
-    var_WheelOmega_In: 
-    var_GroundDist_In: 
-    var_WheelPos_Out: 
-    var_WheelSpin_Out: 
+    wheelRoot: {fileID: 29990726}
+    wheelVisual: {fileID: 4837801162235084520}
+    sensor: {fileID: 29990727}
+    var_WheelOmega_In: RLWIn
+    var_GroundDist_In: RL_gz
+    var_WheelPos_X: RL_x
+    var_WheelPos_Y: RL_y
+    var_WheelPos_Z: RL_z
+    var_WheelRot_X: 'RL_q[1,1]'
+    var_WheelRot_Y: 'RL_q[2,1]'
+    var_WheelRot_Z: 'RL_q[3,1]'
+    var_WheelRot_W: 'RL_q[4,1]'
+    var_WheelSpin_Out: RLWheelOutput
   - id: RR
-    wheelRoot: {fileID: 0}
-    wheelVisual: {fileID: 0}
-    sensor: {fileID: 0}
-    var_WheelOmega_In: 
-    var_GroundDist_In: 
-    var_WheelPos_Out: 
-    var_WheelSpin_Out: 
+    wheelRoot: {fileID: 1733673710}
+    wheelVisual: {fileID: 4378188929599541707}
+    sensor: {fileID: 1733673711}
+    var_WheelOmega_In: RRWIn
+    var_GroundDist_In: RR_gz
+    var_WheelPos_X: RR_x
+    var_WheelPos_Y: RR_y
+    var_WheelPos_Z: RR_z
+    var_WheelRot_X: 'RR_q[1,1]'
+    var_WheelRot_Y: 'RR_q[2,1]'
+    var_WheelRot_Z: 'RR_q[3,1]'
+    var_WheelRot_W: 'RR_q[4,1]'
+    var_WheelSpin_Out: RRWheelOutput
+  wheelRootCorrection: {x: -180, y: 0, z: 90}
+  wheelVisualCorrection: {x: 0, y: 0, z: 0}
 --- !u!33 &2292415220252063625
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -15853,4 +15914,5 @@ SceneRoots:
   - {fileID: 845755034}
   - {fileID: 1988596820}
   - {fileID: 1208556593}
+  - {fileID: 2120043240}
   - {fileID: 1880317207217554254}
