@@ -85,7 +85,8 @@ public class VehicleController : MonoBehaviour
         float cx = (float)fmuManager.GetValue(out_ChassisPos_X);
         float cy = (float)fmuManager.GetValue(out_ChassisPos_Y);
         float cz = (float)fmuManager.GetValue(out_ChassisPos_Z);
-        Vector3 fmuPos = new Vector3(-cy, cz, cx); // 좌표계(Z-up) 확인 필요시 (cx, cz, cy)
+        //Vector3 fmuPos = new Vector3(-cy, cz, cx); // 좌표계(Z-up) 확인 필요시 (cx, cz, cy)
+        Vector3 fmuPos = new Vector3(cx, cy, cz);
 
         // 2. FMU 회전 가져오기
         float qx = (float)fmuManager.GetValue(out_ChassisRot_X);
@@ -96,7 +97,8 @@ public class VehicleController : MonoBehaviour
 
         // 3. [좌표 변환] 유니티 월드 좌표 = 스폰위치 + (스폰회전 * FMU이동량)
         // 이렇게 하면 스폰 포인트가 90도 꺾여 있어도, 차가 그 방향 기준으로 앞으로 갑니다.
-        transform.position = _spawnPos + (_spawnRot * fmuPos);
+        //transform.position = _spawnPos + (_spawnRot * fmuPos);
+        transform.position = _spawnPos + fmuPos;
 
         // 4. [회전 변환] 유니티 월드 회전 = 스폰회전 * FMU회전
         transform.rotation = _spawnRot * fmuRot;
@@ -122,20 +124,13 @@ public class VehicleController : MonoBehaviour
                 w.wheelRoot.localPosition = new Vector3(wx, wy, wz);
             }
 
-            // 회전 (Knuckle/Steering)
+            // 회전 (Steering)
             if (!string.IsNullOrEmpty(w.var_WheelRot_X))
             {
-                float rx = (float)fmuManager.GetValue(w.var_WheelRot_X);
-                float ry = (float)fmuManager.GetValue(w.var_WheelRot_Y);
-                float rz = (float)fmuManager.GetValue(w.var_WheelRot_Z);
-                float rw = (float)fmuManager.GetValue(w.var_WheelRot_W);
-                Quaternion knuckleRot = new Quaternion(rx, ry, rz, rw);
-
                 Quaternion toeRot = Quaternion.identity;
-                if (w.id == "FL") toeRot = Quaternion.Euler(0, 0, toeL * Mathf.Rad2Deg);
-                else if (w.id == "FR") toeRot = Quaternion.Euler(0, 0, toeR * Mathf.Rad2Deg);
-
-                w.wheelRoot.localRotation = knuckleRot * toeRot;
+                if (w.id == "FL") toeRot = Quaternion.Euler(0, toeL * Mathf.Rad2Deg, 0);
+                else if (w.id == "FR") toeRot = Quaternion.Euler(0, toeR * Mathf.Rad2Deg, 0);
+                w.wheelRoot.localRotation = toeRot;
             }
 
             // 스핀 (Rolling)

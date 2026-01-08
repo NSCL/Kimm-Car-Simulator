@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2025-12-18T08:47:39Z" generationTool="Simulink (R2024b)" guid="{fffd8952-89b5-29f8-c723-ce419b2e0ee6}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.147">
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-01-08T12:33:14Z" generationTool="Simulink (R2024b)" guid="{35c8faa8-23b1-b24f-df33-9ecc4f369235}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.164">
   <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="HeaveRollCar"/>
   <UnitDefinitions>
     <Unit name="m"/>
@@ -24,24 +24,24 @@
           <Outport blockPath="HeaveRollCar/FR Wheel Output" dataType="double" dimension="[1]" portName="FR Wheel Output" portNumber="2" sampleTime="[0 0]" uniquePortName="FRWheelOutput" unit="rad"/>
           <Outport blockPath="HeaveRollCar/RL Wheel Output" dataType="double" dimension="[1]" portName="RL Wheel Output" portNumber="3" sampleTime="[0 0]" uniquePortName="RLWheelOutput" unit="rad"/>
           <Outport blockPath="HeaveRollCar/RR Wheel Output" dataType="double" dimension="[1]" portName="RR Wheel Output" portNumber="4" sampleTime="[0 0]" uniquePortName="RRWheelOutput" unit="rad"/>
-          <Outport blockPath="HeaveRollCar/Position.x" dataType="double" dimension="[1]" portName="Position.x" portNumber="5" sampleTime="[0 0]" uniquePortName="Position_x" unit="m"/>
+          <Outport blockPath="HeaveRollCar/Position.x" dataType="double" dimension="[1]" portName="Position.x" portNumber="5" sampleTime="[0 0]" uniquePortName="Position_x" unit=""/>
           <Outport blockPath="HeaveRollCar/Position.y" dataType="double" dimension="[1]" portName="Position.y" portNumber="6" sampleTime="[0 0]" uniquePortName="Position_y" unit="m"/>
           <Outport blockPath="HeaveRollCar/Position.z" dataType="double" dimension="[1]" portName="Position.z" portNumber="7" sampleTime="[0 0]" uniquePortName="Position_z" unit="m"/>
           <Outport blockPath="HeaveRollCar/Orientation" dataType="double" dimension="[4  1]" portName="Orientation" portNumber="8" sampleTime="[0 0]" uniquePortName="Orientation" unit=""/>
           <Outport blockPath="HeaveRollCar/FL_q" dataType="double" dimension="[4  1]" portName="FL_q" portNumber="9" sampleTime="[0 0]" uniquePortName="FL_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/FL_x" dataType="double" dimension="[1]" portName="FL_x" portNumber="10" sampleTime="[0 0]" uniquePortName="FL_x" unit="m"/>
+          <Outport blockPath="HeaveRollCar/FL_x" dataType="double" dimension="[1]" portName="FL_x" portNumber="10" sampleTime="[0 0]" uniquePortName="FL_x" unit=""/>
           <Outport blockPath="HeaveRollCar/FL_y" dataType="double" dimension="[1]" portName="FL_y" portNumber="11" sampleTime="[0 0]" uniquePortName="FL_y" unit="m"/>
           <Outport blockPath="HeaveRollCar/FL_z" dataType="double" dimension="[1]" portName="FL_z" portNumber="12" sampleTime="[0 0]" uniquePortName="FL_z" unit="m"/>
           <Outport blockPath="HeaveRollCar/FR_q" dataType="double" dimension="[4  1]" portName="FR_q" portNumber="13" sampleTime="[0 0]" uniquePortName="FR_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/FR_x" dataType="double" dimension="[1]" portName="FR_x" portNumber="14" sampleTime="[0 0]" uniquePortName="FR_x" unit="m"/>
+          <Outport blockPath="HeaveRollCar/FR_x" dataType="double" dimension="[1]" portName="FR_x" portNumber="14" sampleTime="[0 0]" uniquePortName="FR_x" unit=""/>
           <Outport blockPath="HeaveRollCar/FR_y" dataType="double" dimension="[1]" portName="FR_y" portNumber="15" sampleTime="[0 0]" uniquePortName="FR_y" unit="m"/>
           <Outport blockPath="HeaveRollCar/FR_z" dataType="double" dimension="[1]" portName="FR_z" portNumber="16" sampleTime="[0 0]" uniquePortName="FR_z" unit="m"/>
           <Outport blockPath="HeaveRollCar/RL_q" dataType="double" dimension="[4  1]" portName="RL_q" portNumber="17" sampleTime="[0 0]" uniquePortName="RL_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/RL_x" dataType="double" dimension="[1]" portName="RL_x" portNumber="18" sampleTime="[0 0]" uniquePortName="RL_x" unit="m"/>
+          <Outport blockPath="HeaveRollCar/RL_x" dataType="double" dimension="[1]" portName="RL_x" portNumber="18" sampleTime="[0 0]" uniquePortName="RL_x" unit=""/>
           <Outport blockPath="HeaveRollCar/RL_y" dataType="double" dimension="[1]" portName="RL_y" portNumber="19" sampleTime="[0 0]" uniquePortName="RL_y" unit="m"/>
           <Outport blockPath="HeaveRollCar/RL_z" dataType="double" dimension="[1]" portName="RL_z" portNumber="20" sampleTime="[0 0]" uniquePortName="RL_z" unit="m"/>
           <Outport blockPath="HeaveRollCar/RR_q" dataType="double" dimension="[4  1]" portName="RR_q" portNumber="21" sampleTime="[0 0]" uniquePortName="RR_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/RR_x" dataType="double" dimension="[1]" portName="RR_x" portNumber="22" sampleTime="[0 0]" uniquePortName="RR_x" unit="m"/>
+          <Outport blockPath="HeaveRollCar/RR_x" dataType="double" dimension="[1]" portName="RR_x" portNumber="22" sampleTime="[0 0]" uniquePortName="RR_x" unit=""/>
           <Outport blockPath="HeaveRollCar/RR_y" dataType="double" dimension="[1]" portName="RR_y" portNumber="23" sampleTime="[0 0]" uniquePortName="RR_y" unit="m"/>
           <Outport blockPath="HeaveRollCar/RR_z" dataType="double" dimension="[1]" portName="RR_z" portNumber="24" sampleTime="[0 0]" uniquePortName="RR_z" unit="m"/>
           <Outport blockPath="HeaveRollCar/Toe Left" dataType="double" dimension="[1]" portName="Toe Left" portNumber="25" sampleTime="[0 0]" uniquePortName="ToeLeft" unit=""/>
@@ -104,7 +104,7 @@
       <!--Index = 13-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="Position.x" initial="calculated" name="Position_x" valueReference="13" variability="continuous">
-      <Real unit="m"/>
+      <Real/>
       <!--Index = 14-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="Position.y" initial="calculated" name="Position_y" valueReference="14" variability="continuous">
@@ -148,7 +148,7 @@
       <!--Index = 24-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FL_x" initial="calculated" name="FL_x" valueReference="24" variability="continuous">
-      <Real unit="m"/>
+      <Real/>
       <!--Index = 25-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FL_y" initial="calculated" name="FL_y" valueReference="25" variability="continuous">
@@ -176,7 +176,7 @@
       <!--Index = 31-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FR_x" initial="calculated" name="FR_x" valueReference="31" variability="continuous">
-      <Real unit="m"/>
+      <Real/>
       <!--Index = 32-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FR_y" initial="calculated" name="FR_y" valueReference="32" variability="continuous">
@@ -204,7 +204,7 @@
       <!--Index = 38-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="RL_x" initial="calculated" name="RL_x" valueReference="38" variability="continuous">
-      <Real unit="m"/>
+      <Real/>
       <!--Index = 39-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="RL_y" initial="calculated" name="RL_y" valueReference="39" variability="continuous">
@@ -232,7 +232,7 @@
       <!--Index = 45-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="RR_x" initial="calculated" name="RR_x" valueReference="45" variability="continuous">
-      <Real unit="m"/>
+      <Real/>
       <!--Index = 46-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="RR_y" initial="calculated" name="RR_y" valueReference="46" variability="continuous">
