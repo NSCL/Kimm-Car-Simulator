@@ -1,27 +1,23 @@
 {
   "dependencies": {
-    "com.unity.ai.assistant": {
-      "version": "1.0.0-pre.12",
+    "com.frj.unity-sensors": {
+      "version": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Packages/UnitySensors",
       "depth": 0,
-      "source": "registry",
+      "source": "git",
       "dependencies": {
-        "com.unity.ai.toolkit": "1.0.0-pre.18",
-        "com.unity.serialization": "3.1.1",
-        "com.unity.nuget.newtonsoft-json": "3.2.1",
-        "com.unity.modules.unitywebrequest": "1.0.0"
+        "com.unity.burst": "1.6.6"
       },
-      "url": "https://packages.unity.com"
+      "hash": "c30b45ccdec8cc588afc81b474b5545e8743d882"
     },
-    "com.unity.ai.generators": {
-      "version": "1.0.0-pre.20",
+    "com.frj.unity-sensors-ros": {
+      "version": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Packages/UnitySensorsROS",
       "depth": 0,
-      "source": "registry",
+      "source": "git",
       "dependencies": {
-        "com.unity.ai.toolkit": "1.0.0-pre.20",
-        "com.unity.mathematics": "1.3.2",
-        "com.unity.nuget.newtonsoft-json": "3.2.1"
+        "com.frj.unity-sensors": "3.0.0",
+        "com.unity.robotics.ros-tcp-connector": "0.7.0-preview"
       },
-      "url": "https://packages.unity.com"
+      "hash": "c30b45ccdec8cc588afc81b474b5545e8743d882"
     },
     "com.unity.ai.inference": {
       "version": "2.4.1",
@@ -42,15 +38,6 @@
       "source": "registry",
       "dependencies": {
         "com.unity.modules.ai": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.ai.toolkit": {
-      "version": "1.0.0-pre.20",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
       "url": "https://packages.unity.com"
     },
@@ -131,7 +118,7 @@
     },
     "com.unity.mathematics": {
       "version": "1.3.3",
-      "depth": 1,
+      "depth": 2,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
@@ -202,21 +189,25 @@
         "com.unity.render-pipelines.core": "17.0.3"
       }
     },
+    "com.unity.robotics.ros-tcp-connector": {
+      "version": "https://github.com/Unity-Technologies/ROS-TCP-Connector.git?path=/com.unity.robotics.ros-tcp-connector",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c27f00c6cf750d2d0564349b3039d19aa3925e7c"
+    },
+    "com.unity.robotics.visualizations": {
+      "version": "https://github.com/Unity-Technologies/ROS-TCP-Connector.git?path=/com.unity.robotics.visualizations",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c27f00c6cf750d2d0564349b3039d19aa3925e7c"
+    },
     "com.unity.searcher": {
       "version": "4.9.4",
       "depth": 2,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.serialization": {
-      "version": "3.1.3",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.burst": "1.7.2",
-        "com.unity.collections": "2.4.2"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.settings-manager": {

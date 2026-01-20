@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "com.unity.ai.assistant": "1.0.0-pre.12",
-    "com.unity.ai.generators": "1.0.0-pre.20",
+    "com.frj.unity-sensors": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Packages/UnitySensors",
+    "com.frj.unity-sensors-ros": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Packages/UnitySensorsROS",
     "com.unity.ai.inference": "2.4.1",
     "com.unity.ai.navigation": "2.0.9",
     "com.unity.collab-proxy": "2.10.2",
@@ -11,6 +11,8 @@
     "com.unity.multiplayer.center": "1.0.1",
     "com.unity.probuilder": "6.0.8",
     "com.unity.render-pipelines.universal": "17.3.0",
+    "com.unity.robotics.ros-tcp-connector": "https://github.com/Unity-Technologies/ROS-TCP-Connector.git?path=/com.unity.robotics.ros-tcp-connector",
+    "com.unity.robotics.visualizations": "https://github.com/Unity-Technologies/ROS-TCP-Connector.git?path=/com.unity.robotics.visualizations",
     "com.unity.test-framework": "1.6.0",
     "com.unity.timeline": "1.8.9",
     "com.unity.ugui": "2.0.0",
