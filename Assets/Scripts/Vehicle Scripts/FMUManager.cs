@@ -23,6 +23,8 @@ public class FMUManager : MonoBehaviour
     //실제 시뮬레이션 엔진
     private FMU fmu;
 
+    private double currentTime = 0.0;
+
     private void Start()
     {
         if(string.IsNullOrEmpty(selectedFMUName))
@@ -33,12 +35,7 @@ public class FMUManager : MonoBehaviour
 
         try
         {
-            fmu = new FMU(selectedFMUName, this.name);
-            fmu.Reset();
-            fmu.SetupExperiment(Time.fixedTimeAsDouble);
-            fmu.EnterInitializationMode();
-            fmu.ExitInitializationMode();
-            Debug.Log($"[FMUManager]{selectedFMUName} Set up finished.");
+            ResetFMU();
         }
         catch (System.Exception e)
         {
@@ -54,7 +51,16 @@ public class FMUManager : MonoBehaviour
             fmu= null;
         }
     }
-
+    public void ResetFMU()
+    {
+        currentTime= 0.0;
+        fmu = new FMU(selectedFMUName, this.name);
+        fmu.Reset();
+        fmu.SetupExperiment(Time.fixedTimeAsDouble);
+        fmu.EnterInitializationMode();
+        fmu.ExitInitializationMode();
+        Debug.Log($"[FMUManager]{selectedFMUName} Set up finished.");
+    }
     // 외부에서 값을 넣어줄 때 쓰는 함수 (Input)
     public void SetValue(string varName, double value)
     {
@@ -91,7 +97,8 @@ public class FMUManager : MonoBehaviour
     {
         if(fmu != null)
         {
-            fmu.DoStep(Time.timeAsDouble, (double)Time.fixedDeltaTime);
+            fmu.DoStep(currentTime, (double)Time.fixedDeltaTime);
+            currentTime += (double)Time.fixedDeltaTime;
         }
     }
 }

@@ -136,6 +136,15 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reset Position"",
+                    ""type"": ""Button"",
+                    ""id"": ""383959e7-eb7a-4950-b786-68d6e081e917"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -270,6 +279,28 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
                     ""action"": ""GearReverse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d21bb17f-11ea-4d70-aa82-cb5c4470c989"",
+                    ""path"": ""<Keyboard>/#(R)"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0d27a919-7acb-45d9-9960-d65b7190adfb"",
+                    ""path"": ""<XInputController>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset Position"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -283,6 +314,7 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
         m_Vehicle_Brake = m_Vehicle.FindAction("Brake", throwIfNotFound: true);
         m_Vehicle_GearDrive = m_Vehicle.FindAction("GearDrive", throwIfNotFound: true);
         m_Vehicle_GearReverse = m_Vehicle.FindAction("GearReverse", throwIfNotFound: true);
+        m_Vehicle_ResetPosition = m_Vehicle.FindAction("Reset Position", throwIfNotFound: true);
     }
 
     ~@VehicleInputControls()
@@ -368,6 +400,7 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Vehicle_Brake;
     private readonly InputAction m_Vehicle_GearDrive;
     private readonly InputAction m_Vehicle_GearReverse;
+    private readonly InputAction m_Vehicle_ResetPosition;
     /// <summary>
     /// Provides access to input actions defined in input action map "Vehicle".
     /// </summary>
@@ -399,6 +432,10 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Vehicle/GearReverse".
         /// </summary>
         public InputAction @GearReverse => m_Wrapper.m_Vehicle_GearReverse;
+        /// <summary>
+        /// Provides access to the underlying input action "Vehicle/ResetPosition".
+        /// </summary>
+        public InputAction @ResetPosition => m_Wrapper.m_Vehicle_ResetPosition;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -440,6 +477,9 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
             @GearReverse.started += instance.OnGearReverse;
             @GearReverse.performed += instance.OnGearReverse;
             @GearReverse.canceled += instance.OnGearReverse;
+            @ResetPosition.started += instance.OnResetPosition;
+            @ResetPosition.performed += instance.OnResetPosition;
+            @ResetPosition.canceled += instance.OnResetPosition;
         }
 
         /// <summary>
@@ -466,6 +506,9 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
             @GearReverse.started -= instance.OnGearReverse;
             @GearReverse.performed -= instance.OnGearReverse;
             @GearReverse.canceled -= instance.OnGearReverse;
+            @ResetPosition.started -= instance.OnResetPosition;
+            @ResetPosition.performed -= instance.OnResetPosition;
+            @ResetPosition.canceled -= instance.OnResetPosition;
         }
 
         /// <summary>
@@ -541,5 +584,12 @@ public partial class @VehicleInputControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnGearReverse(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Reset Position" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnResetPosition(InputAction.CallbackContext context);
     }
 }

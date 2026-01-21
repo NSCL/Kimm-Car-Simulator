@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class VehicleController : MonoBehaviour
 {
@@ -34,22 +35,42 @@ public class VehicleController : MonoBehaviour
     // 내부 계산용 변수
     private Vector3 _spawnPos = Vector3.zero;
     private Quaternion _spawnRot = Quaternion.identity;
-
+    private bool _isRespawning = false;
+    public LayerMask mapLayer;
     void Start()
     {
         // 시작할 때 스폰 포인트의 위치/회전을 기억해둡니다.
         if (spawnPoint != null)
         {
-            _spawnPos = spawnPoint.position;
-            _spawnRot = spawnPoint.rotation;
+            //_spawnPos = spawnPoint.position;
+            //_spawnRot = spawnPoint.rotation;
+            ResetVehicle(spawnPoint.position, spawnPoint.rotation);
         }
         else
         {
             // 스폰 포인트가 없으면 현재 차의 위치를 원점으로 삼음
-            _spawnPos = transform.position;
-            _spawnRot = transform.rotation;
+            //_spawnPos = transform.position;
+            //_spawnRot = transform.rotation;
+            ResetVehicle(transform.position, transform.rotation);
             Debug.LogWarning("Spawn Point가 없습니다! 현재 위치를 원점으로 사용합니다.");
         }
+
+        if(inputManager != null)
+        {
+            inputManager.OnResetTriggered += () =>
+            {
+                if (spawnPoint != null)
+                {
+                    ResetVehicle(spawnPoint.position, spawnPoint.rotation);
+                }
+                else
+                {
+                    ResetVehicle(Vector3.zero,Quaternion.identity);
+                }
+            };
+        }
+
+
     }
 
     void FixedUpdate()
@@ -93,12 +114,13 @@ public class VehicleController : MonoBehaviour
         float qy = (float)fmuManager.GetValue(out_ChassisRot_Y);
         float qz = (float)fmuManager.GetValue(out_ChassisRot_Z);
         float qw = (float)fmuManager.GetValue(out_ChassisRot_W);
+
         Quaternion fmuRot = new Quaternion(qx, qy, qz, qw);
 
         // 3. [좌표 변환] 유니티 월드 좌표 = 스폰위치 + (스폰회전 * FMU이동량)
         // 이렇게 하면 스폰 포인트가 90도 꺾여 있어도, 차가 그 방향 기준으로 앞으로 갑니다.
         //transform.position = _spawnPos + (_spawnRot * fmuPos);
-        transform.position = _spawnPos + fmuPos;
+        transform.position = _spawnPos +(_spawnRot * fmuPos);
 
         // 4. [회전 변환] 유니티 월드 회전 = 스폰회전 * FMU회전
         transform.rotation = _spawnRot * fmuRot;
@@ -139,6 +161,58 @@ public class VehicleController : MonoBehaviour
                 float spin = (float)fmuManager.GetValue(w.var_WheelSpin_Out);
                 w.wheelVisual.localRotation = Quaternion.Euler(spin * Mathf.Rad2Deg, 0, 0);
             }
+        }
+    }
+
+    public void ResetVehicle(Vector3 targetAnchorPos, Quaternion targetAnchorRot)
+    {
+        _spawnPos = targetAnchorPos;
+        _spawnRot = targetAnchorRot;
+
+        if(fmuManager != null)
+        {
+            fmuManager.ResetFMU();
+        }
+        transform.position = _spawnPos;
+        transform.rotation = _spawnRot;
+        Debug.Log($"Spawned at {_spawnPos}");
+    }
+
+    IEnumerator CollisionRespawnRoutine()
+    {
+        _isRespawning = true;
+        if (inputManager != null) inputManager.SetInputActive(false);
+        Vector3 forwardVec = transform.forward;
+        forwardVec.y = 0;
+        forwardVec.Normalize();
+        Vector3 backPos = transform.position - (forwardVec * 10.0f);
+        backPos.y = 0;
+        Quaternion flatRotation = Quaternion.LookRotation(forwardVec);
+        ResetVehicle(backPos, flatRotation);
+        yield return new WaitForSeconds(1f);
+        if (UIManager.Instance != null)
+        {
+            // 코루틴은 Instance 함수를 빌려서 실행
+            UIManager.Instance.EndCollisionEffect();
+        }
+        if (inputManager != null) inputManager.SetInputActive(true);
+        _isRespawning = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (_isRespawning) return;
+
+        // 부딪힌 놈(other)의 레이어가 Map인지 확인
+        // (비트 연산: 내 mapLayer에 포함된 놈인가?)
+        if ((mapLayer.value & (1 << other.gameObject.layer)) != 0)
+        {
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.StartCollisionEffect();
+            }
+            Debug.Log($"{other.gameObject.name}에 충돌");
+            StartCoroutine(CollisionRespawnRoutine());
         }
     }
 }

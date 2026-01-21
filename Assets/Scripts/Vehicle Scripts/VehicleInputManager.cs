@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,20 +9,21 @@ public class VehicleInputManager : MonoBehaviour
     // 기어 상태 정의 (Inspector에서 드롭다운으로 보임)
     public enum GearState { Park, Reverse, Neutral, Drive }
 
-    [Header("Keyboard Input Settings")]
-    [SerializeField] private float steeringSpeed = 2.0f;
-    [SerializeField] private float pedalSpeed = 3.0f;
-    [SerializeField] private float returnSpeed = 5.0f;
-
     [Header("Gear Status")]
     [SerializeField] private GearState currentGear = GearState.Neutral; // 기어 상태
-    [SerializeField] private bool isUsingKeyboard = false; // 현재 키보드 모드인지 확인용
+    private bool isUsingKeyboard = false; // 현재 키보드 모드인지 확인용
 
     [Header("Current Value")]
     [SerializeField] private float currentSteering;
     [SerializeField] private float currentAccel;
     [SerializeField] private float currentBrake;
 
+    [Header("Keyboard Input Settings")]
+    [SerializeField] private float steeringSpeed = 2.0f;
+    [SerializeField] private float pedalSpeed = 3.0f;
+    [SerializeField] private float returnSpeed = 5.0f;
+
+    public event Action OnResetTriggered;
     // 외부 공개 프로퍼티
     public float Steering => currentSteering;
     public float Accel => currentAccel;
@@ -32,7 +34,25 @@ public class VehicleInputManager : MonoBehaviour
     private bool _steerWasKeyboard = false;
     private bool _accelWasKeyboard = false;
     private bool _brakeWasKeyboard = false;
+    public void SetInputActive(bool isActive)
+    {
+        if (isActive)
+        {
+            // 1. 켜기: 다시 Update가 돌게 함
+            this.enabled = true;
+        }
+        else
+        {
+            // 2. 끄기 전 안전장치: 밟고 있던 엑셀/브레이크 강제 초기화
+            // (이거 안 하면 엑셀 1인 상태로 꺼져서 차가 계속 나갑니다)
+            currentSteering = 0f;
+            currentAccel = 0f;
+            currentBrake = 0f; // 또는 1f (완전 정지)
 
+            // 3. 끄기: 이제 Update가 멈추고, OnDisable이 실행되어 Input System도 쉬게 됨
+            this.enabled = false;
+        }
+    }
     private void Awake() => _inputActions = new VehicleInputControls();
     private void OnEnable()
     {
@@ -41,7 +61,7 @@ public class VehicleInputManager : MonoBehaviour
         // 기어 변속 이벤트 연결
         _inputActions.Vehicle.GearDrive.performed += _ => ShiftGear(GearState.Drive);
         _inputActions.Vehicle.GearReverse.performed += _ => ShiftGear(GearState.Reverse);
-        // (참고: 실제 차량은 중립을 거쳐가지만, 시뮬레이터 편의상 바로 전환되게 했습니다)
+        _inputActions.Vehicle.ResetPosition.performed += _ => OnResetTriggered?.Invoke();
     }
 
     private void OnDisable() => _inputActions.Disable();
