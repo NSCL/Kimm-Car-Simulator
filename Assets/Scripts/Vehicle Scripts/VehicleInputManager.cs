@@ -28,7 +28,22 @@ public class VehicleInputManager : MonoBehaviour
     public float Steering => currentSteering;
     public float Accel => currentAccel;
     public float Brake => currentBrake;
-    public int Gear => (int)currentGear; // 필요시 정수로 변환
+    public int Gear
+    {
+        get
+        {
+            switch (currentGear)
+            {
+                case GearState.Reverse:
+                    return -1;
+                case GearState.Drive:
+                    return 1;
+                default:
+                    return 0;
+            }
+
+        }
+    }
 
     // 각 입력별로 마지막 사용 장치가 키보드였는지 기억하는 변수들
     private bool _steerWasKeyboard = false;
