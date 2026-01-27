@@ -1,56 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-01-23T06:36:16Z" generationTool="Simulink (R2024b)" guid="{eaa3af54-2758-f5cc-b9f4-1354d0a49782}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.179">
-  <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="HeaveRollCar"/>
+<fmiModelDescription description="Vehicle Dynamics, 14 DOF Model, Varying Surface Friction&#xA;&#xA;Copyright 2022-2024 The MathWorks, Inc.&#xA;" fmiVersion="2.0" generationDateAndTime="2026-01-27T05:51:48Z" generationTool="Simulink (R2024b)" guid="{4eed9252-2e60-d1fe-4a88-45b115d681e4}" modelName="kimm_vehicle_2axle_heave_roll" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.25">
+  <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="false" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="false" modelIdentifier="kimm_vehicle_2axle_heave_roll"/>
   <UnitDefinitions>
     <Unit name="m"/>
-    <Unit name="rad"/>
+    <Unit name="m/s"/>
+    <Unit name="rad/s"/>
   </UnitDefinitions>
-  <DefaultExperiment startTime="0" stepSize="0.001" stopTime="10"/>
+  <DefaultExperiment startTime="0" stepSize="0.001" stopTime="14.2"/>
   <VendorAnnotations>
     <Tool name="Simulink">
       <Simulink>
         <ImportCompatibility FMUProduct="standalone FMU" requireMATLABOnPath="no" requireRelease="all"/>
         <SimulinkModelInterface>
-          <Inport blockPath="HeaveRollCar/Steer lnput" dataType="double" dimension="[1]" portName="Steer lnput" portNumber="1" sampleTime="[0 0]" uniquePortName="SteerLnput" unit=""/>
-          <Inport blockPath="HeaveRollCar/Trottle" dataType="double" dimension="[1]" portName="Trottle" portNumber="2" sampleTime="[0 0]" uniquePortName="Trottle" unit=""/>
-          <Inport blockPath="HeaveRollCar/Brake" dataType="double" dimension="[1]" portName="Brake" portNumber="3" sampleTime="[0 0]" uniquePortName="Brake" unit=""/>
-          <Inport blockPath="HeaveRollCar/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="4" sampleTime="[0.001     0]" uniquePortName="Gear" unit=""/>
-          <Inport blockPath="HeaveRollCar/FL_gz" dataType="double" dimension="[1]" portName="FL_gz" portNumber="5" sampleTime="[0 0]" uniquePortName="FL_gz" unit=""/>
-          <Inport blockPath="HeaveRollCar/FR_gz" dataType="double" dimension="[1]" portName="FR_gz" portNumber="6" sampleTime="[0 0]" uniquePortName="FR_gz" unit=""/>
-          <Inport blockPath="HeaveRollCar/RL_gz" dataType="double" dimension="[1]" portName="RL_gz" portNumber="7" sampleTime="[0 0]" uniquePortName="RL_gz" unit=""/>
-          <Inport blockPath="HeaveRollCar/RR_gz" dataType="double" dimension="[1]" portName="RR_gz" portNumber="8" sampleTime="[0 0]" uniquePortName="RR_gz" unit=""/>
-          <Outport blockPath="HeaveRollCar/FL Wheel Output" dataType="double" dimension="[1]" portName="FL Wheel Output" portNumber="1" sampleTime="[0 0]" uniquePortName="FLWheelOutput" unit="rad"/>
-          <Outport blockPath="HeaveRollCar/FR Wheel Output" dataType="double" dimension="[1]" portName="FR Wheel Output" portNumber="2" sampleTime="[0 0]" uniquePortName="FRWheelOutput" unit="rad"/>
-          <Outport blockPath="HeaveRollCar/RL Wheel Output" dataType="double" dimension="[1]" portName="RL Wheel Output" portNumber="3" sampleTime="[0 0]" uniquePortName="RLWheelOutput" unit="rad"/>
-          <Outport blockPath="HeaveRollCar/RR Wheel Output" dataType="double" dimension="[1]" portName="RR Wheel Output" portNumber="4" sampleTime="[0 0]" uniquePortName="RRWheelOutput" unit="rad"/>
-          <Outport blockPath="HeaveRollCar/Position.x" dataType="double" dimension="[1]" portName="Position.x" portNumber="5" sampleTime="[0 0]" uniquePortName="Position_x" unit=""/>
-          <Outport blockPath="HeaveRollCar/Position.y" dataType="double" dimension="[1]" portName="Position.y" portNumber="6" sampleTime="[0 0]" uniquePortName="Position_y" unit="m"/>
-          <Outport blockPath="HeaveRollCar/Position.z" dataType="double" dimension="[1]" portName="Position.z" portNumber="7" sampleTime="[0 0]" uniquePortName="Position_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/Orientation" dataType="double" dimension="[4  1]" portName="Orientation" portNumber="8" sampleTime="[0 0]" uniquePortName="Orientation" unit=""/>
-          <Outport blockPath="HeaveRollCar/FL_q" dataType="double" dimension="[4  1]" portName="FL_q" portNumber="9" sampleTime="[0 0]" uniquePortName="FL_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/FL_x" dataType="double" dimension="[1]" portName="FL_x" portNumber="10" sampleTime="[0 0]" uniquePortName="FL_x" unit=""/>
-          <Outport blockPath="HeaveRollCar/FL_y" dataType="double" dimension="[1]" portName="FL_y" portNumber="11" sampleTime="[0 0]" uniquePortName="FL_y" unit="m"/>
-          <Outport blockPath="HeaveRollCar/FL_z" dataType="double" dimension="[1]" portName="FL_z" portNumber="12" sampleTime="[0 0]" uniquePortName="FL_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/FR_q" dataType="double" dimension="[4  1]" portName="FR_q" portNumber="13" sampleTime="[0 0]" uniquePortName="FR_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/FR_x" dataType="double" dimension="[1]" portName="FR_x" portNumber="14" sampleTime="[0 0]" uniquePortName="FR_x" unit=""/>
-          <Outport blockPath="HeaveRollCar/FR_y" dataType="double" dimension="[1]" portName="FR_y" portNumber="15" sampleTime="[0 0]" uniquePortName="FR_y" unit="m"/>
-          <Outport blockPath="HeaveRollCar/FR_z" dataType="double" dimension="[1]" portName="FR_z" portNumber="16" sampleTime="[0 0]" uniquePortName="FR_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/RL_q" dataType="double" dimension="[4  1]" portName="RL_q" portNumber="17" sampleTime="[0 0]" uniquePortName="RL_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/RL_x" dataType="double" dimension="[1]" portName="RL_x" portNumber="18" sampleTime="[0 0]" uniquePortName="RL_x" unit=""/>
-          <Outport blockPath="HeaveRollCar/RL_y" dataType="double" dimension="[1]" portName="RL_y" portNumber="19" sampleTime="[0 0]" uniquePortName="RL_y" unit="m"/>
-          <Outport blockPath="HeaveRollCar/RL_z" dataType="double" dimension="[1]" portName="RL_z" portNumber="20" sampleTime="[0 0]" uniquePortName="RL_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/RR_q" dataType="double" dimension="[4  1]" portName="RR_q" portNumber="21" sampleTime="[0 0]" uniquePortName="RR_q" unit=""/>
-          <Outport blockPath="HeaveRollCar/RR_x" dataType="double" dimension="[1]" portName="RR_x" portNumber="22" sampleTime="[0 0]" uniquePortName="RR_x" unit=""/>
-          <Outport blockPath="HeaveRollCar/RR_y" dataType="double" dimension="[1]" portName="RR_y" portNumber="23" sampleTime="[0 0]" uniquePortName="RR_y" unit="m"/>
-          <Outport blockPath="HeaveRollCar/RR_z" dataType="double" dimension="[1]" portName="RR_z" portNumber="24" sampleTime="[0 0]" uniquePortName="RR_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/Toe Left" dataType="double" dimension="[1]" portName="Toe Left" portNumber="25" sampleTime="[0 0]" uniquePortName="ToeLeft" unit=""/>
-          <Outport blockPath="HeaveRollCar/Toe Right" dataType="double" dimension="[1]" portName="Toe Right" portNumber="26" sampleTime="[0 0]" uniquePortName="ToeRight" unit=""/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/SteerInput" dataType="double" dimension="[1]" portName="SteerInput" portNumber="1" sampleTime="[0 0]" uniquePortName="SteerInput" unit=""/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/Trottle" dataType="double" dimension="[1]" portName="Trottle" portNumber="2" sampleTime="[0 0]" uniquePortName="Trottle" unit=""/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/Brake" dataType="double" dimension="[1]" portName="Brake" portNumber="3" sampleTime="[0 0]" uniquePortName="Brake" unit=""/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="4" sampleTime="[0 0]" uniquePortName="Gear" unit=""/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/FL_gz" dataType="double" dimension="[1]" portName="FL_gz" portNumber="5" sampleTime="[0 0]" uniquePortName="FL_gz" unit="m"/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/FR_gz" dataType="double" dimension="[1]" portName="FR_gz" portNumber="6" sampleTime="[0 0]" uniquePortName="FR_gz" unit="m"/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/RL_gz" dataType="double" dimension="[1]" portName="RL_gz" portNumber="7" sampleTime="[0 0]" uniquePortName="RL_gz" unit="m"/>
+          <Inport blockPath="kimm_vehicle_2axle_heave_roll/RR_gz" dataType="double" dimension="[1]" portName="RR_gz" portNumber="8" sampleTime="[0 0]" uniquePortName="RR_gz" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FL Wheel Output" dataType="double" dimension="[1]" portName="FL Wheel Output" portNumber="1" sampleTime="[0 0]" uniquePortName="FLWheelOutput" unit="rad/s"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FR Wheel Output" dataType="double" dimension="[1]" portName="FR Wheel Output" portNumber="2" sampleTime="[0 0]" uniquePortName="FRWheelOutput" unit="rad/s"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RL Wheel Output" dataType="double" dimension="[1]" portName="RL Wheel Output" portNumber="3" sampleTime="[0 0]" uniquePortName="RLWheelOutput" unit="rad/s"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RR Wheel Output" dataType="double" dimension="[1]" portName="RR Wheel Output" portNumber="4" sampleTime="[0 0]" uniquePortName="RRWheelOutput" unit="rad/s"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/Position.x" dataType="double" dimension="[1]" portName="Position.x" portNumber="5" sampleTime="[0 0]" uniquePortName="Position_x" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/Position.y" dataType="double" dimension="[1]" portName="Position.y" portNumber="6" sampleTime="[0 0]" uniquePortName="Position_y" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/Position.z" dataType="double" dimension="[1]" portName="Position.z" portNumber="7" sampleTime="[0 0]" uniquePortName="Position_z" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/Orientation" dataType="double" dimension="[4  1]" portName="Orientation" portNumber="8" sampleTime="[0 0]" uniquePortName="Orientation" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FL_q" dataType="double" dimension="[4  1]" portName="FL_q" portNumber="9" sampleTime="[0 0]" uniquePortName="FL_q" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FL_x" dataType="double" dimension="[1]" portName="FL_x" portNumber="10" sampleTime="[0 0]" uniquePortName="FL_x" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FL_y" dataType="double" dimension="[1]" portName="FL_y" portNumber="11" sampleTime="[0 0]" uniquePortName="FL_y" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FL_z" dataType="double" dimension="[1]" portName="FL_z" portNumber="12" sampleTime="[0 0]" uniquePortName="FL_z" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FR_q" dataType="double" dimension="[4  1]" portName="FR_q" portNumber="13" sampleTime="[0 0]" uniquePortName="FR_q" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FR_x" dataType="double" dimension="[1]" portName="FR_x" portNumber="14" sampleTime="[0 0]" uniquePortName="FR_x" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FR_y" dataType="double" dimension="[1]" portName="FR_y" portNumber="15" sampleTime="[0 0]" uniquePortName="FR_y" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/FR_z" dataType="double" dimension="[1]" portName="FR_z" portNumber="16" sampleTime="[0 0]" uniquePortName="FR_z" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RL_q" dataType="double" dimension="[4  1]" portName="RL_q" portNumber="17" sampleTime="[0 0]" uniquePortName="RL_q" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RL_x" dataType="double" dimension="[1]" portName="RL_x" portNumber="18" sampleTime="[0 0]" uniquePortName="RL_x" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RL_y" dataType="double" dimension="[1]" portName="RL_y" portNumber="19" sampleTime="[0 0]" uniquePortName="RL_y" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RL_z" dataType="double" dimension="[1]" portName="RL_z" portNumber="20" sampleTime="[0 0]" uniquePortName="RL_z" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RR_q" dataType="double" dimension="[4  1]" portName="RR_q" portNumber="21" sampleTime="[0 0]" uniquePortName="RR_q" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RR_x" dataType="double" dimension="[1]" portName="RR_x" portNumber="22" sampleTime="[0 0]" uniquePortName="RR_x" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RR_y" dataType="double" dimension="[1]" portName="RR_y" portNumber="23" sampleTime="[0 0]" uniquePortName="RR_y" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/RR_z" dataType="double" dimension="[1]" portName="RR_z" portNumber="24" sampleTime="[0 0]" uniquePortName="RR_z" unit="m"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/Toe Left" dataType="double" dimension="[1]" portName="Toe Left" portNumber="25" sampleTime="[0 0]" uniquePortName="ToeLeft" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/Toe Right" dataType="double" dimension="[1]" portName="Toe Right" portNumber="26" sampleTime="[0 0]" uniquePortName="ToeRight" unit=""/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/body_vx" dataType="double" dimension="[1]" portName="body_vx" portNumber="27" sampleTime="[0 0]" uniquePortName="body_vx" unit="m/s"/>
+          <Outport blockPath="kimm_vehicle_2axle_heave_roll/body_vy" dataType="double" dimension="[1]" portName="body_vy" portNumber="28" sampleTime="[0 0]" uniquePortName="body_vy" unit="m/s"/>
         </SimulinkModelInterface>
       </Simulink>
     </Tool>
   </VendorAnnotations>
   <ModelVariables>
-    <ScalarVariable causality="input" description="Steer lnput" name="SteerLnput" valueReference="0" variability="continuous">
+    <ScalarVariable causality="input" description="SteerInput" name="SteerInput" valueReference="0" variability="continuous">
       <Real start="0"/>
       <!--Index = 1-->
     </ScalarVariable>
@@ -67,35 +70,35 @@
       <!--Index = 4-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="FL_gz" name="FL_gz" valueReference="4" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 5-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="FR_gz" name="FR_gz" valueReference="5" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 6-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="RL_gz" name="RL_gz" valueReference="6" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 7-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="RR_gz" name="RR_gz" valueReference="7" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 8-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FL Wheel Output" initial="calculated" name="FLWheelOutput" valueReference="8" variability="continuous">
-      <Real unit="rad"/>
+      <Real unit="rad/s"/>
       <!--Index = 9-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FR Wheel Output" initial="calculated" name="FRWheelOutput" valueReference="9" variability="continuous">
-      <Real unit="rad"/>
+      <Real unit="rad/s"/>
       <!--Index = 10-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="RL Wheel Output" initial="calculated" name="RLWheelOutput" valueReference="10" variability="continuous">
-      <Real unit="rad"/>
+      <Real unit="rad/s"/>
       <!--Index = 11-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="RR Wheel Output" initial="calculated" name="RRWheelOutput" valueReference="11" variability="continuous">
-      <Real unit="rad"/>
+      <Real unit="rad/s"/>
       <!--Index = 12-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="Position.x" initial="calculated" name="Position_x" valueReference="12" variability="continuous">
@@ -246,33 +249,17 @@
       <Real/>
       <!--Index = 49-->
     </ScalarVariable>
-    <ScalarVariable causality="independent" description="time" name="time" valueReference="49" variability="continuous">
-      <Real/>
+    <ScalarVariable causality="output" description="body_vx" initial="calculated" name="body_vx" valueReference="49" variability="continuous">
+      <Real unit="m/s"/>
       <!--Index = 50-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Kimm.Target.vx0" initial="exact" name="Kimm.Target.vx0" valueReference="50" variability="tunable">
-      <Real start="20"/>
+    <ScalarVariable causality="output" description="body_vy" initial="calculated" name="body_vy" valueReference="50" variability="continuous">
+      <Real unit="m/s"/>
       <!--Index = 51-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Kimm.Target.w0" initial="exact" name="Kimm.Target.w0" valueReference="51" variability="tunable">
-      <Real start="57.14285714285715"/>
+    <ScalarVariable causality="independent" description="time" name="time" valueReference="51" variability="continuous">
+      <Real/>
       <!--Index = 52-->
-    </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Kimm.Body.mass" initial="exact" name="Kimm.Body.mass" valueReference="52" variability="tunable">
-      <Real start="1600"/>
-      <!--Index = 53-->
-    </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Kimm.Body.Inertia(1,1)" initial="exact" name="Kimm.Body.Inertia[1,1]" valueReference="53" variability="tunable">
-      <Real start="600"/>
-      <!--Index = 54-->
-    </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Kimm.Body.Inertia(1,2)" initial="exact" name="Kimm.Body.Inertia[1,2]" valueReference="54" variability="tunable">
-      <Real start="3000"/>
-      <!--Index = 55-->
-    </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Kimm.Body.Inertia(1,3)" initial="exact" name="Kimm.Body.Inertia[1,3]" valueReference="55" variability="tunable">
-      <Real start="3200"/>
-      <!--Index = 56-->
     </ScalarVariable>
   </ModelVariables>
   <ModelStructure>
@@ -318,6 +305,8 @@
       <Unknown index="47"/>
       <Unknown index="48"/>
       <Unknown index="49"/>
+      <Unknown index="50"/>
+      <Unknown index="51"/>
     </Outputs>
     <InitialUnknowns>
       <Unknown index="9"/>
@@ -361,6 +350,8 @@
       <Unknown index="47"/>
       <Unknown index="48"/>
       <Unknown index="49"/>
+      <Unknown index="50"/>
+      <Unknown index="51"/>
     </InitialUnknowns>
   </ModelStructure>
 </fmiModelDescription>

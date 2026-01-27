@@ -15,6 +15,9 @@ public class VehicleController : MonoBehaviour
 
     [Header("3. Chassis FMU Inputs")]
     [FMUVariable(true)] public string var_Steer_In;
+    [FMUVariable(true)] public string var_Throttle_In;
+    [FMUVariable(true)] public string var_Brake_In;
+    [FMUVariable(true)] public string var_Gear_In;
 
     [Header("4. Chassis FMU Outputs")]
     [FMUVariable] public string out_ChassisPos_X;
@@ -78,8 +81,12 @@ public class VehicleController : MonoBehaviour
         if (fmuManager == null || inputManager == null) return;
 
         // --- [STEP 1] Input (기존 동일) ---
-        float targetSteer = inputManager.Steering * (620.0f * Mathf.Deg2Rad); // 임시 계수
+        float targetSteer = inputManager.Steering * (720.0f * Mathf.Deg2Rad); // 임시 계수
         if (!string.IsNullOrEmpty(var_Steer_In)) fmuManager.SetValue(var_Steer_In, targetSteer);
+        if (!string.IsNullOrEmpty(var_Throttle_In)) fmuManager.SetValue(var_Throttle_In, inputManager.Accel);
+        if (!string.IsNullOrEmpty(var_Brake_In)) fmuManager.SetValue(var_Brake_In, inputManager.Brake);
+        if (!string.IsNullOrEmpty(var_Gear_In)) fmuManager.SetValue(var_Gear_In, (int)inputManager.Gear);
+
 
         float targetSpeed = inputManager.Accel * maxMotorSpeed;
         if (inputManager.Accel == 0 && inputManager.Brake > 0) targetSpeed = 0;
@@ -88,7 +95,7 @@ public class VehicleController : MonoBehaviour
         {
             if (w.sensor != null) w.sensor.CalculateGroundForces();
             if (!string.IsNullOrEmpty(w.var_GroundDist_In)) fmuManager.SetValue(w.var_GroundDist_In, w.sensor.penetration);
-            if (!string.IsNullOrEmpty(w.var_WheelOmega_In)) fmuManager.SetValue(w.var_WheelOmega_In, targetSpeed);
+            //if (!string.IsNullOrEmpty(w.var_WheelOmega_In)) fmuManager.SetValue(w.var_WheelOmega_In, targetSpeed);
         }
 
         // --- [STEP 2] Simulation ---

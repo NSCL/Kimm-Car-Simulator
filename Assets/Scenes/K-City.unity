@@ -62522,21 +62522,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 254f959b433198f41a55e6206be45ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FMUManager
-  selectedFMUName: HeaveRollCar
+  selectedFMUName: kimm_vehicle_2axle_heave_roll
   variables:
-  - name: qWhl
+  - name: SteerInput
     value: 0
     causality: input
-  - name: FLWIn
+  - name: Trottle
     value: 0
     causality: input
-  - name: FRWIn
+  - name: Brake
     value: 0
     causality: input
-  - name: RLWIn
-    value: 0
-    causality: input
-  - name: RRWIn
+  - name: Gear
     value: 0
     causality: input
   - name: FL_gz
@@ -62674,27 +62671,15 @@ MonoBehaviour:
   - name: ToeRight
     value: 0
     causality: output
+  - name: body_vx
+    value: 0
+    causality: output
+  - name: body_vy
+    value: 0
+    causality: output
   - name: time
     value: 0
     causality: independent
-  - name: Kimm.Target.vx0
-    value: 0
-    causality: parameter
-  - name: Kimm.Target.w0
-    value: 0
-    causality: parameter
-  - name: Kimm.Body.mass
-    value: 0
-    causality: parameter
-  - name: 'Kimm.Body.Inertia[1,1]'
-    value: 0
-    causality: parameter
-  - name: 'Kimm.Body.Inertia[1,2]'
-    value: 0
-    causality: parameter
-  - name: 'Kimm.Body.Inertia[1,3]'
-    value: 0
-    causality: parameter
 --- !u!1 &1815654508 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4735478963226861105, guid: 05cbf214a89bca6478faaf739af6a0df, type: 3}
@@ -96831,7 +96816,10 @@ MonoBehaviour:
   fmuManager: {fileID: 1815478317}
   spawnPoint: {fileID: 2120043240}
   maxMotorSpeed: 50
-  var_Steer_In: qWhl
+  var_Steer_In: 
+  var_Throttle_In: 
+  var_Brake_In: 
+  var_Gear_In: 
   out_ChassisPos_X: Position_x
   out_ChassisPos_Y: Position_y
   out_ChassisPos_Z: Position_z
@@ -96920,7 +96908,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 2.095459, y: 0.4380481, z: 4.8048096}
   m_Center: {x: -0.01928711, y: 0.048348382, z: -0.016784668}
