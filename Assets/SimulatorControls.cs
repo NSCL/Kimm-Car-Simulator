@@ -173,6 +173,15 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateItem"",
+                    ""type"": ""Value"",
+                    ""id"": ""44347aae-243b-40a6-8094-6edea5eef069"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -307,6 +316,17 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
                     ""action"": ""Place"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""efc77567-7615-4812-bff3-a4dcacac30e2"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -324,6 +344,7 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
         m_EditCamera_EnableLook = m_EditCamera.FindAction("EnableLook", throwIfNotFound: true);
         m_EditCamera_MousePosition = m_EditCamera.FindAction("MousePosition", throwIfNotFound: true);
         m_EditCamera_Place = m_EditCamera.FindAction("Place", throwIfNotFound: true);
+        m_EditCamera_RotateItem = m_EditCamera.FindAction("RotateItem", throwIfNotFound: true);
     }
 
     ~@SimulatorControls()
@@ -507,6 +528,7 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_EditCamera_EnableLook;
     private readonly InputAction m_EditCamera_MousePosition;
     private readonly InputAction m_EditCamera_Place;
+    private readonly InputAction m_EditCamera_RotateItem;
     /// <summary>
     /// Provides access to input actions defined in input action map "EditCamera".
     /// </summary>
@@ -542,6 +564,10 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "EditCamera/Place".
         /// </summary>
         public InputAction @Place => m_Wrapper.m_EditCamera_Place;
+        /// <summary>
+        /// Provides access to the underlying input action "EditCamera/RotateItem".
+        /// </summary>
+        public InputAction @RotateItem => m_Wrapper.m_EditCamera_RotateItem;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -586,6 +612,9 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
             @Place.started += instance.OnPlace;
             @Place.performed += instance.OnPlace;
             @Place.canceled += instance.OnPlace;
+            @RotateItem.started += instance.OnRotateItem;
+            @RotateItem.performed += instance.OnRotateItem;
+            @RotateItem.canceled += instance.OnRotateItem;
         }
 
         /// <summary>
@@ -615,6 +644,9 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
             @Place.started -= instance.OnPlace;
             @Place.performed -= instance.OnPlace;
             @Place.canceled -= instance.OnPlace;
+            @RotateItem.started -= instance.OnRotateItem;
+            @RotateItem.performed -= instance.OnRotateItem;
+            @RotateItem.canceled -= instance.OnRotateItem;
         }
 
         /// <summary>
@@ -712,5 +744,12 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPlace(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RotateItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRotateItem(InputAction.CallbackContext context);
     }
 }

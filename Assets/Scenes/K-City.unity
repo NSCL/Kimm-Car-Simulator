@@ -19686,7 +19686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FreeFlyCamera
   moveSpeed: 20
-  rotateSpeed: 100
+  rotateSpeed: 20
 --- !u!114 &569927068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95620,7 +95620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdf7295874072d9488181a3c8d444e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RuntimeObjectPlacer
-  objectPrefab: {fileID: 3277328432934076556, guid: 898f7c390e3fb2749b8a017341bb5641, type: 3}
+  objectPrefab: {fileID: 2024938121997204562, guid: 8034d7a0db68d71499072ed356d459cf, type: 3}
   ghostMaterial: {fileID: 0}
 --- !u!1 &2118653116 stripped
 GameObject:
