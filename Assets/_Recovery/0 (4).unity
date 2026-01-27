@@ -19686,7 +19686,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FreeFlyCamera
   moveSpeed: 20
-  rotateSpeed: 100
+  rotateSpeed: 20
 --- !u!114 &569927068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62560,7 +62560,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 254f959b433198f41a55e6206be45ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FMUManager
-  selectedFMUName: HeaveRollCar
+  selectedFMUName: HeaveRollCar2
   variables:
   - name: SteerLnput
     value: 0

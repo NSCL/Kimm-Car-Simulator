@@ -155,6 +155,24 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""MousePosition"",
+                    ""type"": ""Value"",
+                    ""id"": ""0f8b1e43-3b1f-4b50-8940-dd6963d8622e"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Place"",
+                    ""type"": ""Button"",
+                    ""id"": ""ef00584c-d0bc-4ad6-a1a4-4dafafd84bd3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -267,6 +285,28 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
                     ""action"": ""EnableLook"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e5b425ff-d855-461f-a06a-2cc701326bae"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MousePosition"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b708020-da7c-4cf7-a36d-e93389501b73"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Place"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -282,6 +322,8 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
         m_EditCamera_Look = m_EditCamera.FindAction("Look", throwIfNotFound: true);
         m_EditCamera_Vertical = m_EditCamera.FindAction("Vertical", throwIfNotFound: true);
         m_EditCamera_EnableLook = m_EditCamera.FindAction("EnableLook", throwIfNotFound: true);
+        m_EditCamera_MousePosition = m_EditCamera.FindAction("MousePosition", throwIfNotFound: true);
+        m_EditCamera_Place = m_EditCamera.FindAction("Place", throwIfNotFound: true);
     }
 
     ~@SimulatorControls()
@@ -463,6 +505,8 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_EditCamera_Look;
     private readonly InputAction m_EditCamera_Vertical;
     private readonly InputAction m_EditCamera_EnableLook;
+    private readonly InputAction m_EditCamera_MousePosition;
+    private readonly InputAction m_EditCamera_Place;
     /// <summary>
     /// Provides access to input actions defined in input action map "EditCamera".
     /// </summary>
@@ -490,6 +534,14 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "EditCamera/EnableLook".
         /// </summary>
         public InputAction @EnableLook => m_Wrapper.m_EditCamera_EnableLook;
+        /// <summary>
+        /// Provides access to the underlying input action "EditCamera/MousePosition".
+        /// </summary>
+        public InputAction @MousePosition => m_Wrapper.m_EditCamera_MousePosition;
+        /// <summary>
+        /// Provides access to the underlying input action "EditCamera/Place".
+        /// </summary>
+        public InputAction @Place => m_Wrapper.m_EditCamera_Place;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -528,6 +580,12 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
             @EnableLook.started += instance.OnEnableLook;
             @EnableLook.performed += instance.OnEnableLook;
             @EnableLook.canceled += instance.OnEnableLook;
+            @MousePosition.started += instance.OnMousePosition;
+            @MousePosition.performed += instance.OnMousePosition;
+            @MousePosition.canceled += instance.OnMousePosition;
+            @Place.started += instance.OnPlace;
+            @Place.performed += instance.OnPlace;
+            @Place.canceled += instance.OnPlace;
         }
 
         /// <summary>
@@ -551,6 +609,12 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
             @EnableLook.started -= instance.OnEnableLook;
             @EnableLook.performed -= instance.OnEnableLook;
             @EnableLook.canceled -= instance.OnEnableLook;
+            @MousePosition.started -= instance.OnMousePosition;
+            @MousePosition.performed -= instance.OnMousePosition;
+            @MousePosition.canceled -= instance.OnMousePosition;
+            @Place.started -= instance.OnPlace;
+            @Place.performed -= instance.OnPlace;
+            @Place.canceled -= instance.OnPlace;
         }
 
         /// <summary>
@@ -634,5 +698,19 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEnableLook(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "MousePosition" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMousePosition(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Place" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPlace(InputAction.CallbackContext context);
     }
 }

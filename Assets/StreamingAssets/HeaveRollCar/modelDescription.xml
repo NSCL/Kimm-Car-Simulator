@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-01-23T06:36:16Z" generationTool="Simulink (R2024b)" guid="{eaa3af54-2758-f5cc-b9f4-1354d0a49782}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.179">
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-01-27T09:13:25Z" generationTool="Simulink (R2024b)" guid="{6a4f9a69-0a18-1c7c-c3a7-ffcb342bb6a6}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.193">
   <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="HeaveRollCar"/>
   <UnitDefinitions>
     <Unit name="m"/>
@@ -14,19 +14,19 @@
           <Inport blockPath="HeaveRollCar/Steer lnput" dataType="double" dimension="[1]" portName="Steer lnput" portNumber="1" sampleTime="[0 0]" uniquePortName="SteerLnput" unit=""/>
           <Inport blockPath="HeaveRollCar/Trottle" dataType="double" dimension="[1]" portName="Trottle" portNumber="2" sampleTime="[0 0]" uniquePortName="Trottle" unit=""/>
           <Inport blockPath="HeaveRollCar/Brake" dataType="double" dimension="[1]" portName="Brake" portNumber="3" sampleTime="[0 0]" uniquePortName="Brake" unit=""/>
-          <Inport blockPath="HeaveRollCar/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="4" sampleTime="[0.001     0]" uniquePortName="Gear" unit=""/>
-          <Inport blockPath="HeaveRollCar/FL_gz" dataType="double" dimension="[1]" portName="FL_gz" portNumber="5" sampleTime="[0 0]" uniquePortName="FL_gz" unit=""/>
-          <Inport blockPath="HeaveRollCar/FR_gz" dataType="double" dimension="[1]" portName="FR_gz" portNumber="6" sampleTime="[0 0]" uniquePortName="FR_gz" unit=""/>
-          <Inport blockPath="HeaveRollCar/RL_gz" dataType="double" dimension="[1]" portName="RL_gz" portNumber="7" sampleTime="[0 0]" uniquePortName="RL_gz" unit=""/>
-          <Inport blockPath="HeaveRollCar/RR_gz" dataType="double" dimension="[1]" portName="RR_gz" portNumber="8" sampleTime="[0 0]" uniquePortName="RR_gz" unit=""/>
+          <Inport blockPath="HeaveRollCar/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="4" sampleTime="[0 0]" uniquePortName="Gear" unit=""/>
+          <Inport blockPath="HeaveRollCar/FL_gz" dataType="double" dimension="[1]" portName="FL_gz" portNumber="5" sampleTime="[0 0]" uniquePortName="FL_gz" unit="m"/>
+          <Inport blockPath="HeaveRollCar/FR_gz" dataType="double" dimension="[1]" portName="FR_gz" portNumber="6" sampleTime="[0 0]" uniquePortName="FR_gz" unit="m"/>
+          <Inport blockPath="HeaveRollCar/RL_gz" dataType="double" dimension="[1]" portName="RL_gz" portNumber="7" sampleTime="[0 0]" uniquePortName="RL_gz" unit="m"/>
+          <Inport blockPath="HeaveRollCar/RR_gz" dataType="double" dimension="[1]" portName="RR_gz" portNumber="8" sampleTime="[0 0]" uniquePortName="RR_gz" unit="m"/>
           <Outport blockPath="HeaveRollCar/FL Wheel Output" dataType="double" dimension="[1]" portName="FL Wheel Output" portNumber="1" sampleTime="[0 0]" uniquePortName="FLWheelOutput" unit="rad"/>
           <Outport blockPath="HeaveRollCar/FR Wheel Output" dataType="double" dimension="[1]" portName="FR Wheel Output" portNumber="2" sampleTime="[0 0]" uniquePortName="FRWheelOutput" unit="rad"/>
           <Outport blockPath="HeaveRollCar/RL Wheel Output" dataType="double" dimension="[1]" portName="RL Wheel Output" portNumber="3" sampleTime="[0 0]" uniquePortName="RLWheelOutput" unit="rad"/>
           <Outport blockPath="HeaveRollCar/RR Wheel Output" dataType="double" dimension="[1]" portName="RR Wheel Output" portNumber="4" sampleTime="[0 0]" uniquePortName="RRWheelOutput" unit="rad"/>
-          <Outport blockPath="HeaveRollCar/Position.x" dataType="double" dimension="[1]" portName="Position.x" portNumber="5" sampleTime="[0 0]" uniquePortName="Position_x" unit=""/>
-          <Outport blockPath="HeaveRollCar/Position.y" dataType="double" dimension="[1]" portName="Position.y" portNumber="6" sampleTime="[0 0]" uniquePortName="Position_y" unit="m"/>
-          <Outport blockPath="HeaveRollCar/Position.z" dataType="double" dimension="[1]" portName="Position.z" portNumber="7" sampleTime="[0 0]" uniquePortName="Position_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/Orientation" dataType="double" dimension="[4  1]" portName="Orientation" portNumber="8" sampleTime="[0 0]" uniquePortName="Orientation" unit=""/>
+          <Outport blockPath="HeaveRollCar/body_x" dataType="double" dimension="[1]" portName="body_x" portNumber="5" sampleTime="[0 0]" uniquePortName="body_x" unit=""/>
+          <Outport blockPath="HeaveRollCar/body_y" dataType="double" dimension="[1]" portName="body_y" portNumber="6" sampleTime="[0 0]" uniquePortName="body_y" unit="m"/>
+          <Outport blockPath="HeaveRollCar/body_z" dataType="double" dimension="[1]" portName="body_z" portNumber="7" sampleTime="[0 0]" uniquePortName="body_z" unit="m"/>
+          <Outport blockPath="HeaveRollCar/body_q" dataType="double" dimension="[4  1]" portName="body_q" portNumber="8" sampleTime="[0 0]" uniquePortName="body_q" unit=""/>
           <Outport blockPath="HeaveRollCar/FL_q" dataType="double" dimension="[4  1]" portName="FL_q" portNumber="9" sampleTime="[0 0]" uniquePortName="FL_q" unit=""/>
           <Outport blockPath="HeaveRollCar/FL_x" dataType="double" dimension="[1]" portName="FL_x" portNumber="10" sampleTime="[0 0]" uniquePortName="FL_x" unit=""/>
           <Outport blockPath="HeaveRollCar/FL_y" dataType="double" dimension="[1]" portName="FL_y" portNumber="11" sampleTime="[0 0]" uniquePortName="FL_y" unit="m"/>
@@ -67,19 +67,19 @@
       <!--Index = 4-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="FL_gz" name="FL_gz" valueReference="4" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 5-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="FR_gz" name="FR_gz" valueReference="5" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 6-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="RL_gz" name="RL_gz" valueReference="6" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 7-->
     </ScalarVariable>
     <ScalarVariable causality="input" description="RR_gz" name="RR_gz" valueReference="7" variability="continuous">
-      <Real start="0"/>
+      <Real start="0" unit="m"/>
       <!--Index = 8-->
     </ScalarVariable>
     <ScalarVariable causality="output" description="FL Wheel Output" initial="calculated" name="FLWheelOutput" valueReference="8" variability="continuous">
@@ -98,31 +98,31 @@
       <Real unit="rad"/>
       <!--Index = 12-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Position.x" initial="calculated" name="Position_x" valueReference="12" variability="continuous">
+    <ScalarVariable causality="output" description="body_x" initial="calculated" name="body_x" valueReference="12" variability="continuous">
       <Real/>
       <!--Index = 13-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Position.y" initial="calculated" name="Position_y" valueReference="13" variability="continuous">
+    <ScalarVariable causality="output" description="body_y" initial="calculated" name="body_y" valueReference="13" variability="continuous">
       <Real unit="m"/>
       <!--Index = 14-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Position.z" initial="calculated" name="Position_z" valueReference="14" variability="continuous">
+    <ScalarVariable causality="output" description="body_z" initial="calculated" name="body_z" valueReference="14" variability="continuous">
       <Real unit="m"/>
       <!--Index = 15-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Orientation(1,1)" initial="calculated" name="Orientation[1,1]" valueReference="15" variability="continuous">
+    <ScalarVariable causality="output" description="body_q(1,1)" initial="calculated" name="body_q[1,1]" valueReference="15" variability="continuous">
       <Real/>
       <!--Index = 16-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Orientation(2,1)" initial="calculated" name="Orientation[2,1]" valueReference="16" variability="continuous">
+    <ScalarVariable causality="output" description="body_q(2,1)" initial="calculated" name="body_q[2,1]" valueReference="16" variability="continuous">
       <Real/>
       <!--Index = 17-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Orientation(3,1)" initial="calculated" name="Orientation[3,1]" valueReference="17" variability="continuous">
+    <ScalarVariable causality="output" description="body_q(3,1)" initial="calculated" name="body_q[3,1]" valueReference="17" variability="continuous">
       <Real/>
       <!--Index = 18-->
     </ScalarVariable>
-    <ScalarVariable causality="output" description="Orientation(4,1)" initial="calculated" name="Orientation[4,1]" valueReference="18" variability="continuous">
+    <ScalarVariable causality="output" description="body_q(4,1)" initial="calculated" name="body_q[4,1]" valueReference="18" variability="continuous">
       <Real/>
       <!--Index = 19-->
     </ScalarVariable>
