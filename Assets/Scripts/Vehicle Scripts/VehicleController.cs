@@ -11,7 +11,6 @@ public class VehicleController : MonoBehaviour
     [Header("2. Simulation Settings")]
     // [NEW] 스폰 포인트 (빈 오브젝트를 만들어서 할당)
     public Transform spawnPoint;
-    public float maxMotorSpeed = 50.0f;
 
     [Header("3. Chassis FMU Inputs")]
     [FMUVariable(true)] public string var_Steer_In;
@@ -88,14 +87,10 @@ public class VehicleController : MonoBehaviour
         if (!string.IsNullOrEmpty(var_Gear_In)) fmuManager.SetValue(var_Gear_In, (int)inputManager.Gear);
 
 
-        float targetSpeed = inputManager.Accel * maxMotorSpeed;
-        if (inputManager.Accel == 0 && inputManager.Brake > 0) targetSpeed = 0;
-
         foreach (var w in wheels)
         {
             if (w.sensor != null) w.sensor.CalculateGroundForces();
             if (!string.IsNullOrEmpty(w.var_GroundDist_In)) fmuManager.SetValue(w.var_GroundDist_In, w.sensor.penetration);
-            //if (!string.IsNullOrEmpty(w.var_WheelOmega_In)) fmuManager.SetValue(w.var_WheelOmega_In, targetSpeed);
         }
 
         // --- [STEP 2] Simulation ---
