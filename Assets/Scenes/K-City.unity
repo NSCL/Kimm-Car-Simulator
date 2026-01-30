@@ -62541,13 +62541,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e40406e1167941a4ca6152cfb5d45721, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleInputManager
-  currentGear: 2
+  currentGear: 0
   currentSteering: 0
   currentAccel: 0
   currentBrake: 0
-  steeringSpeed: 5
-  pedalSpeed: 5
-  returnSpeed: 5
+  steeringSpeed: 1
+  pedalSpeed: 1
+  returnSpeed: 1
 --- !u!114 &1815478317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62562,7 +62562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FMUManager
   selectedFMUName: HeaveRollCar
   variables:
-  - name: SteerLnput
+  - name: SteerInput
     value: 0
     causality: input
   - name: Trottle
@@ -62586,18 +62586,6 @@ MonoBehaviour:
   - name: RR_gz
     value: 0
     causality: input
-  - name: FLWheelOutput
-    value: 0
-    causality: output
-  - name: FRWheelOutput
-    value: 0
-    causality: output
-  - name: RLWheelOutput
-    value: 0
-    causality: output
-  - name: RRWheelOutput
-    value: 0
-    causality: output
   - name: body_x
     value: 0
     causality: output
@@ -62619,16 +62607,22 @@ MonoBehaviour:
   - name: 'body_q[4,1]'
     value: 0
     causality: output
-  - name: 'FL_q[1,1]'
+  - name: body_vx
     value: 0
     causality: output
-  - name: 'FL_q[2,1]'
+  - name: body_vy
     value: 0
     causality: output
-  - name: 'FL_q[3,1]'
+  - name: FLWheelOutput
     value: 0
     causality: output
-  - name: 'FL_q[4,1]'
+  - name: FRWheelOutput
+    value: 0
+    causality: output
+  - name: RLWheelOutput
+    value: 0
+    causality: output
+  - name: RRWheelOutput
     value: 0
     causality: output
   - name: FL_x
@@ -62640,18 +62634,6 @@ MonoBehaviour:
   - name: FL_z
     value: 0
     causality: output
-  - name: 'FR_q[1,1]'
-    value: 0
-    causality: output
-  - name: 'FR_q[2,1]'
-    value: 0
-    causality: output
-  - name: 'FR_q[3,1]'
-    value: 0
-    causality: output
-  - name: 'FR_q[4,1]'
-    value: 0
-    causality: output
   - name: FR_x
     value: 0
     causality: output
@@ -62661,18 +62643,6 @@ MonoBehaviour:
   - name: FR_z
     value: 0
     causality: output
-  - name: 'RL_q[1,1]'
-    value: 0
-    causality: output
-  - name: 'RL_q[2,1]'
-    value: 0
-    causality: output
-  - name: 'RL_q[3,1]'
-    value: 0
-    causality: output
-  - name: 'RL_q[4,1]'
-    value: 0
-    causality: output
   - name: RL_x
     value: 0
     causality: output
@@ -62680,18 +62650,6 @@ MonoBehaviour:
     value: 0
     causality: output
   - name: RL_z
-    value: 0
-    causality: output
-  - name: 'RR_q[1,1]'
-    value: 0
-    causality: output
-  - name: 'RR_q[2,1]'
-    value: 0
-    causality: output
-  - name: 'RR_q[3,1]'
-    value: 0
-    causality: output
-  - name: 'RR_q[4,1]'
     value: 0
     causality: output
   - name: RR_x
@@ -95620,8 +95578,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdf7295874072d9488181a3c8d444e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RuntimeObjectPlacer
-  objectPrefab: {fileID: 2024938121997204562, guid: 8034d7a0db68d71499072ed356d459cf, type: 3}
-  ghostMaterial: {fileID: 0}
+  objectPrefab: {fileID: 6845038119460800996, guid: c73b6241174cb234fb4053f2f31e6e27, type: 3}
+  placementLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  rotationSpeed: 10
 --- !u!1 &2118653116 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -3587934313989678298, guid: 05cbf214a89bca6478faaf739af6a0df, type: 3}
@@ -96815,8 +96776,7 @@ MonoBehaviour:
   inputManager: {fileID: 1815478316}
   fmuManager: {fileID: 1815478317}
   spawnPoint: {fileID: 2120043240}
-  maxMotorSpeed: 50
-  var_Steer_In: SteerLnput
+  var_Steer_In: SteerInput
   var_Throttle_In: Trottle
   var_Brake_In: Brake
   var_Gear_In: Gear
@@ -96834,7 +96794,7 @@ MonoBehaviour:
     wheelRoot: {fileID: 1326229849}
     wheelVisual: {fileID: 580311280016134596}
     sensor: {fileID: 1326229848}
-    var_WheelOmega_In: FLWIn
+    var_WheelOmega_In: 
     var_GroundDist_In: FL_gz
     var_WheelPos_X: FL_x
     var_WheelPos_Y: FL_y
@@ -96848,7 +96808,7 @@ MonoBehaviour:
     wheelRoot: {fileID: 1002873612}
     wheelVisual: {fileID: 3570975275397642228}
     sensor: {fileID: 1002873613}
-    var_WheelOmega_In: FRWIn
+    var_WheelOmega_In: 
     var_GroundDist_In: FR_gz
     var_WheelPos_X: FR_x
     var_WheelPos_Y: FR_y
