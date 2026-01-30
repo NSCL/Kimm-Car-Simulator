@@ -12,13 +12,13 @@ public class VehicleController : MonoBehaviour
     // [NEW] 스폰 포인트 (빈 오브젝트를 만들어서 할당)
     public Transform spawnPoint;
 
-    [Header("3. Chassis FMU Inputs")]
+    [Header("3. Vehicle FMU Inputs")]
     [FMUVariable(true)] public string var_Steer_In;
     [FMUVariable(true)] public string var_Throttle_In;
     [FMUVariable(true)] public string var_Brake_In;
     [FMUVariable(true)] public string var_Gear_In;
 
-    [Header("4. Chassis FMU Outputs")]
+    [Header("4. Vehicle FMU Outputs")]
     [FMUVariable] public string out_ChassisPos_X;
     [FMUVariable] public string out_ChassisPos_Y;
     [FMUVariable] public string out_ChassisPos_Z;
