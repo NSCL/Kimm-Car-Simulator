@@ -19,6 +19,7 @@ public class SimulatorManager : MonoBehaviour
     public GameObject vehicleCamera; //운전석 3인칭 카메라
     public GameObject editCamera; //항공뷰/편집용 프리캠
     public VehicleController vehicleController; //차량 제어 스크립트
+    public GameObject editModeUIGroup;
 
     private void Awake()
     {
@@ -70,7 +71,7 @@ public class SimulatorManager : MonoBehaviour
             //1. 카메라 전환
             if (vehicleCamera) vehicleCamera.SetActive(true);
             if(editCamera) editCamera.SetActive(false);
-
+            if (editModeUIGroup != null) editModeUIGroup.SetActive(false);
             //차량 조작 허용
             if (vehicleController) vehicleController.enabled = true;
         }
@@ -81,7 +82,10 @@ public class SimulatorManager : MonoBehaviour
             //1. 카메라 전환
             if(vehicleCamera) vehicleCamera.SetActive(false);
             if(editCamera) editCamera.SetActive(true);
-
+            Vector3 carPos = vehicleCamera.transform.position;
+            editCamera.transform.position = carPos + Vector3.up*50f;
+            editCamera.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            if (editModeUIGroup != null) editModeUIGroup.SetActive(true);
             //2. 차량 조작 차단
             if(vehicleController) vehicleController.enabled = false;
         }

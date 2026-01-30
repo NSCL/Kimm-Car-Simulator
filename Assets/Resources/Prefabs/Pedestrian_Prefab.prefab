@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 666839809746067522}
   - component: {fileID: 2901206047937848301}
   - component: {fileID: 177382001608609025}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Pedestrian_Prefab
-  m_TagString: Untagged
+  m_TagString: SpawnedObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

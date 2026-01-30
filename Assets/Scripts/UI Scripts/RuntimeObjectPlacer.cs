@@ -11,10 +11,9 @@ public class RuntimeObjectPlacer : MonoBehaviour
     private GameObject currentGhost;
     private SimulatorControls controls;
     private Camera editCam;
-
-    // ? 추가된 변수 1: 프리팹의 원래 회전값을 저장할 변수
     private Quaternion initialRotation;
     private float currentYRotation = 0f;
+
 
     void Start()
     {
@@ -22,7 +21,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
         {
             controls = SimulatorManager.Instance.inputActions;
             controls.EditCamera.Place.performed += OnPlaceInput;
-
+            controls.EditCamera.Remove.performed += OnRemoveInput;
             if (SimulatorManager.Instance.editCamera != null)
                 editCam = SimulatorManager.Instance.editCamera.GetComponent<Camera>();
         }
@@ -31,6 +30,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
     void OnDestroy()
     {
         if (controls != null) controls.EditCamera.Place.performed -= OnPlaceInput;
+        if (controls != null) controls.EditCamera.Remove.performed -= OnRemoveInput;
     }
 
     void Update()
@@ -52,6 +52,31 @@ public class RuntimeObjectPlacer : MonoBehaviour
         }
     }
 
+    private void OnRemoveInput(InputAction.CallbackContext context)
+    {
+        if (SimulatorManager.Instance.IsSimulationActive()) return;
+        Vector2 mousePos = controls.EditCamera.MousePosition.ReadValue<Vector2>();
+        Ray ray = editCam.ScreenPointToRay(mousePos);
+        RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
+        foreach (RaycastHit hit in hits)
+        {
+            // 만약 태그가 "SpawnedObject"인 녀석을 발견하면?
+            if (hit.collider.CompareTag("SpawnedObject"))
+            {
+                Destroy(hit.collider.gameObject);
+                Debug.Log($"삭제 완료: {hit.collider.name}");
+
+                return;
+            }
+        }
+    }
+
+    public void SelectItem(GameObject newPrefab)
+    {
+        if (currentGhost != null) Destroy(currentGhost);
+        objectPrefab = newPrefab;
+        currentYRotation = 0f;
+    }
     void CreateGhost()
     {
         currentGhost = Instantiate(objectPrefab);
@@ -105,4 +130,5 @@ public class RuntimeObjectPlacer : MonoBehaviour
             Instantiate(objectPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
         }
     }
+
 }

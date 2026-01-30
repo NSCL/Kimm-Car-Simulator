@@ -96,6 +96,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Remove",
+                    "type": "Button",
+                    "id": "8f7908f8-1a4d-4cef-b5f8-ff9441783d80",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -239,6 +248,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "RotateItem",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73dd5fd5-6e4e-4fa5-ae21-c12951e04f19",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Remove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
