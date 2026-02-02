@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-01-27T15:13:22Z" generationTool="Simulink (R2024b)" guid="{8e5f8f86-6325-c7f2-3203-f78920e03b1e}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.222">
-  <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="HeaveRollCar"/>
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-02-02T06:40:09Z" generationTool="Simulink (R2024b)" guid="{72934c3c-7abd-027f-3096-6376a4faaa8d}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.236">
+  <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="false" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="false" modelIdentifier="HeaveRollCar"/>
   <UnitDefinitions>
     <Unit name="m"/>
     <Unit name="m/s"/>
@@ -13,7 +13,7 @@
         <ImportCompatibility FMUProduct="standalone FMU" requireMATLABOnPath="no" requireRelease="all"/>
         <SimulinkModelInterface>
           <Inport blockPath="HeaveRollCar/SteerInput" dataType="double" dimension="[1]" portName="SteerInput" portNumber="1" sampleTime="[0 0]" uniquePortName="SteerInput" unit=""/>
-          <Inport blockPath="HeaveRollCar/Trottle" dataType="double" dimension="[1]" portName="Trottle" portNumber="2" sampleTime="[0.001     0]" uniquePortName="Trottle" unit=""/>
+          <Inport blockPath="HeaveRollCar/Throttle" dataType="double" dimension="[1]" portName="Throttle" portNumber="2" sampleTime="[0.001     0]" uniquePortName="Throttle" unit=""/>
           <Inport blockPath="HeaveRollCar/Brake" dataType="double" dimension="[1]" portName="Brake" portNumber="3" sampleTime="[0.001     0]" uniquePortName="Brake" unit=""/>
           <Inport blockPath="HeaveRollCar/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="4" sampleTime="[0.001     0]" uniquePortName="Gear" unit=""/>
           <Inport blockPath="HeaveRollCar/FL_gz" dataType="double" dimension="[1]" portName="FL_gz" portNumber="5" sampleTime="[0 0]" uniquePortName="FL_gz" unit="m"/>
@@ -53,7 +53,7 @@
       <Real start="0"/>
       <!--Index = 1-->
     </ScalarVariable>
-    <ScalarVariable causality="input" description="Trottle" name="Trottle" valueReference="1" variability="continuous">
+    <ScalarVariable causality="input" description="Throttle" name="Throttle" valueReference="1" variability="continuous">
       <Real start="0"/>
       <!--Index = 2-->
     </ScalarVariable>
@@ -192,6 +192,30 @@
     <ScalarVariable causality="independent" description="time" name="time" valueReference="35" variability="continuous">
       <Real/>
       <!--Index = 36-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Kimm.Target.vx0" initial="exact" name="Kimm.Target.vx0" valueReference="36" variability="tunable">
+      <Real start="20"/>
+      <!--Index = 37-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Kimm.Target.w0" initial="exact" name="Kimm.Target.w0" valueReference="37" variability="tunable">
+      <Real start="57.14285714285715"/>
+      <!--Index = 38-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Kimm.Body.mass" initial="exact" name="Kimm.Body.mass" valueReference="38" variability="tunable">
+      <Real start="1600"/>
+      <!--Index = 39-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Kimm.Body.Inertia(1,1)" initial="exact" name="Kimm.Body.Inertia[1,1]" valueReference="39" variability="tunable">
+      <Real start="600"/>
+      <!--Index = 40-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Kimm.Body.Inertia(1,2)" initial="exact" name="Kimm.Body.Inertia[1,2]" valueReference="40" variability="tunable">
+      <Real start="3000"/>
+      <!--Index = 41-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Kimm.Body.Inertia(1,3)" initial="exact" name="Kimm.Body.Inertia[1,3]" valueReference="41" variability="tunable">
+      <Real start="3200"/>
+      <!--Index = 42-->
     </ScalarVariable>
   </ModelVariables>
   <ModelStructure>

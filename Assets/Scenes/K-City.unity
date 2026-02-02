@@ -51821,7 +51821,7 @@ MonoBehaviour:
   - name: SteerInput
     value: 0
     causality: input
-  - name: Trottle
+  - name: Throttle
     value: 0
     causality: input
   - name: Brake
@@ -102741,7 +102741,7 @@ MonoBehaviour:
   fmuManager: {fileID: 1815478317}
   spawnPoint: {fileID: 2120043240}
   var_Steer_In: SteerInput
-  var_Throttle_In: Trottle
+  var_Throttle_In: Throttle
   var_Brake_In: Brake
   var_Gear_In: Gear
   out_ChassisPos_X: body_x
