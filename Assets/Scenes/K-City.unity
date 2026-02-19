@@ -51926,24 +51926,6 @@ MonoBehaviour:
   - name: time
     value: 0
     causality: independent
-  - name: Kimm.Target.vx0
-    value: 0
-    causality: parameter
-  - name: Kimm.Target.w0
-    value: 0
-    causality: parameter
-  - name: Kimm.Body.mass
-    value: 0
-    causality: parameter
-  - name: 'Kimm.Body.Inertia[1,1]'
-    value: 0
-    causality: parameter
-  - name: 'Kimm.Body.Inertia[1,2]'
-    value: 0
-    causality: parameter
-  - name: 'Kimm.Body.Inertia[1,3]'
-    value: 0
-    causality: parameter
 --- !u!64 &1815654512
 MeshCollider:
   m_ObjectHideFlags: 0
