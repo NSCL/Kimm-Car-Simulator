@@ -51824,22 +51824,46 @@ MonoBehaviour:
   - name: Throttle
     value: 0
     causality: input
-  - name: Brake
+  - name: Gear
     value: 0
     causality: input
-  - name: Gear
+  - name: Brake
     value: 0
     causality: input
   - name: FL_gz
     value: 0
     causality: input
+  - name: FL_qx
+    value: 0
+    causality: input
+  - name: FL_qy
+    value: 0
+    causality: input
   - name: FR_gz
+    value: 0
+    causality: input
+  - name: FR_qx
+    value: 0
+    causality: input
+  - name: FR_qy
     value: 0
     causality: input
   - name: RL_gz
     value: 0
     causality: input
+  - name: RL_qx
+    value: 0
+    causality: input
+  - name: RL_qy
+    value: 0
+    causality: input
   - name: RR_gz
+    value: 0
+    causality: input
+  - name: RR_qx
+    value: 0
+    causality: input
+  - name: RR_qy
     value: 0
     causality: input
   - name: body_x
