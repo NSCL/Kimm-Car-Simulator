@@ -147,7 +147,7 @@ MonoBehaviour:
   mainDivisions:
     messure: 0
     unitsPerDivision: 0
-    total: 2
+    total: 3
     material: {fileID: 2100000, guid: bdb13d53e3b6bb549950dfa33b36f965, type: 2}
     materialTiling:
       EnableTiling: 1
@@ -166,7 +166,7 @@ MonoBehaviour:
     textPrefix: 
     textSuffix: 
     fractionDigits: 0
-    fontSize: 15
+    fontSize: 10
     fontSharpness: 3
     textDepth: 0
     textSeperation: -29.5
@@ -193,7 +193,7 @@ MonoBehaviour:
     textPrefix: 
     textSuffix: 
     fractionDigits: 0
-    fontSize: 15
+    fontSize: 10
     fontSharpness: 3
     textDepth: 0
     textSeperation: -29.5
@@ -401,6 +401,7 @@ MonoBehaviour:
   dataDropdown: {fileID: 3046003104798166318}
   graph: {fileID: 3700106579020830846}
   timeWindow: 5
+  updateRate: 10
 --- !u!1 &721083262868104603
 GameObject:
   m_ObjectHideFlags: 0
