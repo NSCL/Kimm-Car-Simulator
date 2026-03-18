@@ -80,7 +80,7 @@ public class VehicleController : MonoBehaviour
         if (fmuManager == null || inputManager == null) return;
 
         // --- [STEP 1] Input (기존 동일) ---
-        float targetSteer = inputManager.Steering * (720.0f * Mathf.Deg2Rad); // 임시 계수
+        float targetSteer = inputManager.Steering * (450.0f * Mathf.Deg2Rad); // 임시 계수
         if (!string.IsNullOrEmpty(var_Steer_In)) fmuManager.SetValue(var_Steer_In, targetSteer);
         if (!string.IsNullOrEmpty(var_Throttle_In)) fmuManager.SetValue(var_Throttle_In, inputManager.Accel);
         if (!string.IsNullOrEmpty(var_Brake_In)) fmuManager.SetValue(var_Brake_In, inputManager.Brake);
