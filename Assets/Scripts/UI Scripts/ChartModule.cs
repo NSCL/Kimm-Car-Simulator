@@ -26,6 +26,7 @@ public class ChartModule : MonoBehaviour
         if(telemetry.availableDataNames.Count==0 ) telemetry.InitializeTelemetry();
         graph.DataSource.StartBatch();
         graph.DataSource.AutomaticHorizontalView = false;
+        graph.DataSource.AutomaticVerticallView = true;
         graph.DataSource.HorizontalViewSize = timeWindow;
         graph.DataSource.HorizontalViewOrigin = 0;
         graph.DataSource.EndBatch();

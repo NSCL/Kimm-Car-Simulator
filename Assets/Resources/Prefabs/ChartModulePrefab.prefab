@@ -63,7 +63,7 @@ MonoBehaviour:
   maintainLabelSize: 0
   autoScrollHorizontally: 1
   horizontalScrolling: 0
-  autoScrollVertically: 0
+  autoScrollVertically: 1
   verticalScrolling: 0
   raycastTarget: 1
   MousePan:
@@ -84,7 +84,7 @@ MonoBehaviour:
       m_Calls: []
   itemFormat: <?y>
   Data:
-    automaticVerticalViewGap: 5
+    automaticVerticalViewGap: 0
     automaticVerticallView: 1
     automaticcHorizontaViewGap: 0
     automaticHorizontalView: 1
@@ -165,7 +165,7 @@ MonoBehaviour:
     textPrefab: {fileID: 114000012995897278, guid: fa8a37cac60da9c41b8aa59bfd823fcd, type: 3}
     textPrefix: 
     textSuffix: 
-    fractionDigits: 0
+    fractionDigits: 3
     fontSize: 10
     fontSharpness: 3
     textDepth: 0
@@ -192,7 +192,7 @@ MonoBehaviour:
     textPrefab: {fileID: 114000012995897278, guid: fa8a37cac60da9c41b8aa59bfd823fcd, type: 3}
     textPrefix: 
     textSuffix: 
-    fractionDigits: 0
+    fractionDigits: 3
     fontSize: 10
     fontSharpness: 3
     textDepth: 0
