@@ -2,6 +2,7 @@
   "dependencies": {
     "com.frj.unity-sensors": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Packages/UnitySensors",
     "com.frj.unity-sensors-ros": "https://github.com/Field-Robotics-Japan/UnitySensors.git?path=/Packages/UnitySensorsROS",
+    "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.inference": "2.5.0",
     "com.unity.ai.navigation": "2.0.10",
     "com.unity.collab-proxy": "2.11.3",
