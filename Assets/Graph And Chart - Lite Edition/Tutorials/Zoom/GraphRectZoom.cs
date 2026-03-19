@@ -61,7 +61,7 @@ public class GraphRectZoom : MonoBehaviour
             {
                 mIsZoomed = true;
                 graph.DataSource.AutomaticHorizontalView = false;
-                graph.DataSource.AutomaticVerticallView = false;
+                graph.DataSource.AutomaticVerticalView = false;
 
                 DoubleVector2 min = new DoubleVector2(Math.Min(x1, x2), Math.Min(y1, y2));
                 DoubleVector2 max = new DoubleVector2(Math.Max(x1, x2), Math.Max(y1, y2));
@@ -83,7 +83,7 @@ public class GraphRectZoom : MonoBehaviour
             mIsZoomed = false;
             var graph = GetComponent<GraphChart>();
             graph.DataSource.AutomaticHorizontalView = true;
-            graph.DataSource.AutomaticVerticallView = true;
+            graph.DataSource.AutomaticVerticalView = true;
             graph.HorizontalScrolling = 0;
             graph.VerticalScrolling = 0;
             mIsUp = false;

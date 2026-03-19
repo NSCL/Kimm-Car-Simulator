@@ -62,7 +62,7 @@ namespace ChartAndGraph
         /// <summary>
         /// set this to true to automatically detect the horizontal size of the graph chart
         /// </summary>
-        public bool AutomaticVerticallView
+        public bool AutomaticVerticalView
         {
             get { return automaticVerticallView; }
             set
@@ -255,7 +255,7 @@ namespace ChartAndGraph
                     }
                     return HorizontalViewOrigin + axisAdd;
                 }
-                if (axis == 1 && AutomaticVerticallView == false)
+                if (axis == 1 && AutomaticVerticalView == false)
                 {
                     double axisAdd = verticalViewSize;
                     if (Math.Abs(axisAdd) < 0.0001f)
@@ -307,7 +307,7 @@ namespace ChartAndGraph
             {
                 if (axis == 0 && automaticHorizontalView == false)
                     return horizontalViewOrigin;
-                if (axis == 1 && AutomaticVerticallView == false)
+                if (axis == 1 && AutomaticVerticalView == false)
                     return verticalViewOrigin;
             }
             double? res = null;
@@ -380,7 +380,7 @@ namespace ChartAndGraph
         {
             if (automaticHorizontalView)
                 RestoreDataValues(0);
-            if (AutomaticVerticallView)
+            if (AutomaticVerticalView)
                 RestoreDataValues(1);
         }
 

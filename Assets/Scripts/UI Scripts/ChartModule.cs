@@ -1,12 +1,11 @@
 using UnityEngine;
 using TMPro;
-using ChartAndGraph; // 구매하신 에셋 네임스페이스
+using ChartAndGraph;
 using System.Collections.Generic;
 
 public class ChartModule : MonoBehaviour
 {
     [Header("UI References")]
-    //public TextMeshProUGUI chartTitle;
     public TMP_Dropdown dataDropdown;
     public GraphChart graph;
 
@@ -23,12 +22,18 @@ public class ChartModule : MonoBehaviour
     public void Initialize(VehicleTelemetry vehicle)
     {
         telemetry = vehicle;
-        if(telemetry.availableDataNames.Count==0 ) telemetry.InitializeTelemetry();
+        if (telemetry.availableDataNames.Count == 0) telemetry.InitializeTelemetry();
+
         graph.DataSource.StartBatch();
+
+        // X축 스크롤 세팅
         graph.DataSource.AutomaticHorizontalView = false;
-        graph.DataSource.AutomaticVerticallView = true;
         graph.DataSource.HorizontalViewSize = timeWindow;
         graph.DataSource.HorizontalViewOrigin = 0;
+
+        // 에셋의 자동 스케일링 기능 켜기
+        graph.DataSource.AutomaticVerticalView = true;
+
         graph.DataSource.EndBatch();
 
         SetupDropdown();
@@ -38,10 +43,9 @@ public class ChartModule : MonoBehaviour
     {
         dataDropdown.ClearOptions();
         dataDropdown.AddOptions(telemetry.availableDataNames);
-        if(telemetry.availableDataNames.Count>0 )
+        if (telemetry.availableDataNames.Count > 0)
         {
             currentDataName = telemetry.availableDataNames[0];
-            //UpdateTitle();
         }
 
         dataDropdown.onValueChanged.AddListener(OnDropdownChanged);
@@ -52,37 +56,45 @@ public class ChartModule : MonoBehaviour
         currentDataName = telemetry.availableDataNames[index];
         graph.DataSource.ClearCategory(categoryName);
         stepTime = 0f;
-        //UpdateTitle();
     }
-
-    //void UpdateTitle()
-    //{
-    //    if (chartTitle != null) chartTitle.text = currentDataName;
-    //}
 
     private void Update()
     {
-        if(telemetry==null || string.IsNullOrEmpty(currentDataName)) return;
+        if (telemetry == null || string.IsNullOrEmpty(currentDataName)) return;
 
         stepTime += Time.deltaTime;
         timeSinceLastUpdate += Time.deltaTime;
 
-        if(timeSinceLastUpdate>=(1f/updateRate))
+        if (timeSinceLastUpdate >= (1f / updateRate))
         {
             timeSinceLastUpdate = 0f;
             float value = telemetry.GetValue(currentDataName);
 
             graph.DataSource.StartBatch();
-            graph.DataSource.AddPointToCategory(categoryName,stepTime,value);
 
-            if(stepTime>timeWindow)
+            // 1. 차트에 점 추가
+            graph.DataSource.AddPointToCategory(categoryName, stepTime, value);
+
+            // 2. 시간이 지나면 X축을 왼쪽으로 밀어내기 (스크롤)
+            if (stepTime > timeWindow)
             {
                 graph.DataSource.HorizontalViewOrigin = stepTime - timeWindow;
             }
+
+            // 3. 제안하신 '현재 값 기반의 Padding' 적용!
+            // 현재 값의 20%를 여백으로 설정 (값이 커지면 여백도 자연스럽게 커짐)
+            float padding = Mathf.Abs(value) * 0.2f;
+
+            // 차가 완전히 정지해서 value가 0이 되었을 때, 최소한의 Y축 눈금 보장 (-0.5 ~ 0.5)
+            if (padding < 0.5f) padding = 0f;
+
+            // 에셋의 Gap 속성에 계산한 padding 값 주입 
+            graph.DataSource.AutomaticVerticallViewGap = padding;
+
             graph.DataSource.EndBatch();
         }
-
     }
+
     public void CloseChart()
     {
         Destroy(gameObject);
