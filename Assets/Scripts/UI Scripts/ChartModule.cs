@@ -62,14 +62,14 @@ public class ChartModule : MonoBehaviour
     {
         if (telemetry == null || string.IsNullOrEmpty(currentDataName)) return;
 
-        stepTime += Time.deltaTime;
+        //stepTime += Time.deltaTime;
         timeSinceLastUpdate += Time.deltaTime;
 
         if (timeSinceLastUpdate >= (1f / updateRate))
         {
             timeSinceLastUpdate = 0f;
             float value = telemetry.GetValue(currentDataName);
-
+            stepTime = Time.timeSinceLevelLoad;
             graph.DataSource.StartBatch();
 
             // 1. 차트에 점 추가

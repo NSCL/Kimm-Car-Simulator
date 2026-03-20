@@ -16,6 +16,7 @@ public class TelemetryManager : MonoBehaviour
     [Header("Center: Speedometer")]
     public TextMeshProUGUI speedText;
     public RectTransform needleTransform; // 속도계 바늘
+    public string speedVariableName = "body_vx";
     public float maxSpeedKmh = 100f; // 계기판의 최대 속도 (맞게 수정하세요)
     public float zeroSpeedAngle = 135f; // 0km/h일 때 바늘의 Z축 회전값
     public float maxSpeedAngle = -135f; // 최대 속도일 때 바늘의 Z축 회전값
@@ -42,7 +43,7 @@ public class TelemetryManager : MonoBehaviour
         // 2. 우측 기어 박스 이동 (부드러운 스무딩 적용)
         if (gearBox != null)
         {
-            RectTransform targetPos = posN; // 기본값 중립
+            RectTransform targetPos = posP; // 기본값 중립
 
             // inputManager의 기어 상태에 따라 목표 위치 설정
             // (차량 스크립트에 맞게 숫자를 수정하세요. 보통 1=D, 0=N, -1=R, 2=P 등으로 씁니다)
@@ -61,7 +62,7 @@ public class TelemetryManager : MonoBehaviour
         if (fmuManager != null && speedText != null && needleTransform != null)
         {
             // FMU에서 속도 가져오기 (변수명 'body_vx' 맞으시죠?)
-            float speedMs = (float)fmuManager.GetValue("body_vx");
+            float speedMs = (float)fmuManager.GetValue(speedVariableName);
             float speedKmh = Mathf.Abs(speedMs * 3.6f);
 
             // 텍스트 업데이트 (소수점 버림)
