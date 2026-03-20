@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: HeaveRollCar
   m_EditorClassIdentifier: Assembly-CSharp::ModelDescription
   fmiVersion: 2.0
-  guid: 7b00650063006200330031003700380062002d0035003700660036002d0065006500390036002d0031003200320065002d003500380039003600620036003500370038003400610065007d00
+  guid: 7b00640035006400320036003000650032002d0032003000330037002d0033006100300065002d0065006600370031002d006300640063003200640061006500620066006100610066007d00
   modelName: HeaveRollCar
   coSimulation:
     modelIdentifier: HeaveRollCar
@@ -370,51 +370,3 @@ MonoBehaviour:
     initial: 
     type: 0
     start: 
-  - name: Kimm.Target.vx0
-    valueReference: 44
-    description: Kimm.Target.vx0
-    causality: parameter
-    variability: tunable
-    initial: exact
-    type: 0
-    start: 20
-  - name: Kimm.Target.w0
-    valueReference: 45
-    description: Kimm.Target.w0
-    causality: parameter
-    variability: tunable
-    initial: exact
-    type: 0
-    start: 57.14285714285715
-  - name: Kimm.Body.mass
-    valueReference: 46
-    description: Kimm.Body.mass
-    causality: parameter
-    variability: tunable
-    initial: exact
-    type: 0
-    start: 1600
-  - name: 'Kimm.Body.Inertia[1,1]'
-    valueReference: 47
-    description: Kimm.Body.Inertia(1,1)
-    causality: parameter
-    variability: tunable
-    initial: exact
-    type: 0
-    start: 600
-  - name: 'Kimm.Body.Inertia[1,2]'
-    valueReference: 48
-    description: Kimm.Body.Inertia(1,2)
-    causality: parameter
-    variability: tunable
-    initial: exact
-    type: 0
-    start: 3000
-  - name: 'Kimm.Body.Inertia[1,3]'
-    valueReference: 49
-    description: Kimm.Body.Inertia(1,3)
-    causality: parameter
-    variability: tunable
-    initial: exact
-    type: 0
-    start: 3200
