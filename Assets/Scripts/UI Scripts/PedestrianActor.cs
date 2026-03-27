@@ -53,13 +53,13 @@ public class PedestrianActor : MonoBehaviour
             if (direction != Vector3.zero)
             {
                 Quaternion lookRot = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * 10f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRot, Time.deltaTime * 5f);
             }
-            transform.position = Vector3.MoveTowards(transform.position, targetPoint.position, currentSpeed * Time.deltaTime);
+            transform.position += transform.forward * currentSpeed * Time.deltaTime;
         }
 
         // 도착 및 무한 루프 판정
-        if (Vector3.Distance(transform.position, targetPoint.position) < 0.1f)
+        if (Vector3.Distance(transform.position, targetPoint.position) < 0.5f)
         {
             currentIdx++;
             if (currentIdx >= path.Count)

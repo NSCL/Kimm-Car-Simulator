@@ -80,7 +80,7 @@ public class ScenarioPathBuilder : MonoBehaviour
             pathLine.loop = false;
         }
         if (walkSpeedInput != null) walkSpeedInput.text = "3";
-        if(runSpeedInput!=null) runSpeedInput.text = "10";
+        if(runSpeedInput!=null) runSpeedInput.text = "5";
         isBuildingPath = true;
         currentPath.Clear();
         currentYRotation = 0f;

@@ -48358,8 +48358,8 @@ MonoBehaviour:
   pathEditorPanel: {fileID: 1287433455}
   stateDropdown: {fileID: 84582519}
   pathLine: {fileID: 1521443258}
-  walkSpeedInput: {fileID: 0}
-  runSpeedInput: {fileID: 0}
+  walkSpeedInput: {fileID: 1351504020}
+  runSpeedInput: {fileID: 459471300}
   currentPath: []
 --- !u!120 &1521443258
 LineRenderer:
@@ -64845,10 +64845,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1772972132}
   - {fileID: 485093306}
   - {fileID: 503669355}
   - {fileID: 1632680049}
-  - {fileID: 1772972132}
   m_Father: {fileID: 545853574}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
