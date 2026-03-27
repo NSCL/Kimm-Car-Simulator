@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,6 +21,8 @@ public class SimulatorManager : MonoBehaviour
     public GameObject editCamera; //항공뷰/편집용 프리캠
     public VehicleController vehicleController; //차량 제어 스크립트
     public GameObject editModeUIGroup;
+
+    public event Action<SimulatorMode> OnModeChanged;
 
     private void Awake()
     {
@@ -60,6 +63,7 @@ public class SimulatorManager : MonoBehaviour
             currentMode = SimulatorMode.Simulation;
 
         ApplyMode(currentMode);
+        OnModeChanged?.Invoke(currentMode);
     }
 
     void ApplyMode(SimulatorMode mode)

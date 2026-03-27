@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+using UnityEngine.EventSystems;
 public class RuntimeObjectPlacer : MonoBehaviour
 {
     [Header("Settings")]
@@ -13,7 +13,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
     private Camera editCam;
     private Quaternion initialRotation;
     private float currentYRotation = 0f;
-
+    private bool isPointerOverUI = false;
 
     void Start()
     {
@@ -35,6 +35,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     void Update()
     {
+        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
         if (SimulatorManager.Instance.IsSimulationActive())
         {
             if (currentGhost != null) currentGhost.SetActive(false);
@@ -123,6 +124,8 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     private void OnPlaceInput(InputAction.CallbackContext context)
     {
+        if(isPointerOverUI) return;
+
         if (SimulatorManager.Instance.IsSimulationActive()) return;
 
         if (currentGhost != null && currentGhost.activeSelf)
