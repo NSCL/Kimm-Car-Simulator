@@ -20,14 +20,26 @@ public class FMUManager : MonoBehaviour
     // 인스펙터에 보여질 변수 리스트
     public List<RuntimeFMUVariable> variables = new List<RuntimeFMUVariable>();
 
-    //실제 시뮬레이션 엔진
+    //  [추가됨] 성능 폭발 최적화: 매 프레임마다 리스트를 뒤지지 않도록 딕셔너리로 관리합니다.
+    private Dictionary<string, RuntimeFMUVariable> varDict = new Dictionary<string, RuntimeFMUVariable>();
+
+    // 실제 시뮬레이션 엔진
     private FMU fmu;
 
     private double currentTime = 0.0;
 
+    private void Awake()
+    {
+        // 시작하기 전에, 인스펙터에 있는 변수들을 빛의 속도로 찾을 수 있게 딕셔너리에 담아둡니다.
+        foreach (var v in variables)
+        {
+            varDict[v.name] = v;
+        }
+    }
+
     private void Start()
     {
-        if(string.IsNullOrEmpty(selectedFMUName))
+        if (string.IsNullOrEmpty(selectedFMUName))
         {
             Debug.LogError("FMU is Null or Empty.");
             return;
@@ -45,57 +57,76 @@ public class FMUManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (fmu != null) 
+        if (fmu != null)
         {
             fmu.Dispose();
-            fmu= null;
+            fmu = null;
         }
     }
+
     public void ResetFMU()
     {
-        currentTime= 0.0;
+        //  [핵심 버그 수정됨] VehicleController에서 Reset을 부를 때마다 기존 C++ 메모리가 터지는 걸 막습니다!
+        if (fmu != null)
+        {
+            fmu.Dispose(); // 기존 메모리 안전하게 해제
+            fmu = null;
+        }
+
+        currentTime = 0.0;
         fmu = new FMU(selectedFMUName, this.name);
         fmu.Reset();
         fmu.SetupExperiment(Time.fixedTimeAsDouble);
         fmu.EnterInitializationMode();
         fmu.ExitInitializationMode();
-        Debug.Log($"[FMUManager]{selectedFMUName} Set up finished.");
+        Debug.Log($"[FMUManager] {selectedFMUName} Set up finished.");
     }
+
     // 외부에서 값을 넣어줄 때 쓰는 함수 (Input)
     public void SetValue(string varName, double value)
     {
-        var v = variables.Find(x => x.name == varName);
-        if (v != null) v.value = value;
-
-        if(fmu != null)
+        //  [수정됨] 매 프레임 쓰레기를 만들던 Find 함수 대신, 딕셔너리에서 바로 꺼냅니다.
+        if (varDict.TryGetValue(varName, out RuntimeFMUVariable v))
         {
-            fmu.SetReal(varName, (double)value);
+            v.value = value;
+        }
+
+        if (fmu != null)
+        {
+            fmu.SetReal(varName, value);
         }
     }
 
     // 외부(차량 물리 등)에서 값을 가져갈 때 쓰는 함수
     public double GetValue(string varName)
     {
-        double result = 0.0f;
-        if (fmu != null) 
+        double result = 0.0;
+
+        if (fmu != null)
         {
-            result=(double)fmu.GetReal(varName);
+            result = fmu.GetReal(varName);
         }
         else
         {
-            var v = variables.Find(x => x.name == varName);
-            if(v != null) result = v.value;
+            // FMU가 없을 때도 딕셔너리에서 안전하게 찾습니다.
+            if (varDict.TryGetValue(varName, out RuntimeFMUVariable v))
+            {
+                result = v.value;
+            }
         }
 
-        var targetVar = variables.Find(x => x.name==varName);
-        if (targetVar != null) targetVar.value = result;
+        // 인스펙터 업데이트용
+        if (varDict.TryGetValue(varName, out RuntimeFMUVariable targetVar))
+        {
+            targetVar.value = result;
+        }
 
         return result;
     }
 
     public void DoStep()
     {
-        if(fmu != null)
+        if (fmu != null)
         {
             fmu.DoStep(currentTime, (double)Time.fixedDeltaTime);
             currentTime += (double)Time.fixedDeltaTime;
