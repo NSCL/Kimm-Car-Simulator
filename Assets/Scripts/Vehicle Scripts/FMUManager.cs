@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using FMI2;
+using System.Diagnostics;
 
 // [중요] 이 클래스는 FMUImporter가 쓰는 ScalarVariable과는 별개로
 // 우리 시뮬레이터가 실제로 값을 수정하고 놀 런타임용 변수입니다.
@@ -19,7 +20,7 @@ public class FMUManager : MonoBehaviour
 
     // 인스펙터에 보여질 변수 리스트
     public List<RuntimeFMUVariable> variables = new List<RuntimeFMUVariable>();
-
+    public double stepSize = 0.001;
     //  [추가됨] 성능 폭발 최적화: 매 프레임마다 리스트를 뒤지지 않도록 딕셔너리로 관리합니다.
     private Dictionary<string, RuntimeFMUVariable> varDict = new Dictionary<string, RuntimeFMUVariable>();
 
@@ -41,7 +42,7 @@ public class FMUManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(selectedFMUName))
         {
-            Debug.LogError("FMU is Null or Empty.");
+            UnityEngine.Debug.LogError("FMU is Null or Empty.");
             return;
         }
 
@@ -51,7 +52,7 @@ public class FMUManager : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[FMU Init Error]{e.Message}");
+            UnityEngine.Debug.LogError($"[FMU Init Error]{e.Message}");
         }
     }
 
@@ -79,7 +80,7 @@ public class FMUManager : MonoBehaviour
         fmu.SetupExperiment(Time.fixedTimeAsDouble);
         fmu.EnterInitializationMode();
         fmu.ExitInitializationMode();
-        Debug.Log($"[FMUManager] {selectedFMUName} Set up finished.");
+        UnityEngine.Debug.Log($"[FMUManager] {selectedFMUName} Set up finished.");
     }
 
     // 외부에서 값을 넣어줄 때 쓰는 함수 (Input)
@@ -131,5 +132,21 @@ public class FMUManager : MonoBehaviour
             fmu.DoStep(currentTime, (double)Time.fixedDeltaTime);
             currentTime += (double)Time.fixedDeltaTime;
         }
+        //if (fmu != null)
+        //{
+        //    double cleanStep = 0.001;
+
+        //    Stopwatch sw = new Stopwatch(); // 초시계 준비
+        //    sw.Start(); // 측정 시작
+
+        //    fmu.DoStep(currentTime, cleanStep); // 실제 C++ DLL 연산
+
+        //    sw.Stop(); // 측정 종료
+
+        //    // 1번 계산하는 데 현실에서 몇 초 걸렸는지 로그 출력
+        //    UnityEngine.Debug.Log($"1스텝 계산 소요 현실 시간: {sw.Elapsed.TotalSeconds:F5} 초");
+
+        //    currentTime += cleanStep;
+        //}
     }
 }
