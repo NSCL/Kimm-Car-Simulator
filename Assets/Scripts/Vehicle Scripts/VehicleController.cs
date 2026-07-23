@@ -9,7 +9,7 @@ public class VehicleController : MonoBehaviour
     public FMUManager fmuManager;
 
     [Header("2. Simulation Settings")]
-    // [NEW] ½ºÆù Æ÷ÀÎÆ® (ºó ¿ÀºêÁ§Æ®¸¦ ¸¸µé¾î¼­ ÇÒ´ç)
+    // [NEW] ìŠ¤í° í¬ì¸íŠ¸ (ë¹ˆ ì˜¤ë¸Œì íŠ¸ë¥¼ ë§Œë“¤ì–´ì„œ í• ë‹¹)
     public Transform spawnPoint;
 
     [Header("3. Vehicle FMU Inputs")]
@@ -34,14 +34,14 @@ public class VehicleController : MonoBehaviour
     public List<WheelData> wheels;
     public Vector3 wheelRootCorrection = new Vector3(-90, 0, 0);
     public Vector3 wheelVisualCorrection = new Vector3(0, 0, 0);
-    // ³»ºÎ °è»ê¿ë º¯¼ö
+    // ë‚´ë¶€ ê³„ì‚°ìš© ë³€ìˆ˜
     private Vector3 _spawnPos = Vector3.zero;
     private Quaternion _spawnRot = Quaternion.identity;
     private bool _isRespawning = false;
     public LayerMask mapLayer;
     void Start()
     {
-        // ½ÃÀÛÇÒ ¶§ ½ºÆù Æ÷ÀÎÆ®ÀÇ À§Ä¡/È¸ÀüÀ» ±â¾ïÇØµÓ´Ï´Ù.
+        // ì‹œì‘í•  ë•Œ ìŠ¤í° í¬ì¸íŠ¸ì˜ ìœ„ì¹˜/íšŒì „ì„ ê¸°ì–µí•´ë‘¡ë‹ˆë‹¤.
         if (spawnPoint != null)
         {
             //_spawnPos = spawnPoint.position;
@@ -50,11 +50,11 @@ public class VehicleController : MonoBehaviour
         }
         else
         {
-            // ½ºÆù Æ÷ÀÎÆ®°¡ ¾øÀ¸¸é ÇöÀç Â÷ÀÇ À§Ä¡¸¦ ¿øÁ¡À¸·Î »ïÀ½
+            // ìŠ¤í° í¬ì¸íŠ¸ê°€ ì—†ìœ¼ë©´ í˜„ì¬ ì°¨ì˜ ìœ„ì¹˜ë¥¼ ì›ì ìœ¼ë¡œ ì‚¼ìŒ
             //_spawnPos = transform.position;
             //_spawnRot = transform.rotation;
             ResetVehicle(transform.position, transform.rotation);
-            Debug.LogWarning("Spawn Point°¡ ¾ø½À´Ï´Ù! ÇöÀç À§Ä¡¸¦ ¿øÁ¡À¸·Î »ç¿ëÇÕ´Ï´Ù.");
+            Debug.LogWarning("Spawn Pointê°€ ì—†ìŠµë‹ˆë‹¤! í˜„ì¬ ìœ„ì¹˜ë¥¼ ì›ì ìœ¼ë¡œ ì‚¬ìš©í•©ë‹ˆë‹¤.");
         }
 
         if(inputManager != null)
@@ -79,8 +79,8 @@ public class VehicleController : MonoBehaviour
     {
         if (fmuManager == null || inputManager == null) return;
 
-        // --- [STEP 1] Input (±âÁ¸ µ¿ÀÏ) ---
-        float targetSteer = inputManager.Steering * (450.0f * Mathf.Deg2Rad); // ÀÓ½Ã °è¼ö
+        // --- [STEP 1] Input (ê¸°ì¡´ ë™ì¼) ---
+        float targetSteer = inputManager.Steering * (450.0f * Mathf.Deg2Rad); // ì„ì‹œ ê³„ìˆ˜
         if (!string.IsNullOrEmpty(var_Steer_In)) fmuManager.SetValue(var_Steer_In, targetSteer);
         if (!string.IsNullOrEmpty(var_Throttle_In)) fmuManager.SetValue(var_Throttle_In, inputManager.Accel);
         if (!string.IsNullOrEmpty(var_Brake_In)) fmuManager.SetValue(var_Brake_In, inputManager.Brake);
@@ -96,22 +96,22 @@ public class VehicleController : MonoBehaviour
         // --- [STEP 2] Simulation ---
         fmuManager.DoStep();
 
-        // --- [STEP 3] Output (ÁÂÇ¥ º¯È¯ Ãß°¡!) ---
+        // --- [STEP 3] Output (ì¢Œí‘œ ë³€í™˜ ì¶”ê°€!) ---
         ApplyChassisWithSpawn();
         ApplyWheels();
     }
 
-    // ¡Ú ÇÙ½É: ½ºÆù Æ÷ÀÎÆ® ±âÁØÀ¸·Î ÁÂÇ¥ º¯È¯
+    // â˜… í•µì‹¬: ìŠ¤í° í¬ì¸íŠ¸ ê¸°ì¤€ìœ¼ë¡œ ì¢Œí‘œ ë³€í™˜
     void ApplyChassisWithSpawn()
     {
-        // 1. FMU¿¡¼­ °è»êµÈ ·ÎÄÃ ÁÂÇ¥ (0,0,0 ±âÁØ) °¡Á®¿À±â
+        // 1. FMUì—ì„œ ê³„ì‚°ëœ ë¡œì»¬ ì¢Œí‘œ (0,0,0 ê¸°ì¤€) ê°€ì ¸ì˜¤ê¸°
         float cx = (float)fmuManager.GetValue(out_ChassisPos_X);
         float cy = (float)fmuManager.GetValue(out_ChassisPos_Y);
         float cz = (float)fmuManager.GetValue(out_ChassisPos_Z);
-        //Vector3 fmuPos = new Vector3(-cy, cz, cx); // ÁÂÇ¥°è(Z-up) È®ÀÎ ÇÊ¿ä½Ã (cx, cz, cy)
+        //Vector3 fmuPos = new Vector3(-cy, cz, cx); // ì¢Œí‘œê³„(Z-up) í™•ì¸ í•„ìš”ì‹œ (cx, cz, cy)
         Vector3 fmuPos = new Vector3(cx, cy, cz);
 
-        // 2. FMU È¸Àü °¡Á®¿À±â
+        // 2. FMU íšŒì „ ê°€ì ¸ì˜¤ê¸°
         float qx = (float)fmuManager.GetValue(out_ChassisRot_X);
         float qy = (float)fmuManager.GetValue(out_ChassisRot_Y);
         float qz = (float)fmuManager.GetValue(out_ChassisRot_Z);
@@ -119,27 +119,27 @@ public class VehicleController : MonoBehaviour
 
         Quaternion fmuRot = new Quaternion(qx, qy, qz, qw);
 
-        // 3. [ÁÂÇ¥ º¯È¯] À¯´ÏÆ¼ ¿ùµå ÁÂÇ¥ = ½ºÆùÀ§Ä¡ + (½ºÆùÈ¸Àü * FMUÀÌµ¿·®)
-        // ÀÌ·¸°Ô ÇÏ¸é ½ºÆù Æ÷ÀÎÆ®°¡ 90µµ ²ª¿© ÀÖ¾îµµ, Â÷°¡ ±× ¹æÇâ ±âÁØÀ¸·Î ¾ÕÀ¸·Î °©´Ï´Ù.
+        // 3. [ì¢Œí‘œ ë³€í™˜] ìœ ë‹ˆí‹° ì›”ë“œ ì¢Œí‘œ = ìŠ¤í°ìœ„ì¹˜ + (ìŠ¤í°íšŒì „ * FMUì´ë™ëŸ‰)
+        // ì´ë ‡ê²Œ í•˜ë©´ ìŠ¤í° í¬ì¸íŠ¸ê°€ 90ë„ êº¾ì—¬ ìˆì–´ë„, ì°¨ê°€ ê·¸ ë°©í–¥ ê¸°ì¤€ìœ¼ë¡œ ì•ìœ¼ë¡œ ê°‘ë‹ˆë‹¤.
         //transform.position = _spawnPos + (_spawnRot * fmuPos);
         transform.position = _spawnPos +(_spawnRot * fmuPos);
 
-        // 4. [È¸Àü º¯È¯] À¯´ÏÆ¼ ¿ùµå È¸Àü = ½ºÆùÈ¸Àü * FMUÈ¸Àü
+        // 4. [íšŒì „ ë³€í™˜] ìœ ë‹ˆí‹° ì›”ë“œ íšŒì „ = ìŠ¤í°íšŒì „ * FMUíšŒì „
         transform.rotation = _spawnRot * fmuRot;
     }
 
     void ApplyWheels()
     {
-        // ¹ÙÄû´Â Chassis(ºÎ¸ğ)°¡ ÀÌ¹Ì ÀÌµ¿ÇßÀ¸¹Ç·Î, 
-        // localPositionÀ» ¾²¸é Chassis¸¦ µû¶ó ÀÚ¿¬½º·´°Ô ÀÌµ¿ÇÕ´Ï´Ù.
-        // (±âÁ¸ ÄÚµå À¯Áö)
+        // ë°”í€´ëŠ” Chassis(ë¶€ëª¨)ê°€ ì´ë¯¸ ì´ë™í–ˆìœ¼ë¯€ë¡œ, 
+        // localPositionì„ ì“°ë©´ Chassisë¥¼ ë”°ë¼ ìì—°ìŠ¤ëŸ½ê²Œ ì´ë™í•©ë‹ˆë‹¤.
+        // (ê¸°ì¡´ ì½”ë“œ ìœ ì§€)
 
         float toeL = (float)fmuManager.GetValue(out_Toe_Left);
         float toeR = (float)fmuManager.GetValue(out_Toe_Right);
 
         foreach (var w in wheels)
         {
-            // À§Ä¡ (Chassis ±âÁØ »ó´ë ÁÂÇ¥¶ó°í °¡Á¤)
+            // ìœ„ì¹˜ (Chassis ê¸°ì¤€ ìƒëŒ€ ì¢Œí‘œë¼ê³  ê°€ì •)
             if (!string.IsNullOrEmpty(w.var_WheelPos_X))
             {
                 float wx = (float)fmuManager.GetValue(w.var_WheelPos_X);
@@ -148,8 +148,16 @@ public class VehicleController : MonoBehaviour
                 w.wheelRoot.localPosition = new Vector3(wx, wy, wz);
             }
 
-            // È¸Àü (Steering)
+            // íšŒì „ (Steering ë° Quaternion íšŒì „)
             if (!string.IsNullOrEmpty(w.var_WheelRot_X))
+            {
+                float rx = (float)fmuManager.GetValue(w.var_WheelRot_X);
+                float ry = (float)fmuManager.GetValue(w.var_WheelRot_Y);
+                float rz = (float)fmuManager.GetValue(w.var_WheelRot_Z);
+                float rw = (float)fmuManager.GetValue(w.var_WheelRot_W);
+                w.wheelRoot.localRotation = new Quaternion(rx, ry, rz, rw);
+            }
+            else if (w.id == "FL" || w.id == "FR")
             {
                 Quaternion toeRot = Quaternion.identity;
                 if (w.id == "FL") toeRot = Quaternion.Euler(0, toeL * Mathf.Rad2Deg, 0);
@@ -157,7 +165,7 @@ public class VehicleController : MonoBehaviour
                 w.wheelRoot.localRotation = toeRot;
             }
 
-            // ½ºÇÉ (Rolling)
+            // ìŠ¤í•€ (Rolling)
             if (!string.IsNullOrEmpty(w.var_WheelSpin_Out))
             {
                 float spin = (float)fmuManager.GetValue(w.var_WheelSpin_Out);
@@ -194,7 +202,7 @@ public class VehicleController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         if (UIManager.Instance != null)
         {
-            // ÄÚ·çÆ¾Àº Instance ÇÔ¼ö¸¦ ºô·Á¼­ ½ÇÇà
+            // ì½”ë£¨í‹´ì€ Instance í•¨ìˆ˜ë¥¼ ë¹Œë ¤ì„œ ì‹¤í–‰
             UIManager.Instance.EndCollisionEffect();
         }
         if (inputManager != null) inputManager.SetInputActive(true);
@@ -205,15 +213,15 @@ public class VehicleController : MonoBehaviour
     {
         if (_isRespawning) return;
 
-        // ºÎµúÈù ³ğ(other)ÀÇ ·¹ÀÌ¾î°¡ MapÀÎÁö È®ÀÎ
-        // (ºñÆ® ¿¬»ê: ³» mapLayer¿¡ Æ÷ÇÔµÈ ³ğÀÎ°¡?)
+        // ë¶€ë”ªíŒ ë†ˆ(other)ì˜ ë ˆì´ì–´ê°€ Mapì¸ì§€ í™•ì¸
+        // (ë¹„íŠ¸ ì—°ì‚°: ë‚´ mapLayerì— í¬í•¨ëœ ë†ˆì¸ê°€?)
         if ((mapLayer.value & (1 << other.gameObject.layer)) != 0)
         {
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.StartCollisionEffect();
             }
-            Debug.Log($"{other.gameObject.name}¿¡ Ãæµ¹");
+            Debug.Log($"{other.gameObject.name}ì— ì¶©ëŒ");
             StartCoroutine(CollisionRespawnRoutine());
         }
     }
