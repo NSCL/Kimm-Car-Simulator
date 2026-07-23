@@ -9,17 +9,17 @@ public class SimulatorManager : MonoBehaviour
     public SimulatorControls inputActions;
     public enum SimulatorMode
     {
-        Simulation, //ÁÖÇà¸ğµå
-        Edit //ÆíÁı¸ğµå
+        Simulation, //ì£¼í–‰ëª¨ë“œ
+        Edit //í¸ì§‘ëª¨ë“œ
     }
 
     [Header("Status")]
     public SimulatorMode currentMode = SimulatorMode.Simulation;
 
     [Header("References")]
-    public GameObject vehicleCamera; //¿îÀü¼® 3ÀÎÄª Ä«¸Ş¶ó
-    public GameObject editCamera; //Ç×°øºä/ÆíÁı¿ë ÇÁ¸®Ä·
-    public VehicleController vehicleController; //Â÷·® Á¦¾î ½ºÅ©¸³Æ®
+    public GameObject vehicleCamera; //ìš´ì „ì„ 3ì¸ì¹­ ì¹´ë©”ë¼
+    public GameObject editCamera; //í•­ê³µë·°/í¸ì§‘ìš© í”„ë¦¬ìº 
+    public VehicleController vehicleController; //ì°¨ëŸ‰ ì œì–´ ìŠ¤í¬ë¦½íŠ¸
     public GameObject editModeUIGroup;
 
     public event Action<SimulatorMode> OnModeChanged;
@@ -72,25 +72,27 @@ public class SimulatorManager : MonoBehaviour
         {
             Debug.Log("Mode: Simulation");
 
-            //1. Ä«¸Ş¶ó ÀüÈ¯
+            //1. ì¹´ë©”ë¼ ì „í™˜
             if (vehicleCamera) vehicleCamera.SetActive(true);
             if(editCamera) editCamera.SetActive(false);
             if (editModeUIGroup != null) editModeUIGroup.SetActive(false);
-            //Â÷·® Á¶ÀÛ Çã¿ë
+            //ì°¨ëŸ‰ ì¡°ì‘ í—ˆìš©
             if (vehicleController) vehicleController.enabled = true;
         }
         else
         {
             Debug.Log("Mode: Edit");
 
-            //1. Ä«¸Ş¶ó ÀüÈ¯
+            //1. ì¹´ë©”ë¼ ì „í™˜
             if(vehicleCamera) vehicleCamera.SetActive(false);
             if(editCamera) editCamera.SetActive(true);
-            Vector3 carPos = vehicleCamera.transform.position;
-            editCamera.transform.position = carPos + Vector3.up*50f;
-            editCamera.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+            Vector3 carPos = vehicleController != null ? vehicleController.transform.position : (vehicleCamera != null ? vehicleCamera.transform.position : Vector3.zero);
+            float carYaw = vehicleController != null ? vehicleController.transform.eulerAngles.y : (vehicleCamera != null ? vehicleCamera.transform.eulerAngles.y : 0f);
+
+            editCamera.transform.position = carPos + Vector3.up * 50f;
+            editCamera.transform.rotation = Quaternion.Euler(90f, carYaw, 0f);
             if (editModeUIGroup != null) editModeUIGroup.SetActive(true);
-            //2. Â÷·® Á¶ÀÛ Â÷´Ü
+            //2. ì°¨ëŸ‰ ì¡°ì‘ ì°¨ë‹¨
             if(vehicleController) vehicleController.enabled = false;
         }
     }
