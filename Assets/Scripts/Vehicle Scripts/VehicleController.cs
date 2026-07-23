@@ -39,6 +39,18 @@ public class VehicleController : MonoBehaviour
     private Quaternion _spawnRot = Quaternion.identity;
     private bool _isRespawning = false;
     public LayerMask mapLayer;
+
+    private void Awake()
+    {
+        // 인스펙터 설정과 상관없이 Default, Road, Map 레이어를 충돌 감지 대상에 자동 포함
+        int defaultLayer = LayerMask.NameToLayer("Default");
+        int roadLayer = LayerMask.NameToLayer("Road");
+        int mapLayerIndex = LayerMask.NameToLayer("Map");
+
+        if (defaultLayer != -1) mapLayer |= (1 << defaultLayer);
+        if (roadLayer != -1) mapLayer |= (1 << roadLayer);
+        if (mapLayerIndex != -1) mapLayer |= (1 << mapLayerIndex);
+    }
     void Start()
     {
         // 시작할 때 스폰 포인트의 위치/회전을 기억해둡니다.
