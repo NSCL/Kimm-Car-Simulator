@@ -6,7 +6,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
     [Header("Settings")]
     public GameObject objectPrefab;
     public LayerMask placementLayer;
-    public float rotationSpeed = 10f; // ¼Óµµ Á¶±İ ¿Ã¸²
+    public float rotationSpeed = 10f; // ì†ë„ ì¡°ê¸ˆ ì˜¬ë¦¼
 
     private GameObject currentGhost;
     private SimulatorControls controls;
@@ -35,7 +35,8 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     void Update()
     {
-        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        bool minimapHover = (MinimapController.Instance != null && MinimapController.Instance.IsMouseOverMinimap);
+        isPointerOverUI = (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) || minimapHover;
         if (SimulatorManager.Instance.IsSimulationActive())
         {
             if (currentGhost != null) currentGhost.SetActive(false);
@@ -61,11 +62,11 @@ public class RuntimeObjectPlacer : MonoBehaviour
         RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
         foreach (RaycastHit hit in hits)
         {
-            // ¸¸¾à ÅÂ±×°¡ "SpawnedObject"ÀÎ ³à¼®À» ¹ß°ßÇÏ¸é?
+            // ë§Œì•½ íƒœê·¸ê°€ "SpawnedObject"ì¸ ë…€ì„ì„ ë°œê²¬í•˜ë©´?
             if (hit.collider.CompareTag("SpawnedObject"))
             {
                 Destroy(hit.collider.gameObject);
-                Debug.Log($"»èÁ¦ ¿Ï·á: {hit.collider.name}");
+                Debug.Log($"ì‚­ì œ ì™„ë£Œ: {hit.collider.name}");
 
                 return;
             }
@@ -82,7 +83,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
     {
         currentGhost = Instantiate(objectPrefab);
 
-        // ? ¼öÁ¤ 1: »ı¼ºµÇÀÚ¸¶ÀÚ ÇÁ¸®ÆÕ º»¿¬ÀÇ È¸Àü°ªÀ» ±â¾ïÇÔ!
+        // ? ìˆ˜ì • 1: ìƒì„±ë˜ìë§ˆì í”„ë¦¬íŒ¹ ë³¸ì—°ì˜ íšŒì „ê°’ì„ ê¸°ì–µí•¨!
         initialRotation = currentGhost.transform.rotation;
 
         var colliders = currentGhost.GetComponentsInChildren<Collider>();
@@ -104,15 +105,15 @@ public class RuntimeObjectPlacer : MonoBehaviour
             currentGhost.SetActive(true);
             currentGhost.transform.position = hit.point;
 
-            // ÈÙ ÀÔ·Â ¹Ş±â
+            // íœ  ì…ë ¥ ë°›ê¸°
             float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
             if (Mathf.Abs(scrollInput) > 0.1f)
             {
-                currentYRotation += scrollInput * rotationSpeed; // * Time.deltaTime »©´Â °Ô ¹İÀÀÀÌ ´õ Áï°¢ÀûÀÓ
+                currentYRotation += scrollInput * rotationSpeed; // * Time.deltaTime ë¹¼ëŠ” ê²Œ ë°˜ì‘ì´ ë” ì¦‰ê°ì ì„
             }
 
-            // ? ¼öÁ¤ 2: "³» ÈÙ È¸Àü(YÃà)" * "¿ø·¡ ÇÁ¸®ÆÕ È¸Àü"
-            // ÄõÅÍ´Ï¾ğ °ö¼ÀÀº ¼ø¼­°¡ Áß¿äÇÕ´Ï´Ù. (Ãß°¡ È¸Àü * ¿ø·¡ È¸Àü)
+            // ? ìˆ˜ì • 2: "ë‚´ íœ  íšŒì „(Yì¶•)" * "ì›ë˜ í”„ë¦¬íŒ¹ íšŒì „"
+            // ì¿¼í„°ë‹ˆì–¸ ê³±ì…ˆì€ ìˆœì„œê°€ ì¤‘ìš”í•©ë‹ˆë‹¤. (ì¶”ê°€ íšŒì „ * ì›ë˜ íšŒì „)
             Quaternion addedRotation = Quaternion.Euler(0, currentYRotation, 0);
             currentGhost.transform.rotation = addedRotation * initialRotation;
         }
