@@ -112,20 +112,35 @@ public class MapChanger : MonoBehaviour
     {
         if (mapList.Count == 0)
         {
-            mapList.Add(new MapInfo
+            int sceneCount = SceneManager.sceneCountInBuildSettings;
+            for (int i = 0; i < sceneCount; i++)
             {
-                mapName = "K-City",
-                sceneName = "K-City",
-                spawnPosition = new Vector3(0f, 0.5f, 0f),
-                spawnRotation = Vector3.zero
-            });
-            mapList.Add(new MapInfo
+                string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+                string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
+
+                // Main, Core, SampleScene 등 프레임워크 전용 씬을 제외하고 Build Settings에 등록된 모든 맵 씬(Zalazone, K-City, M-City 등) 자동 등록
+                if (!string.IsNullOrEmpty(sceneName) && 
+                    !sceneName.Equals("Main", System.StringComparison.OrdinalIgnoreCase) &&
+                    !sceneName.Equals("Core", System.StringComparison.OrdinalIgnoreCase) &&
+                    !sceneName.Equals("Origin", System.StringComparison.OrdinalIgnoreCase) &&
+                    !sceneName.Equals("SampleScene", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    mapList.Add(new MapInfo
+                    {
+                        mapName = sceneName,
+                        sceneName = sceneName,
+                        spawnPosition = new Vector3(0f, 0.5f, 0f),
+                        spawnRotation = Vector3.zero
+                    });
+                }
+            }
+
+            // 만약 Build Settings에 맵이 없었던 예외 경우 대비 하드코딩 백업
+            if (mapList.Count == 0)
             {
-                mapName = "M-City",
-                sceneName = "M-City",
-                spawnPosition = new Vector3(0f, 0.5f, 0f),
-                spawnRotation = Vector3.zero
-            });
+                mapList.Add(new MapInfo { mapName = "K-City", sceneName = "K-City", spawnPosition = new Vector3(0f, 0.5f, 0f) });
+                mapList.Add(new MapInfo { mapName = "M-City", sceneName = "M-City", spawnPosition = new Vector3(0f, 0.5f, 0f) });
+            }
         }
     }
 
