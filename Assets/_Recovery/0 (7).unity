@@ -513,7 +513,7 @@ MonoBehaviour:
   maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   distanceFromGround: 0
   penetration: 0
   isGrounded: 0
@@ -5911,7 +5911,7 @@ MonoBehaviour:
   maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   distanceFromGround: 0
   penetration: 0
   isGrounded: 0
@@ -8103,7 +8103,7 @@ MonoBehaviour:
   maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   distanceFromGround: 0
   penetration: 0
   isGrounded: 0
@@ -8634,7 +8634,7 @@ MonoBehaviour:
   objectPrefab: {fileID: 6845038119460800996, guid: c73b6241174cb234fb4053f2f31e6e27, type: 3}
   placementLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   rotationSpeed: 10
 --- !u!4 &1521443256
 Transform:
@@ -10065,7 +10065,7 @@ MonoBehaviour:
   maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   distanceFromGround: 0
   penetration: 0
   isGrounded: 0

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 946326855817520792}
   - component: {fileID: 1960934233069216375}
   - component: {fileID: 4069980406051800748}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: TrafficCone
   m_TagString: SpawnedObject
   m_Icon: {fileID: 0}
