@@ -208,7 +208,8 @@ public class VehicleController : MonoBehaviour
         forwardVec.y = 0;
         forwardVec.Normalize();
         Vector3 backPos = transform.position - (forwardVec * 10.0f);
-        backPos.y = 0;
+        // [수정]: 맵마다 지면 높이 Y가 다르므로 Y=0으로 강제 고정하던 코드를 주석 처리합니다.
+        // // backPos.y = 0;
         Quaternion flatRotation = Quaternion.LookRotation(forwardVec);
         ResetVehicle(backPos, flatRotation);
         yield return new WaitForSeconds(1f);

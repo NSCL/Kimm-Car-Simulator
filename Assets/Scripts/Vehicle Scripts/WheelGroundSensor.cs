@@ -3,42 +3,52 @@ using UnityEngine;
 public class WheelGroundSensor : MonoBehaviour
 {
     [Header("Sensor Settings")]
-    public float wheelRadius = 0.35f;      // Å¸ÀÌ¾î ¹İÁö¸§
-    public float maxRayDistance = 2.0f;    // ·¹ÀÌ¸¦ ½ò ÃÖ´ë °Å¸® (ÃÖÀûÈ­¿ë)
-    public LayerMask groundLayer;          // Áö¸é¸¸ ÀÎ½ÄÇÏµµ·Ï ¼³Á¤ (³» Â÷´Â ¹«½Ã)
+    public float wheelRadius = 0.35f;      // íƒ€ì´ì–´ ë°˜ì§€ë¦„
+    public float maxRayDistance = 2.0f;    // ë ˆì´ë¥¼ ì  ìµœëŒ€ ê±°ë¦¬ (ìµœì í™”ìš©)
+    public LayerMask groundLayer;          // ì§€ë©´ë§Œ ì¸ì‹í•˜ë„ë¡ ì„¤ì • (ë‚´ ì°¨ëŠ” ë¬´ì‹œ)
 
-    // [Output] ´Ù¸¥ ½ºÅ©¸³Æ®(Controller)¿¡¼­ °¡Á®°¥ °ªµé
-    public float distanceFromGround;// Áö¸é±îÁöÀÇ ½ÇÁ¦ °Å¸®
-    public float penetration;// (¹İÁö¸§ - °Å¸®) : ¾ç¼ö¸é ´­¸², À½¼ö¸é ¶ä
-    public bool isGrounded;// Áö¸é °¨Áö ¿©ºÎ
+    // [Output] ë‹¤ë¥¸ ìŠ¤í¬ë¦½íŠ¸(Controller)ì—ì„œ ê°€ì ¸ê°ˆ ê°’ë“¤
+    public float distanceFromGround;// ì§€ë©´ê¹Œì§€ì˜ ì‹¤ì œ ê±°ë¦¬
+    public float penetration;// (ë°˜ì§€ë¦„ - ê±°ë¦¬) : ì–‘ìˆ˜ë©´ ëˆŒë¦¼, ìŒìˆ˜ë©´ ëœ¸
+    public bool isGrounded;// ì§€ë©´ ê°ì§€ ì—¬ë¶€
 
-    // VehicleController¿¡¼­ ¸Å ÇÁ·¹ÀÓ È£ÃâÇØÁÙ ÇÔ¼ö
+    [Header("Debug")]
+    public bool enableDebugLog = true; // ì—ë””í„° ì½˜ì†”ì—ì„œ ê°ì§€ëœ ì§€ë©´ ì˜¤ë¸Œì íŠ¸ ì •ë³´ë¥¼ í™•ì¸í•  ìˆ˜ ìˆëŠ” ë””ë²„ê·¸ í† ê¸€
+
+    // VehicleControllerì—ì„œ ë§¤ í”„ë ˆì„ í˜¸ì¶œí•´ì¤„ í•¨ìˆ˜
     public void CalculateGroundForces()
     {
-        // ³» À§Ä¡¿¡¼­ '·ÎÄÃ' ¾Æ·¡ ¹æÇâ(-transform.up)À¸·Î ·¹ÀÌ ¹ß»ç
-        // (Â÷°¡ µÚÁı¾îÁö°Å³ª ±â¿ï¾îÁö¸é ¼¾¼­µµ °°ÀÌ ±â¿ï¾îÁ®¾ß ÇÏ¹Ç·Î Vector3.down ´ë½Å »ç¿ë)
+        // ë‚´ ìœ„ì¹˜ì—ì„œ 'ë¡œì»¬' ì•„ë˜ ë°©í–¥(-transform.up)ìœ¼ë¡œ ë ˆì´ ë°œì‚¬
+        // (ì°¨ê°€ ë’¤ì§‘ì–´ì§€ê±°ë‚˜ ê¸°ìš¸ì–´ì§€ë©´ ì„¼ì„œë„ ê°™ì´ ê¸°ìš¸ì–´ì ¸ì•¼ í•˜ë¯€ë¡œ Vector3.down ëŒ€ì‹  ì‚¬ìš©)
         Vector3 rayOrigin = transform.position;
         Vector3 rayDirection = -transform.up;
 
         RaycastHit hit;
 
-        // ·¹ÀÌÄ³½ºÆ® ½î±â
+        // ë ˆì´ìºìŠ¤íŠ¸ ì˜ê¸°
         if (Physics.Raycast(rayOrigin, rayDirection, out hit, maxRayDistance, groundLayer))
         {
             isGrounded = true;
             distanceFromGround = hit.distance;
 
-            // ÇÙ½É: FMU Å¸ÀÌ¾î ¸ğµ¨Àº º¸Åë "¾ó¸¶³ª ´­·È³Ä(penetration)"¸¦ ¿øÇÔ
-            // ¹İÁö¸§(0.35) - °Å¸®(0.30) = 0.05 (0.05¸¸Å­ Å¸ÀÌ¾î°¡ Âî±×·¯Áü)
+            // í•µì‹¬: FMU íƒ€ì´ì–´ ëª¨ë¸ì€ ë³´í†µ "ì–¼ë§ˆë‚˜ ëˆŒë ¸ëƒ(penetration)"ë¥¼ ì›í•¨
+            // ë°˜ì§€ë¦„(0.35) - ê±°ë¦¬(0.30) = 0.05 (0.05ë§Œí¼ íƒ€ì´ì–´ê°€ ì°Œê·¸ëŸ¬ì§)
             penetration = wheelRadius - distanceFromGround;
+
+            // [ë””ë²„ê·¸ ì •ë³´ ì¶œë ¥]: ì„¼ì„œê°€ ê°ì§€í•œ ì§€ë©´ ì˜¤ë¸Œì íŠ¸ ì´ë¦„, Layer, Hit Y ì¢Œí‘œ ë° ê±°ë¦¬ë¥¼ ì½˜ì†”ì— í‘œì‹œ
+            if (enableDebugLog)
+            {
+                Debug.Log($"[{gameObject.name}] ì§€ë©´ ê°ì§€ ì™„ë£Œ -> ì˜¤ë¸Œì íŠ¸: '{hit.collider.name}' (Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}), " +
+                          $"Hit Yì¢Œí‘œ: {hit.point.y:F3}m, ê±°ë¦¬: {hit.distance:F3}m, ì¹¨íˆ¬ëŸ‰: {penetration:F3}m");
+            }
         }
         else
         {
-            // Áö¸éÀÌ °¨ÁöµÇÁö ¾ÊÀ½ (°øÁß ºÎ¾ç)
+            // ì§€ë©´ì´ ê°ì§€ë˜ì§€ ì•ŠìŒ (ê³µì¤‘ ë¶€ì–‘)
             isGrounded = false;
             distanceFromGround = maxRayDistance;
 
-            // °øÁß¿¡ ¶¹À» ¶§´Â penetrationÀÌ 0 ÀÌÇÏ°¡ µÇ¾î¾ß ÇÔ (FMU°¡ ÈûÀ» 0À¸·Î °è»êÇÏµµ·Ï)
+            // ê³µì¤‘ì— ë–´ì„ ë•ŒëŠ” penetrationì´ 0 ì´í•˜ê°€ ë˜ì–´ì•¼ í•¨ (FMUê°€ í˜ì„ 0ìœ¼ë¡œ ê³„ì‚°í•˜ë„ë¡)
             penetration = wheelRadius - maxRayDistance;
         }
     }
@@ -46,7 +56,7 @@ public class WheelGroundSensor : MonoBehaviour
     {
         CalculateGroundForces();
     }
-    // µğ¹ö±ë¿ë (¾À ºä¿¡¼­ ³ì»ö ¼± È®ÀÎ)
+    // ë””ë²„ê¹…ìš© (ì”¬ ë·°ì—ì„œ ë…¹ìƒ‰ ì„  í™•ì¸)
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -55,8 +65,8 @@ public class WheelGroundSensor : MonoBehaviour
         Vector3 rayDirection = -transform.up * (isGrounded ? distanceFromGround : maxRayDistance);
         Gizmos.DrawRay(transform.position, rayDirection);
 
-        // Å¸ÀÌ¾î Å©±â °¡ÀÌµå
-        Gizmos.color = new Color(1, 1, 0, 0.3f); // ¹İÅõ¸í ³ë¶û
+        // íƒ€ì´ì–´ í¬ê¸° ê°€ì´ë“œ
+        Gizmos.color = new Color(1, 1, 0, 0.3f); // ë°˜íˆ¬ëª… ë…¸ë‘
         Gizmos.DrawWireSphere(transform.position, wheelRadius);
     }
 #endif

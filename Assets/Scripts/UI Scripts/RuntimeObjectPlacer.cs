@@ -17,6 +17,15 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     void Start()
     {
+        // [원리]: 인스펙터에서 placementLayer가 설정되지 않은 경우(0/Nothing),
+        // "Ignore Raycast" 및 "UI" 레이어를 제외한 모든 레이어(~ (Ignore Raycast | UI))를 
+        // 감지 마스크로 설정하여 맵 지형의 레이어 설정(Default, Ground, Map 등)에 관계없이 마우스 배치가 동작하도록 합니다.
+        if (placementLayer.value == 0)
+        {
+            int ignoreLayerBit = LayerMask.GetMask("Ignore Raycast", "UI");
+            placementLayer = ~ignoreLayerBit;
+        }
+
         if (SimulatorManager.Instance != null)
         {
             controls = SimulatorManager.Instance.inputActions;
