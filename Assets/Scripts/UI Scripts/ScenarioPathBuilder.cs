@@ -44,6 +44,15 @@ public class ScenarioPathBuilder : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // [ì›ë¦¬]: ì¸ìŠ¤í™í„°ì—ì„œ groundLayerê°€ ì„¤ì •ë˜ì§€ ì•Šì€ ê²½ìš°(0/Nothing),
+        // "Ignore Raycast" ë° "UI" ë ˆì´ì–´ë¥¼ ì œì™¸í•œ ëª¨ë“  ë ˆì´ì–´(~ (Ignore Raycast | UI))ë¥¼ 
+        // ê°ì§€ ë§ˆìŠ¤í¬ë¡œ ì„¤ì •í•˜ì—¬ ë§µ ì§€í˜•ì˜ ë ˆì´ì–´ ì„¤ì •(Default, Ground, Map ë“±)ì— ê´€ê³„ì—†ì´ ë³´í–‰ì ê²½ë¡œ ë°°ì¹˜ê°€ ë™ì‘í•˜ë„ë¡ í•©ë‹ˆë‹¤.
+        if (groundLayer.value == 0)
+        {
+            int ignoreLayerBit = LayerMask.GetMask("Ignore Raycast", "UI");
+            groundLayer = ~ignoreLayerBit;
+        }
+
         if(SimulatorManager.Instance !=null)
         {
             controls = SimulatorManager.Instance.inputActions;
@@ -138,32 +147,32 @@ public class ScenarioPathBuilder : MonoBehaviour
 
     private void OnPlaceInput(InputAction.CallbackContext context)
     {
-        // 1. UI Å¬¸¯ ¹æ¾î
+        // 1. UI í´ë¦­ ë°©ì–´
         if (isPointerOverUI) return;
 
-        // 2. ¸ğµå È®ÀÎ
+        // 2. ëª¨ë“œ í™•ì¸
         if (!isBuildingPath || SimulatorManager.Instance.IsSimulationActive()) return;
 
         if (currentGhost != null && currentGhost.activeSelf)
         {
-            // 3. (¼öÁ¤µÊ) ¸¶Ä¿¸¦ ¸ÕÀú ¾À¿¡ »ı¼ºÇÏ°í º¯¼ö¿¡ ´ã½À´Ï´Ù!
+            // 3. (ìˆ˜ì •ë¨) ë§ˆì»¤ë¥¼ ë¨¼ì € ì”¬ì— ìƒì„±í•˜ê³  ë³€ìˆ˜ì— ë‹´ìŠµë‹ˆë‹¤!
             GameObject newMarker = null;
             if (waypointMarkerPrefab != null)
             {
                 newMarker = Instantiate(waypointMarkerPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
             }
 
-            // 4. »ı¼ºµÈ ¸¶Ä¿(newMarker)¸¦ ÀåºÎ¿¡ È®½ÇÇÏ°Ô ±â·ÏÇÕ´Ï´Ù.
+            // 4. ìƒì„±ëœ ë§ˆì»¤(newMarker)ë¥¼ ì¥ë¶€ì— í™•ì‹¤í•˜ê²Œ ê¸°ë¡í•©ë‹ˆë‹¤.
             WaypointData newPoint = new WaypointData
             {
                 position = currentGhost.transform.position,
                 rotation = currentGhost.transform.rotation,
                 state = currentStateFromUI,
-                visualMarker = newMarker // ÀÌÁ¦ nullÀÌ ¾Æ´Ï¶ó ½ÇÁ¦ »ı¼ºµÈ ¿ÀºêÁ§Æ®°¡ µé¾î°©´Ï´Ù!
+                visualMarker = newMarker // ì´ì œ nullì´ ì•„ë‹ˆë¼ ì‹¤ì œ ìƒì„±ëœ ì˜¤ë¸Œì íŠ¸ê°€ ë“¤ì–´ê°‘ë‹ˆë‹¤!
             };
 
             currentPath.Add(newPoint);
-            Debug.Log($"¿şÀÌÆ÷ÀÎÆ® Ãß°¡µÊ! ÇöÀç ÃÑ {currentPath.Count}°³ÀÇ Á¡ÀÌ ÀÖ½À´Ï´Ù.");
+            Debug.Log($"ì›¨ì´í¬ì¸íŠ¸ ì¶”ê°€ë¨! í˜„ì¬ ì´ {currentPath.Count}ê°œì˜ ì ì´ ìˆìŠµë‹ˆë‹¤.");
             UpdatePathLine();
         }
     }
@@ -172,7 +181,7 @@ public class ScenarioPathBuilder : MonoBehaviour
     {
         isBuildingPath = false;
         if(currentGhost != null) Destroy(currentGhost);
-        Debug.Log("°æ·Î ÀÛ¼º ¿Ï·á! ÀúÀåµÈ Á¡ÀÇ °³¼ö: " + currentPath.Count);
+        Debug.Log("ê²½ë¡œ ì‘ì„± ì™„ë£Œ! ì €ì¥ëœ ì ì˜ ê°œìˆ˜: " + currentPath.Count);
         if(pathEditorPanel != null) pathEditorPanel.SetActive(false);
         if (pathLine != null && currentPath.Count > 1)
         {
@@ -204,14 +213,14 @@ public class ScenarioPathBuilder : MonoBehaviour
         if (currentGhost != null) Destroy(currentGhost);
         if (pathEditorPanel != null) pathEditorPanel.SetActive(false);
 
-        // È­¸é¿¡ Âï¾îµĞ ¸¶Ä¿µéÀ» ½Ï ´Ù Áö¿ö¹ö¸³´Ï´Ù.
+        // í™”ë©´ì— ì°ì–´ë‘” ë§ˆì»¤ë“¤ì„ ì‹¹ ë‹¤ ì§€ì›Œë²„ë¦½ë‹ˆë‹¤.
         foreach (var point in currentPath)
         {
             if (point.visualMarker != null) Destroy(point.visualMarker);
         }
-        currentPath.Clear(); // ÀåºÎµµ ÃÊ±âÈ­
+        currentPath.Clear(); // ì¥ë¶€ë„ ì´ˆê¸°í™”
     }
-    // ½Ã¹Ä·¹ÀÌ¼Ç ¸ğµå ÁøÀÔ ½Ã È£ÃâÇÒ ÇÔ¼ö
+    // ì‹œë®¬ë ˆì´ì…˜ ëª¨ë“œ ì§„ì… ì‹œ í˜¸ì¶œí•  í•¨ìˆ˜
     public void HideWaypointMarkers()
     {
         if (pathLine != null) pathLine.enabled = false;
@@ -219,12 +228,12 @@ public class ScenarioPathBuilder : MonoBehaviour
         {
             if (point.visualMarker != null)
             {
-                point.visualMarker.SetActive(false); // ´«¿¡¼­¸¸ ¼û±è! µ¥ÀÌÅÍ´Â »ì¾ÆÀÖÀ½.
+                point.visualMarker.SetActive(false); // ëˆˆì—ì„œë§Œ ìˆ¨ê¹€! ë°ì´í„°ëŠ” ì‚´ì•„ìˆìŒ.
             }
         }
     }
 
-    // (¿É¼Ç) ´Ù½Ã Edit Mode·Î µ¹¾Æ¿ÔÀ» ¶§ º¸ÀÌ°Ô ÇÏ·Á¸é
+    // (ì˜µì…˜) ë‹¤ì‹œ Edit Modeë¡œ ëŒì•„ì™”ì„ ë•Œ ë³´ì´ê²Œ í•˜ë ¤ë©´
     public void ShowWaypointMarkers()
     {
         if (pathLine != null) pathLine.enabled = true;
@@ -247,25 +256,25 @@ public class ScenarioPathBuilder : MonoBehaviour
     {
         if (pathLine == null) return;
 
-        pathLine.positionCount = currentPath.Count; // Á¡ÀÇ °³¼ö¸¸Å­ ¼±ÀÇ ²ªÀÓ Æ÷ÀÎÆ®¸¦ ¸¸µê
+        pathLine.positionCount = currentPath.Count; // ì ì˜ ê°œìˆ˜ë§Œí¼ ì„ ì˜ êº¾ì„ í¬ì¸íŠ¸ë¥¼ ë§Œë“¦
         for (int i = 0; i < currentPath.Count; i++)
         {
-            // ¼±ÀÌ ¶¥¿¡ ÆÄ¹¯È÷Áö ¾Ê°Ô YÃàÀ¸·Î »ìÂ¦(0.1f) ¶ç¿öÁİ´Ï´Ù!
+            // ì„ ì´ ë•…ì— íŒŒë¬»íˆì§€ ì•Šê²Œ Yì¶•ìœ¼ë¡œ ì‚´ì§(0.1f) ë„ì›Œì¤ë‹ˆë‹¤!
             pathLine.SetPosition(i, currentPath[i].position + Vector3.up * 0.1f);
         }
     }
     public void ClearAllPedestrians()
     {
-        // 1. È¤½Ã °æ·Î¸¦ ±×¸®°í ÀÖ´ø ÁßÀÌ¶ó¸é Ãë¼Ò
+        // 1. í˜¹ì‹œ ê²½ë¡œë¥¼ ê·¸ë¦¬ê³  ìˆë˜ ì¤‘ì´ë¼ë©´ ì·¨ì†Œ
         CancelBuildingPath();
 
-        // 2. ¾À¿¡ ÀÖ´Â ¸ğµç º¸ÇàÀÚ(PedestrianActor)¸¦ Ã£¾Æ¼­ ½Ï Áö¿ó´Ï´Ù.
+        // 2. ì”¬ì— ìˆëŠ” ëª¨ë“  ë³´í–‰ì(PedestrianActor)ë¥¼ ì°¾ì•„ì„œ ì‹¹ ì§€ì›ë‹ˆë‹¤.
         PedestrianActor[] allActors = FindObjectsByType<PedestrianActor>(FindObjectsSortMode.None);
         foreach (PedestrianActor actor in allActors)
         {
             Destroy(actor.gameObject);
         }
 
-        Debug.Log($"ÃÑ {allActors.Length}¸íÀÇ º¸ÇàÀÚ¸¦ »èÁ¦Çß½À´Ï´Ù.");
+        Debug.Log($"ì´ {allActors.Length}ëª…ì˜ ë³´í–‰ìë¥¼ ì‚­ì œí–ˆìŠµë‹ˆë‹¤.");
     }
 }

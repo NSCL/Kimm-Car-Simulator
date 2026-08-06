@@ -10,6 +10,7 @@ public class WheelGroundSensor : MonoBehaviour
     // [Output] 다른 스크립트(Controller)에서 가져갈 값들
     public float distanceFromGround;// 지면까지의 실제 거리
     public float penetration;// (반지름 - 거리) : 양수면 눌림, 음수면 뜸
+    public float hitPointY; // [원리]: FMU 패치 높이(gz) 조절을 위한 충돌 지면의 실제 월드 Y 좌표
     public bool isGrounded;// 지면 감지 여부
 
     [Header("Debug")]
@@ -30,6 +31,7 @@ public class WheelGroundSensor : MonoBehaviour
         {
             isGrounded = true;
             distanceFromGround = hit.distance;
+            hitPointY = hit.point.y; // 실제 충돌 지면의 Y 좌표 저장
 
             // 핵심: FMU 타이어 모델은 보통 "얼마나 눌렸냐(penetration)"를 원함
             // 반지름(0.35) - 거리(0.30) = 0.05 (0.05만큼 타이어가 찌그러짐)
@@ -38,8 +40,8 @@ public class WheelGroundSensor : MonoBehaviour
             // [디버그 정보 출력]: 센서가 감지한 지면 오브젝트 이름, Layer, Hit Y 좌표 및 거리를 콘솔에 표시
             if (enableDebugLog)
             {
-                Debug.Log($"[{gameObject.name}] 지면 감지 완료 -> 오브젝트: '{hit.collider.name}' (Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}), " +
-                          $"Hit Y좌표: {hit.point.y:F3}m, 거리: {hit.distance:F3}m, 침투량: {penetration:F3}m");
+                //Debug.Log($"[{gameObject.name}] 지면 감지 완료 -> 오브젝트: '{hit.collider.name}' (Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}), " +
+                //          $"Hit Y좌표: {hit.point.y:F3}m, 거리: {hit.distance:F3}m, 침투량: {penetration:F3}m");
             }
         }
         else
@@ -47,6 +49,7 @@ public class WheelGroundSensor : MonoBehaviour
             // 지면이 감지되지 않음 (공중 부양)
             isGrounded = false;
             distanceFromGround = maxRayDistance;
+            hitPointY = transform.position.y - maxRayDistance;
 
             // 공중에 떴을 때는 penetration이 0 이하가 되어야 함 (FMU가 힘을 0으로 계산하도록)
             penetration = wheelRadius - maxRayDistance;

@@ -102,7 +102,14 @@ public class VehicleController : MonoBehaviour
         foreach (var w in wheels)
         {
             if (w.sensor != null) w.sensor.CalculateGroundForces();
-            if (!string.IsNullOrEmpty(w.var_GroundDist_In)) fmuManager.SetValue(w.var_GroundDist_In, w.sensor.penetration);
+
+            // [원리]: FMU 모델 내부의 바퀴 패치 높이(gz) 조절을 위해,
+            // 침투량이 아닌 '스폰 위치 대비 실제 지면의 상대적 Y 높이 (hitPointY - _spawnPos.y)'를 FMU에 전달합니다.
+            if (!string.IsNullOrEmpty(w.var_GroundDist_In))
+            {
+                float relativeGroundY = w.sensor.isGrounded ? (w.sensor.hitPointY - _spawnPos.y) : 0f;
+                fmuManager.SetValue(w.var_GroundDist_In, relativeGroundY);
+            }
         }
 
         // --- [STEP 2] Simulation ---
