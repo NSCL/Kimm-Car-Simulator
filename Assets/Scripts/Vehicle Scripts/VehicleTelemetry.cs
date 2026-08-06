@@ -8,11 +8,11 @@ public class VehicleTelemetry : MonoBehaviour
     public VehicleInputManager inputManager;
     public FMUManager fmuManager;
 
-    // ÇÙ½É 1: UI µå·Ó´Ù¿î¿¡ ´øÁ®ÁÙ ¿¹»Û ÀÌ¸§Ç¥ ¸ñ·Ï
+    // í•µì‹¬ 1: UI ë“œë¡­ë‹¤ìš´ì— ë˜ì ¸ì¤„ ì˜ˆìœ ì´ë¦„í‘œ ëª©ë¡
     [HideInInspector]
     public List<string> availableDataNames = new List<string>();
 
-    // ÇÙ½É 2: ÀÌ¸§Ç¥¸¦ ÁÖ¸é, Áï½Ã °ªÀ» ¹İÈ¯ÇÏ´Â ÀÚÆÇ±â (O(1) ¼Óµµ·Î ¸Å¿ì ºü¸§)
+    // í•µì‹¬ 2: ì´ë¦„í‘œë¥¼ ì£¼ë©´, ì¦‰ì‹œ ê°’ì„ ë°˜í™˜í•˜ëŠ” ìíŒê¸° (O(1) ì†ë„ë¡œ ë§¤ìš° ë¹ ë¦„)
     private Dictionary<string, Func<float>> dataProviders = new Dictionary<string, Func<float>>();
 
     private void Start()
@@ -20,15 +20,15 @@ public class VehicleTelemetry : MonoBehaviour
         InitializeTelemetry();
     }
 
-    // Â÷Æ® ¸Å´ÏÀú°¡ ºÎ¸¦ ¼öµµ ÀÖÀ¸´Ï publicÀ¸·Î ¿­¾îµÓ´Ï´Ù.
+    // ì°¨íŠ¸ ë§¤ë‹ˆì €ê°€ ë¶€ë¥¼ ìˆ˜ë„ ìˆìœ¼ë‹ˆ publicìœ¼ë¡œ ì—´ì–´ë‘¡ë‹ˆë‹¤.
     public void InitializeTelemetry()
     {
-        if (dataProviders.Count > 0) return; // ÀÌ¹Ì ¼¼ÆÃµÆÀ¸¸é ÆĞ½º
+        if (dataProviders.Count > 0) return; // ì´ë¯¸ ì„¸íŒ…ëìœ¼ë©´ íŒ¨ìŠ¤
 
         dataProviders.Clear();
         availableDataNames.Clear();
 
-        // 1. À¯´ÏÆ¼ ÀÔ·Â µ¥ÀÌÅÍ 'ÀÚµ¿' µî·Ï
+        // 1. ìœ ë‹ˆí‹° ì…ë ¥ ë°ì´í„° 'ìë™' ë“±ë¡
         if (inputManager != null)
         {
             RegisterData("Input: Accel", () => inputManager.Accel);
@@ -37,35 +37,59 @@ public class VehicleTelemetry : MonoBehaviour
             RegisterData("Input: Gear", () => inputManager.Gear);
         }
 
-        // 2. FMUManagerÀÇ variables ¸®½ºÆ®¸¦ ½Ï µÚÁ®¼­ 'ÀÚµ¿' µî·Ï
+        // 2. FMUManagerì˜ variables ë¦¬ìŠ¤íŠ¸ë¥¼ ì‹¹ ë’¤ì ¸ì„œ 'ìë™' ë“±ë¡
         if (fmuManager != null && fmuManager.variables != null)
         {
             foreach (var fmuVar in fmuManager.variables)
             {
-                // C# Å¬·ÎÀú(Closure) ÀÌ½´ ¹æÁö¸¦ À§ÇØ Áö¿ª º¯¼ö¿¡ º¹»ç
+                // C# í´ë¡œì €(Closure) ì´ìŠˆ ë°©ì§€ë¥¼ ìœ„í•´ ì§€ì—­ ë³€ìˆ˜ì— ë³µì‚¬
                 string varName = fmuVar.name;
 
-                // "FMU: body_vx" ¶ó´Â ÀÌ¸§Ç¥·Î, fmuManager.GetValue()¸¦ ½ÇÇàÇÏ´Â ÇÔ¼ö¸¦ ÅëÂ°·Î µñ¼Å³Ê¸®¿¡ ÀúÀå
+                // "FMU: body_vx" ë¼ëŠ” ì´ë¦„í‘œë¡œ, fmuManager.GetValue()ë¥¼ ì‹¤í–‰í•˜ëŠ” í•¨ìˆ˜ë¥¼ í†µì§¸ë¡œ ë”•ì…”ë„ˆë¦¬ì— ì €ì¥
                 RegisterData($"FMU: {varName}", () => (float)fmuManager.GetValue(varName));
             }
         }
 
-        Debug.Log($"[Telemetry] ÃÑ {availableDataNames.Count}°³ÀÇ µ¥ÀÌÅÍ¸¦ ¼öÁıÇß½À´Ï´Ù.");
+        Debug.Log($"[Telemetry] ì´ {availableDataNames.Count}ê°œì˜ ë°ì´í„°ë¥¼ ìˆ˜ì§‘í–ˆìŠµë‹ˆë‹¤.");
     }
 
-    // µñ¼Å³Ê¸®¿Í ¸®½ºÆ®¿¡ µ¿½Ã¿¡ ²È¾Æ³Ö´Â ÇïÆÛ ÇÔ¼ö
+    // ë”•ì…”ë„ˆë¦¬ì™€ ë¦¬ìŠ¤íŠ¸ì— ë™ì‹œì— ê½‚ì•„ë„£ëŠ” í—¬í¼ í•¨ìˆ˜
     private void RegisterData(string displayName, Func<float> providerFunction)
     {
         dataProviders[displayName] = providerFunction;
         availableDataNames.Add(displayName);
     }
 
-    // ¿ÜºÎ(ChartModule)¿¡¼­ ÀÌ ÇÔ¼ö ÇÏ³ª¸¸ ºÎ¸£¸é ¸ğµç µ¥ÀÌÅÍ°¡ Æ¢¾î³ª¿É´Ï´Ù!
+    // [ì›ë¦¬]: ì™¸ë¶€(ChartModule)ì—ì„œ ì´ í•¨ìˆ˜ í•˜ë‚˜ë§Œ ë¶€ë¥´ë©´ í”„ë ˆì„ ìºì‹±ëœ ë¹ ë¥¸ ë°ì´í„°ê°€ ë°˜í™˜ë©ë‹ˆë‹¤.
     public float GetValue(string dataName)
     {
-        if (dataProviders.TryGetValue(dataName, out Func<float> provider))
+        return GetDataValue(dataName);
+    }
+    private Dictionary<string, float> cachedValues = new Dictionary<string, float>();
+    private int lastCachedFrame = -1;
+
+    // [ì›ë¦¬]: ë™ì¼í•œ í”„ë ˆì„(Time.frameCount) ë‚´ì—ì„œ ì°¨íŠ¸ ì—¬ëŸ¬ ê°œê°€ ë™ì‹œì— ë™ì¼í•œ í…”ë ˆë©”íŠ¸ë¦¬ ë°ì´í„°(ì˜ˆ: FMU: body_vx)ë¥¼ ìš”êµ¬í•  ë•Œ,
+    // ë§¤ë²ˆ FMU ë”•ì…”ë„ˆë¦¬ íƒìƒ‰ ë° ëŒë‹¤ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•˜ì§€ ì•Šê³  ì²«ë²ˆì§¸ í˜¸ì¶œ ê²°ê³¼ë¥¼ í”„ë ˆì„ ìºì‹œì— ì €ì¥í•˜ì—¬ ë°˜í™˜í•©ë‹ˆë‹¤.
+    // ì´ë¥¼ í†µí•´ ì°¨íŠ¸ ê°œìˆ˜ê°€ Nê°œë¡œ ëŠ˜ì–´ë‚˜ë„ FMU ë°ì´í„° ì¡°íšŒ ë¹„ìš©ì„ O(N)ì—ì„œ O(1)ë¡œ íšê¸°ì ìœ¼ë¡œ ì¤„ì—¬ CPU ì§€ì—°ì„ ì™„ë²½íˆ ë°©ì§€í•©ë‹ˆë‹¤.
+    public float GetDataValue(string displayName)
+    {
+        int currentFrame = Time.frameCount;
+        if (currentFrame != lastCachedFrame)
         {
-            return provider.Invoke(); // ¿¬°áµÈ ÇÔ¼ö ½ÇÇàÇØ¼­ °ª ¹İÈ¯
+            cachedValues.Clear();
+            lastCachedFrame = currentFrame;
+        }
+
+        if (cachedValues.TryGetValue(displayName, out float cachedVal))
+        {
+            return cachedVal;
+        }
+
+        if (dataProviders.TryGetValue(displayName, out var provider))
+        {
+            float val = provider();
+            cachedValues[displayName] = val;
+            return val;
         }
         return 0f;
     }

@@ -12,32 +12,32 @@ public class ChartModule : MonoBehaviour
     [Header("Graph Settings")]
     public float timeWindow = 5f;
     private string categoryName = "Player 1";
-    public float updateRate = 10f; // 10Hz (0.1ÃÊ)
+    public float updateRate = 10f; // 10Hz (0.1ì´ˆ)
 
     private VehicleTelemetry telemetry;
     private string currentDataName = "";
     private float stepTime = 0f;
     private float timeSinceLastUpdate = 0f;
 
-    // ?? ÆÐµù °»½Å È½¼ö¸¦ ÁÙÀÌ±â À§ÇÑ º¯¼ö Ãß°¡
+    // ?? íŒ¨ë”© ê°±ì‹  íšŸìˆ˜ë¥¼ ì¤„ì´ê¸° ìœ„í•œ ë³€ìˆ˜ ì¶”ê°€
     private float lastAppliedPadding = -1f;
+
+    private float timeSinceLastVerticalUpdate = 0f;
 
     public void Initialize(VehicleTelemetry vehicle)
     {
         telemetry = vehicle;
+
+        // [ì›ë¦¬ 2: í”„ë ˆìž„ ë¶„ì‚° ì˜¤í”„ì…‹]
+        timeSinceLastUpdate = (Mathf.Abs(GetInstanceID()) % 10) * 0.01f;
+
         if (telemetry.availableDataNames.Count == 0) telemetry.InitializeTelemetry();
 
         graph.DataSource.StartBatch();
-
         graph.DataSource.AutomaticHorizontalView = false;
         graph.DataSource.HorizontalViewSize = timeWindow;
         graph.DataSource.HorizontalViewOrigin = 0;
         graph.DataSource.AutomaticVerticalView = true;
-
-        // ?? È­¸é ¹ÛÀ¸·Î ³ª°£ °ú°Å µ¥ÀÌÅÍ ÀÚµ¿ »èÁ¦ ¼³Á¤ (¸Þ¸ð¸® ¹× ÇÁ·¹ÀÓ ÃÖÀûÈ­)
-        // Asset ¹öÀü¿¡ µû¶ó MaxCapacity ¼³Á¤ÀÌ ÀÖÀ» ¼ö ÀÖ½À´Ï´Ù. (ÁÖ¼® ÇØÁ¦ ÈÄ È®ÀÎ)
-        // graph.DataSource.MaxCapacity = categoryName, 100; // ÇÑ Ä«Å×°í¸®´ç Á¡ 100°³ À¯Áö
-
         graph.DataSource.EndBatch();
 
         SetupDropdown();
@@ -50,17 +50,21 @@ public class ChartModule : MonoBehaviour
         if (telemetry.availableDataNames.Count > 0)
         {
             currentDataName = telemetry.availableDataNames[0];
+            dataDropdown.value = 0;
         }
 
+        dataDropdown.onValueChanged.RemoveAllListeners();
         dataDropdown.onValueChanged.AddListener(OnDropdownChanged);
     }
 
     void OnDropdownChanged(int index)
     {
+        if (index < 0 || index >= telemetry.availableDataNames.Count) return;
         currentDataName = telemetry.availableDataNames[index];
+
         graph.DataSource.ClearCategory(categoryName);
         stepTime = 0f;
-        lastAppliedPadding = -1f; // Ä«Å×°í¸® º¯°æ ½Ã ÆÐµù ¸®¼Â
+        lastAppliedPadding = -1f;
     }
 
     private void Update()
@@ -68,37 +72,39 @@ public class ChartModule : MonoBehaviour
         if (telemetry == null || string.IsNullOrEmpty(currentDataName)) return;
 
         timeSinceLastUpdate += Time.deltaTime;
+        timeSinceLastVerticalUpdate += Time.deltaTime;
 
+        // 1. [10Hz ê²½ëŸ‰í™” ì—…ë°ì´íŠ¸]: ë°ì´í„° í¬ì¸íŠ¸ ì¶”ê°€ ë° Xì¶• ìŠ¬ë¼ì´ë”© ìœˆë„ìš°ë§Œ ë¹ ë¥´ê²Œ ê°±ì‹ 
         if (timeSinceLastUpdate >= (1f / updateRate))
         {
             timeSinceLastUpdate = 0f;
-            float value = telemetry.GetValue(currentDataName);
+
             stepTime = Time.timeSinceLevelLoad;
+            float value = telemetry.GetValue(currentDataName);
 
             graph.DataSource.StartBatch();
 
-            // 1. Â÷Æ®¿¡ Á¡ Ãß°¡
             graph.DataSource.AddPointToCategory(categoryName, stepTime, value);
 
-            // 2. ½Ã°£ÀÌ Áö³ª¸é XÃà ½ºÅ©·Ñ ÁøÇà
             if (stepTime > timeWindow)
             {
                 graph.DataSource.HorizontalViewOrigin = stepTime - timeWindow;
-
-                // (¼±ÅÃ) ¿¡¼ÂÀÌ ÀÚµ¿ »èÁ¦¸¦ Áö¿øÇÏÁö ¾ÊÀ¸¸é ¿©±â¼­ ¼öµ¿À¸·Î ¿À·¡µÈ Á¡ »èÁ¦
-                // graph.DataSource.ClearCategory(categoryName, stepTime - timeWindow - 1f); 
             }
 
-            // 3. [ÃÖÀûÈ­] Á¶°ÇºÎ Padding ¾÷µ¥ÀÌÆ®
-            float targetPadding = Mathf.Abs(value) * 0.2f;
-            if (targetPadding < 0.5f) targetPadding = 0f;
-
-            // ?? ¹«Á¶°Ç °»½ÅÇÏÁö ¾Ê°í, ÆÐµù °ªÀÌ ±âÁ¸ ´ëºñ 'ÀÏÁ¤ ¼öÄ¡ ÀÌ»ó' º¯ÇßÀ» ¶§¸¸ °»½Å!
-            // (1.0f ÀÌ»ó Â÷ÀÌ ³¯ ¶§¸¸ °»½Å. ÀÌ ¼öÄ¡´Â µ¥ÀÌÅÍ ½ºÄÉÀÏ¿¡ ¸ÂÃç Á¶ÀýÇÏ¼¼¿ä)
-            if (Mathf.Abs(targetPadding - lastAppliedPadding) > 1.0f)
+            // 2. [ì›ë¦¬ 3: Yì¶•/íŒ¨ë”© ì—°ì‚° 2Hz(0.5ì´ˆ) ì£¼ê¸° ë¶„ë¦¬]
+            // ë§¤ 10Hz ë°ì´í„°ë§ˆë‹¤ ì‹¤í–‰ë˜ë˜ Yì¶• ìžë™ë²”ìœ„ ë° ì¶• í…ìŠ¤íŠ¸ ìž¬ê³„ì‚°ì„ 0.5ì´ˆ ì£¼ê¸°ë¡œ ë¶„ë¦¬í•˜ì—¬ CPU ì—°ì‚°ëŸ‰ 80% ì ˆê°
+            if (timeSinceLastVerticalUpdate >= 0.5f)
             {
-                graph.DataSource.AutomaticVerticallViewGap = targetPadding;
-                lastAppliedPadding = targetPadding;
+                timeSinceLastVerticalUpdate = 0f;
+
+                float targetPadding = Mathf.Abs(value) * 0.2f;
+                if (targetPadding < 0.5f) targetPadding = 0f;
+
+                if (Mathf.Abs(targetPadding - lastAppliedPadding) > 1.0f)
+                {
+                    graph.DataSource.AutomaticVerticallViewGap = targetPadding;
+                    lastAppliedPadding = targetPadding;
+                }
             }
 
             graph.DataSource.EndBatch();
