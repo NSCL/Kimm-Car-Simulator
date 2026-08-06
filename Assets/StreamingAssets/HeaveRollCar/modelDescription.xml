@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-03-20T09:37:22Z" generationTool="Simulink (R2024b)" guid="{d5d260e2-2037-3a0e-ef71-cdc2daebfaaf}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.296">
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-08-06T02:28:03Z" generationTool="Simulink (R2024b)" guid="{b55c6fa7-c9e0-7a94-c01c-5dc96f174fe9}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.304">
   <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="HeaveRollCar"/>
   <UnitDefinitions>
     <Unit name="m"/>

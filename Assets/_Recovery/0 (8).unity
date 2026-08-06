@@ -510,13 +510,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelGroundSensor
   wheelRadius: 0.35
-  maxRayDistance: 100
+  maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
   distanceFromGround: 0
   penetration: 0
-  hitPointY: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!1 &47938711
@@ -5910,13 +5909,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelGroundSensor
   wheelRadius: 0.35
-  maxRayDistance: 100
+  maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
   distanceFromGround: 0
   penetration: 0
-  hitPointY: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!1 &1021984418
@@ -8104,13 +8102,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelGroundSensor
   wheelRadius: 0.35
-  maxRayDistance: 100
+  maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
   distanceFromGround: 0
   penetration: 0
-  hitPointY: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!4 &1326229849
@@ -8674,7 +8671,7 @@ MonoBehaviour:
   pedestrianActorPrefab: {fileID: 3277328432934076556, guid: 898f7c390e3fb2749b8a017341bb5641, type: 3}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 64
   rotationSpeed: 10
   pathEditorPanel: {fileID: 1287433455}
   stateDropdown: {fileID: 84582519}
@@ -10068,13 +10065,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WheelGroundSensor
   wheelRadius: 0.35
-  maxRayDistance: 100
+  maxRayDistance: 1
   groundLayer:
     serializedVersion: 2
     m_Bits: 1
   distanceFromGround: 0
   penetration: 0
-  hitPointY: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!1 &1745928117
@@ -12734,7 +12730,7 @@ Transform:
   m_GameObject: {fileID: 1248598967352138228}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 536.62427, y: 0, z: 473.7287}
+  m_LocalPosition: {x: 536.62427, y: 1, z: 473.7287}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
