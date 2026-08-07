@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-08-06T02:28:03Z" generationTool="Simulink (R2024b)" guid="{b55c6fa7-c9e0-7a94-c01c-5dc96f174fe9}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.304">
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-08-07T04:34:26Z" generationTool="Simulink (R2024b)" guid="{4bfde814-5475-3fd5-f488-b745a7494954}" modelName="HeaveRollCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.323">
   <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="HeaveRollCar"/>
   <UnitDefinitions>
     <Unit name="m"/>
@@ -12,7 +12,7 @@
       <Simulink>
         <ImportCompatibility FMUProduct="standalone FMU" requireMATLABOnPath="no" requireRelease="all"/>
         <SimulinkModelInterface>
-          <Inport blockPath="HeaveRollCar/SteerInput" dataType="double" dimension="[1]" portName="SteerInput" portNumber="1" sampleTime="[0 0]" uniquePortName="SteerInput" unit=""/>
+          <Inport blockPath="HeaveRollCar/SteerInput" dataType="double" dimension="[1]" portName="SteerInput" portNumber="1" sampleTime="[0.0005      0]" uniquePortName="SteerInput" unit=""/>
           <Inport blockPath="HeaveRollCar/Throttle" dataType="double" dimension="[1]" portName="Throttle" portNumber="2" sampleTime="[0.0005      0]" uniquePortName="Throttle" unit=""/>
           <Inport blockPath="HeaveRollCar/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="3" sampleTime="[0.0005      0]" uniquePortName="Gear" unit=""/>
           <Inport blockPath="HeaveRollCar/Brake" dataType="double" dimension="[1]" portName="Brake" portNumber="4" sampleTime="[0.0005      0]" uniquePortName="Brake" unit=""/>
@@ -50,8 +50,8 @@
           <Outport blockPath="HeaveRollCar/RR_x" dataType="double" dimension="[1]" portName="RR_x" portNumber="20" sampleTime="[0 0]" uniquePortName="RR_x" unit=""/>
           <Outport blockPath="HeaveRollCar/RR_y" dataType="double" dimension="[1]" portName="RR_y" portNumber="21" sampleTime="[0 0]" uniquePortName="RR_y" unit="m"/>
           <Outport blockPath="HeaveRollCar/RR_z" dataType="double" dimension="[1]" portName="RR_z" portNumber="22" sampleTime="[0 0]" uniquePortName="RR_z" unit="m"/>
-          <Outport blockPath="HeaveRollCar/Toe Left" dataType="double" dimension="[1]" portName="Toe Left" portNumber="23" sampleTime="[0 0]" uniquePortName="ToeLeft" unit=""/>
-          <Outport blockPath="HeaveRollCar/Toe Right" dataType="double" dimension="[1]" portName="Toe Right" portNumber="24" sampleTime="[0 0]" uniquePortName="ToeRight" unit=""/>
+          <Outport blockPath="HeaveRollCar/Toe Left" dataType="double" dimension="[1]" portName="Toe Left" portNumber="23" sampleTime="[0.0005      0]" uniquePortName="ToeLeft" unit=""/>
+          <Outport blockPath="HeaveRollCar/Toe Right" dataType="double" dimension="[1]" portName="Toe Right" portNumber="24" sampleTime="[0.0005      0]" uniquePortName="ToeRight" unit=""/>
         </SimulinkModelInterface>
       </Simulink>
     </Tool>
