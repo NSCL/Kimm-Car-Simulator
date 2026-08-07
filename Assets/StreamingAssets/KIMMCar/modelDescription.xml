@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-08-07T09:16:03Z" generationTool="Simulink (R2024b)" guid="{8e8d0a25-3b5f-64dc-77c6-54f4eba0558c}" modelName="KIMMCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.368">
+  <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="KIMMCar"/>
+  <UnitDefinitions>
+    <Unit name="N*s/m"/>
+    <Unit name="N/m"/>
+    <Unit name="kg"/>
+    <Unit name="kg*m^2"/>
+    <Unit name="kg/m^3"/>
+    <Unit name="m"/>
+    <Unit name="m/s"/>
+    <Unit name="m^2"/>
+    <Unit name="rad"/>
+  </UnitDefinitions>
+  <DefaultExperiment startTime="0" stepSize="0.0005"/>
+  <VendorAnnotations>
+    <Tool name="Simulink">
+      <Simulink>
+        <ImportCompatibility FMUProduct="standalone FMU" requireMATLABOnPath="no" requireRelease="all"/>
+        <SimulinkModelInterface>
+          <Inport blockPath="KIMMCar/SteerInput" dataType="double" dimension="[1]" portName="SteerInput" portNumber="1" sampleTime="[0.0005      0]" uniquePortName="SteerInput" unit=""/>
+          <Inport blockPath="KIMMCar/Throttle" dataType="double" dimension="[1]" portName="Throttle" portNumber="2" sampleTime="[0.0005      0]" uniquePortName="Throttle" unit=""/>
+          <Inport blockPath="KIMMCar/Gear" dataType="double" dimension="[1]" portName="Gear" portNumber="3" sampleTime="[0.0005      0]" uniquePortName="Gear" unit=""/>
+          <Inport blockPath="KIMMCar/Brake" dataType="double" dimension="[1]" portName="Brake" portNumber="4" sampleTime="[0.0005      0]" uniquePortName="Brake" unit=""/>
+          <Inport blockPath="KIMMCar/FL_gz" dataType="double" dimension="[1]" portName="FL_gz" portNumber="5" sampleTime="[0 0]" uniquePortName="FL_gz" unit=""/>
+          <Inport blockPath="KIMMCar/FL_qx" dataType="double" dimension="[1]" portName="FL_qx" portNumber="6" sampleTime="[0 0]" uniquePortName="FL_qx" unit=""/>
+          <Inport blockPath="KIMMCar/FL_qy" dataType="double" dimension="[1]" portName="FL_qy" portNumber="7" sampleTime="[0 0]" uniquePortName="FL_qy" unit=""/>
+          <Inport blockPath="KIMMCar/FR_gz" dataType="double" dimension="[1]" portName="FR_gz" portNumber="8" sampleTime="[0 0]" uniquePortName="FR_gz" unit=""/>
+          <Inport blockPath="KIMMCar/FR_qx" dataType="double" dimension="[1]" portName="FR_qx" portNumber="9" sampleTime="[0 0]" uniquePortName="FR_qx" unit=""/>
+          <Inport blockPath="KIMMCar/FR_qy" dataType="double" dimension="[1]" portName="FR_qy" portNumber="10" sampleTime="[0 0]" uniquePortName="FR_qy" unit=""/>
+          <Inport blockPath="KIMMCar/RL_gz" dataType="double" dimension="[1]" portName="RL_gz" portNumber="11" sampleTime="[0 0]" uniquePortName="RL_gz" unit=""/>
+          <Inport blockPath="KIMMCar/RL_qx" dataType="double" dimension="[1]" portName="RL_qx" portNumber="12" sampleTime="[0 0]" uniquePortName="RL_qx" unit=""/>
+          <Inport blockPath="KIMMCar/RL_qy" dataType="double" dimension="[1]" portName="RL_qy" portNumber="13" sampleTime="[0 0]" uniquePortName="RL_qy" unit=""/>
+          <Inport blockPath="KIMMCar/RR_gz" dataType="double" dimension="[1]" portName="RR_gz" portNumber="14" sampleTime="[0 0]" uniquePortName="RR_gz" unit=""/>
+          <Inport blockPath="KIMMCar/RR_qx" dataType="double" dimension="[1]" portName="RR_qx" portNumber="15" sampleTime="[0 0]" uniquePortName="RR_qx" unit=""/>
+          <Inport blockPath="KIMMCar/RR_qy" dataType="double" dimension="[1]" portName="RR_qy" portNumber="16" sampleTime="[0 0]" uniquePortName="RR_qy" unit=""/>
+          <Outport blockPath="KIMMCar/body_x" dataType="double" dimension="[1]" portName="body_x" portNumber="1" sampleTime="[0 0]" uniquePortName="body_x" unit=""/>
+          <Outport blockPath="KIMMCar/body_y" dataType="double" dimension="[1]" portName="body_y" portNumber="2" sampleTime="[0 0]" uniquePortName="body_y" unit="m"/>
+          <Outport blockPath="KIMMCar/body_z" dataType="double" dimension="[1]" portName="body_z" portNumber="3" sampleTime="[0 0]" uniquePortName="body_z" unit="m"/>
+          <Outport blockPath="KIMMCar/body_q" dataType="double" dimension="[4  1]" portName="body_q" portNumber="4" sampleTime="[0 0]" uniquePortName="body_q" unit=""/>
+          <Outport blockPath="KIMMCar/body_vx" dataType="double" dimension="[1]" portName="body_vx" portNumber="5" sampleTime="[0 0]" uniquePortName="body_vx" unit="m/s"/>
+          <Outport blockPath="KIMMCar/body_vy" dataType="double" dimension="[1]" portName="body_vy" portNumber="6" sampleTime="[0 0]" uniquePortName="body_vy" unit="m/s"/>
+          <Outport blockPath="KIMMCar/FL Wheel Output" dataType="double" dimension="[1]" portName="FL Wheel Output" portNumber="7" sampleTime="[0 0]" uniquePortName="FLWheelOutput" unit="rad"/>
+          <Outport blockPath="KIMMCar/FR Wheel Output" dataType="double" dimension="[1]" portName="FR Wheel Output" portNumber="8" sampleTime="[0 0]" uniquePortName="FRWheelOutput" unit="rad"/>
+          <Outport blockPath="KIMMCar/RL Wheel Output" dataType="double" dimension="[1]" portName="RL Wheel Output" portNumber="9" sampleTime="[0 0]" uniquePortName="RLWheelOutput" unit="rad"/>
+          <Outport blockPath="KIMMCar/RR Wheel Output" dataType="double" dimension="[1]" portName="RR Wheel Output" portNumber="10" sampleTime="[0 0]" uniquePortName="RRWheelOutput" unit="rad"/>
+          <Outport blockPath="KIMMCar/FL_x" dataType="double" dimension="[1]" portName="FL_x" portNumber="11" sampleTime="[0 0]" uniquePortName="FL_x" unit=""/>
+          <Outport blockPath="KIMMCar/FL_y" dataType="double" dimension="[1]" portName="FL_y" portNumber="12" sampleTime="[0 0]" uniquePortName="FL_y" unit="m"/>
+          <Outport blockPath="KIMMCar/FL_z" dataType="double" dimension="[1]" portName="FL_z" portNumber="13" sampleTime="[0 0]" uniquePortName="FL_z" unit="m"/>
+          <Outport blockPath="KIMMCar/FR_x" dataType="double" dimension="[1]" portName="FR_x" portNumber="14" sampleTime="[0 0]" uniquePortName="FR_x" unit=""/>
+          <Outport blockPath="KIMMCar/FR_y" dataType="double" dimension="[1]" portName="FR_y" portNumber="15" sampleTime="[0 0]" uniquePortName="FR_y" unit="m"/>
+          <Outport blockPath="KIMMCar/FR_z" dataType="double" dimension="[1]" portName="FR_z" portNumber="16" sampleTime="[0 0]" uniquePortName="FR_z" unit="m"/>
+          <Outport blockPath="KIMMCar/RL_x" dataType="double" dimension="[1]" portName="RL_x" portNumber="17" sampleTime="[0 0]" uniquePortName="RL_x" unit=""/>
+          <Outport blockPath="KIMMCar/RL_y" dataType="double" dimension="[1]" portName="RL_y" portNumber="18" sampleTime="[0 0]" uniquePortName="RL_y" unit="m"/>
+          <Outport blockPath="KIMMCar/RL_z" dataType="double" dimension="[1]" portName="RL_z" portNumber="19" sampleTime="[0 0]" uniquePortName="RL_z" unit="m"/>
+          <Outport blockPath="KIMMCar/RR_x" dataType="double" dimension="[1]" portName="RR_x" portNumber="20" sampleTime="[0 0]" uniquePortName="RR_x" unit=""/>
+          <Outport blockPath="KIMMCar/RR_y" dataType="double" dimension="[1]" portName="RR_y" portNumber="21" sampleTime="[0 0]" uniquePortName="RR_y" unit="m"/>
+          <Outport blockPath="KIMMCar/RR_z" dataType="double" dimension="[1]" portName="RR_z" portNumber="22" sampleTime="[0 0]" uniquePortName="RR_z" unit="m"/>
+          <Outport blockPath="KIMMCar/Toe Left" dataType="double" dimension="[1]" portName="Toe Left" portNumber="23" sampleTime="[0.0005      0]" uniquePortName="ToeLeft" unit=""/>
+          <Outport blockPath="KIMMCar/Toe Right" dataType="double" dimension="[1]" portName="Toe Right" portNumber="24" sampleTime="[0.0005      0]" uniquePortName="ToeRight" unit=""/>
+        </SimulinkModelInterface>
+      </Simulink>
+    </Tool>
+  </VendorAnnotations>
+  <ModelVariables>
+    <ScalarVariable causality="input" description="SteerInput" name="SteerInput" valueReference="0" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 1-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="Throttle" name="Throttle" valueReference="1" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 2-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="Gear" name="Gear" valueReference="2" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 3-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="Brake" name="Brake" valueReference="3" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 4-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="FL_gz" name="FL_gz" valueReference="4" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 5-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="FL_qx" name="FL_qx" valueReference="5" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 6-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="FL_qy" name="FL_qy" valueReference="6" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 7-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="FR_gz" name="FR_gz" valueReference="7" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 8-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="FR_qx" name="FR_qx" valueReference="8" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 9-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="FR_qy" name="FR_qy" valueReference="9" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 10-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="RL_gz" name="RL_gz" valueReference="10" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 11-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="RL_qx" name="RL_qx" valueReference="11" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 12-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="RL_qy" name="RL_qy" valueReference="12" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 13-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="RR_gz" name="RR_gz" valueReference="13" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 14-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="RR_qx" name="RR_qx" valueReference="14" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 15-->
+    </ScalarVariable>
+    <ScalarVariable causality="input" description="RR_qy" name="RR_qy" valueReference="15" variability="continuous">
+      <Real start="0"/>
+      <!--Index = 16-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_x" initial="calculated" name="body_x" valueReference="16" variability="continuous">
+      <Real/>
+      <!--Index = 17-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_y" initial="calculated" name="body_y" valueReference="17" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 18-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_z" initial="calculated" name="body_z" valueReference="18" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 19-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_q(1,1)" initial="calculated" name="body_q[1,1]" valueReference="19" variability="continuous">
+      <Real/>
+      <!--Index = 20-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_q(2,1)" initial="calculated" name="body_q[2,1]" valueReference="20" variability="continuous">
+      <Real/>
+      <!--Index = 21-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_q(3,1)" initial="calculated" name="body_q[3,1]" valueReference="21" variability="continuous">
+      <Real/>
+      <!--Index = 22-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_q(4,1)" initial="calculated" name="body_q[4,1]" valueReference="22" variability="continuous">
+      <Real/>
+      <!--Index = 23-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_vx" initial="calculated" name="body_vx" valueReference="23" variability="continuous">
+      <Real unit="m/s"/>
+      <!--Index = 24-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="body_vy" initial="calculated" name="body_vy" valueReference="24" variability="continuous">
+      <Real unit="m/s"/>
+      <!--Index = 25-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FL Wheel Output" initial="calculated" name="FLWheelOutput" valueReference="25" variability="continuous">
+      <Real unit="rad"/>
+      <!--Index = 26-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FR Wheel Output" initial="calculated" name="FRWheelOutput" valueReference="26" variability="continuous">
+      <Real unit="rad"/>
+      <!--Index = 27-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RL Wheel Output" initial="calculated" name="RLWheelOutput" valueReference="27" variability="continuous">
+      <Real unit="rad"/>
+      <!--Index = 28-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RR Wheel Output" initial="calculated" name="RRWheelOutput" valueReference="28" variability="continuous">
+      <Real unit="rad"/>
+      <!--Index = 29-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FL_x" initial="calculated" name="FL_x" valueReference="29" variability="continuous">
+      <Real/>
+      <!--Index = 30-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FL_y" initial="calculated" name="FL_y" valueReference="30" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 31-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FL_z" initial="calculated" name="FL_z" valueReference="31" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 32-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FR_x" initial="calculated" name="FR_x" valueReference="32" variability="continuous">
+      <Real/>
+      <!--Index = 33-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FR_y" initial="calculated" name="FR_y" valueReference="33" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 34-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="FR_z" initial="calculated" name="FR_z" valueReference="34" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 35-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RL_x" initial="calculated" name="RL_x" valueReference="35" variability="continuous">
+      <Real/>
+      <!--Index = 36-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RL_y" initial="calculated" name="RL_y" valueReference="36" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 37-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RL_z" initial="calculated" name="RL_z" valueReference="37" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 38-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RR_x" initial="calculated" name="RR_x" valueReference="38" variability="continuous">
+      <Real/>
+      <!--Index = 39-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RR_y" initial="calculated" name="RR_y" valueReference="39" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 40-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="RR_z" initial="calculated" name="RR_z" valueReference="40" variability="continuous">
+      <Real unit="m"/>
+      <!--Index = 41-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="Toe Left" initial="calculated" name="ToeLeft" valueReference="41" variability="continuous">
+      <Real/>
+      <!--Index = 42-->
+    </ScalarVariable>
+    <ScalarVariable causality="output" description="Toe Right" initial="calculated" name="ToeRight" valueReference="42" variability="continuous">
+      <Real/>
+      <!--Index = 43-->
+    </ScalarVariable>
+    <ScalarVariable causality="independent" description="time" name="time" valueReference="43" variability="continuous">
+      <Real/>
+      <!--Index = 44-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_AeroArea" initial="exact" name="Veh_AeroArea" valueReference="44" variability="tunable">
+      <Real start="2.594" unit="m^2"/>
+      <!--Index = 45-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_AeroCd" initial="exact" name="Veh_AeroCd" valueReference="45" variability="tunable">
+      <Real start="0.2888"/>
+      <!--Index = 46-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_AeroCl" initial="exact" name="Veh_AeroCl" valueReference="46" variability="tunable">
+      <Real start="0.149"/>
+      <!--Index = 47-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_AeroRho" initial="exact" name="Veh_AeroRho" valueReference="47" variability="tunable">
+      <Real start="1.205" unit="kg/m^3"/>
+      <!--Index = 48-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_BodyInertia(1,1)" initial="exact" name="Veh_BodyInertia[1,1]" valueReference="48" variability="tunable">
+      <Real start="600" unit="kg*m^2"/>
+      <!--Index = 49-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_BodyInertia(1,2)" initial="exact" name="Veh_BodyInertia[1,2]" valueReference="49" variability="tunable">
+      <Real start="3000" unit="kg*m^2"/>
+      <!--Index = 50-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_BodyInertia(1,3)" initial="exact" name="Veh_BodyInertia[1,3]" valueReference="50" variability="tunable">
+      <Real start="3200" unit="kg*m^2"/>
+      <!--Index = 51-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_BodyMass" initial="exact" name="Veh_BodyMass" valueReference="51" variability="tunable">
+      <Real start="1600" unit="kg"/>
+      <!--Index = 52-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_BodyRefZ0" initial="exact" name="Veh_BodyRefZ0" valueReference="52" variability="tunable">
+      <Real start="0.6147" unit="m"/>
+      <!--Index = 53-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_BodytoWheelCenter" initial="exact" name="Veh_BodytoWheelCenter" valueReference="53" variability="tunable">
+      <Real start="0.2647" unit="m"/>
+      <!--Index = 54-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_FrontAxleX" initial="exact" name="Veh_FrontAxleX" valueReference="54" variability="tunable">
+      <Real start="1.5" unit="m"/>
+      <!--Index = 55-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SteerRatio" initial="exact" name="Veh_SteerRatio" valueReference="55" variability="tunable">
+      <Real start="16"/>
+      <!--Index = 56-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpC" initial="exact" name="Veh_SuspF_BumpC" valueReference="56" variability="tunable">
+      <Real start="3000" unit="N*s/m"/>
+      <!--Index = 57-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpK" initial="exact" name="Veh_SuspF_BumpK" valueReference="57" variability="tunable">
+      <Real start="200000" unit="N/m"/>
+      <!--Index = 58-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpLimit" initial="exact" name="Veh_SuspF_BumpLimit" valueReference="58" variability="tunable">
+      <Real start="-0.08400000000000001" unit="m"/>
+      <!--Index = 59-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpWidth" initial="exact" name="Veh_SuspF_BumpWidth" valueReference="59" variability="tunable">
+      <Real start="0.003" unit="m"/>
+      <!--Index = 60-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_C" initial="exact" name="Veh_SuspF_C" valueReference="60" variability="tunable">
+      <Real start="1750" unit="N*s/m"/>
+      <!--Index = 61-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_EqPos" initial="exact" name="Veh_SuspF_EqPos" valueReference="61" variability="tunable">
+      <Real start="0.1126" unit="m"/>
+      <!--Index = 62-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_K" initial="exact" name="Veh_SuspF_K" valueReference="62" variability="tunable">
+      <Real start="35000" unit="N/m"/>
+      <!--Index = 63-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundC" initial="exact" name="Veh_SuspF_ReboundC" valueReference="63" variability="tunable">
+      <Real start="3000" unit="N*s/m"/>
+      <!--Index = 64-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundK" initial="exact" name="Veh_SuspF_ReboundK" valueReference="64" variability="tunable">
+      <Real start="200000" unit="N/m"/>
+      <!--Index = 65-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundLimit" initial="exact" name="Veh_SuspF_ReboundLimit" valueReference="65" variability="tunable">
+      <Real start="0.056" unit="m"/>
+      <!--Index = 66-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundWidth" initial="exact" name="Veh_SuspF_ReboundWidth" valueReference="66" variability="tunable">
+      <Real start="0.003" unit="m"/>
+      <!--Index = 67-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,1)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,1]" valueReference="67" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
+      <!--Index = 68-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,2)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,2]" valueReference="68" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
+      <!--Index = 69-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,3)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,3]" valueReference="69" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
+      <!--Index = 70-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungMass" initial="exact" name="Veh_SuspF_UnsprungMass" valueReference="70" variability="tunable">
+      <Real start="48" unit="kg"/>
+      <!--Index = 71-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpC" initial="exact" name="Veh_SuspR_BumpC" valueReference="71" variability="tunable">
+      <Real start="4000" unit="N*s/m"/>
+      <!--Index = 72-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpK" initial="exact" name="Veh_SuspR_BumpK" valueReference="72" variability="tunable">
+      <Real start="300000" unit="N/m"/>
+      <!--Index = 73-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpLimit" initial="exact" name="Veh_SuspR_BumpLimit" valueReference="73" variability="tunable">
+      <Real start="-0.095" unit="m"/>
+      <!--Index = 74-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpWidth" initial="exact" name="Veh_SuspR_BumpWidth" valueReference="74" variability="tunable">
+      <Real start="0.003" unit="m"/>
+      <!--Index = 75-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_C" initial="exact" name="Veh_SuspR_C" valueReference="75" variability="tunable">
+      <Real start="2200" unit="N*s/m"/>
+      <!--Index = 76-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_EqPos" initial="exact" name="Veh_SuspR_EqPos" valueReference="76" variability="tunable">
+      <Real start="0.0985" unit="m"/>
+      <!--Index = 77-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_K" initial="exact" name="Veh_SuspR_K" valueReference="77" variability="tunable">
+      <Real start="40000" unit="N/m"/>
+      <!--Index = 78-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundC" initial="exact" name="Veh_SuspR_ReboundC" valueReference="78" variability="tunable">
+      <Real start="4000" unit="N*s/m"/>
+      <!--Index = 79-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundK" initial="exact" name="Veh_SuspR_ReboundK" valueReference="79" variability="tunable">
+      <Real start="300000" unit="N/m"/>
+      <!--Index = 80-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundLimit" initial="exact" name="Veh_SuspR_ReboundLimit" valueReference="80" variability="tunable">
+      <Real start="0.04" unit="m"/>
+      <!--Index = 81-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundWidth" initial="exact" name="Veh_SuspR_ReboundWidth" valueReference="81" variability="tunable">
+      <Real start="0.003" unit="m"/>
+      <!--Index = 82-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,1)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,1]" valueReference="82" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
+      <!--Index = 83-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,2)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,2]" valueReference="83" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
+      <!--Index = 84-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,3)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,3]" valueReference="84" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
+      <!--Index = 85-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungMass" initial="exact" name="Veh_SuspR_UnsprungMass" valueReference="85" variability="tunable">
+      <Real start="45" unit="kg"/>
+      <!--Index = 86-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_TrackF" initial="exact" name="Veh_TrackF" valueReference="86" variability="tunable">
+      <Real start="1.6" unit="m"/>
+      <!--Index = 87-->
+    </ScalarVariable>
+  </ModelVariables>
+  <ModelStructure>
+    <Outputs>
+      <Unknown index="17"/>
+      <Unknown index="18"/>
+      <Unknown index="19"/>
+      <Unknown index="20"/>
+      <Unknown index="21"/>
+      <Unknown index="22"/>
+      <Unknown index="23"/>
+      <Unknown index="24"/>
+      <Unknown index="25"/>
+      <Unknown index="26"/>
+      <Unknown index="27"/>
+      <Unknown index="28"/>
+      <Unknown index="29"/>
+      <Unknown index="30"/>
+      <Unknown index="31"/>
+      <Unknown index="32"/>
+      <Unknown index="33"/>
+      <Unknown index="34"/>
+      <Unknown index="35"/>
+      <Unknown index="36"/>
+      <Unknown index="37"/>
+      <Unknown index="38"/>
+      <Unknown index="39"/>
+      <Unknown index="40"/>
+      <Unknown index="41"/>
+      <Unknown index="42"/>
+      <Unknown index="43"/>
+    </Outputs>
+    <InitialUnknowns>
+      <Unknown index="17"/>
+      <Unknown index="18"/>
+      <Unknown index="19"/>
+      <Unknown index="20"/>
+      <Unknown index="21"/>
+      <Unknown index="22"/>
+      <Unknown index="23"/>
+      <Unknown index="24"/>
+      <Unknown index="25"/>
+      <Unknown index="26"/>
+      <Unknown index="27"/>
+      <Unknown index="28"/>
+      <Unknown index="29"/>
+      <Unknown index="30"/>
+      <Unknown index="31"/>
+      <Unknown index="32"/>
+      <Unknown index="33"/>
+      <Unknown index="34"/>
+      <Unknown index="35"/>
+      <Unknown index="36"/>
+      <Unknown index="37"/>
+      <Unknown index="38"/>
+      <Unknown index="39"/>
+      <Unknown index="40"/>
+      <Unknown index="41"/>
+      <Unknown index="42"/>
+      <Unknown index="43"/>
+    </InitialUnknowns>
+  </ModelStructure>
+</fmiModelDescription>

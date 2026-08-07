@@ -1,0 +1,716 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 230ae089dd87dc0478b8764182759ebb, type: 3}
+  m_Name: KIMMCar
+  m_EditorClassIdentifier: Assembly-CSharp::ModelDescription
+  fmiVersion: 2.0
+  guid: 7b00380065003800640030006100320035002d0033006200350066002d0036003400640063002d0037003700630036002d003500340066003400650062006100300035003500380063007d00
+  modelName: KIMMCar
+  coSimulation:
+    modelIdentifier: KIMMCar
+  modelVariables:
+  - name: SteerInput
+    valueReference: 0
+    description: SteerInput
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: Throttle
+    valueReference: 1
+    description: Throttle
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: Gear
+    valueReference: 2
+    description: Gear
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: Brake
+    valueReference: 3
+    description: Brake
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: FL_gz
+    valueReference: 4
+    description: FL_gz
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: FL_qx
+    valueReference: 5
+    description: FL_qx
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: FL_qy
+    valueReference: 6
+    description: FL_qy
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: FR_gz
+    valueReference: 7
+    description: FR_gz
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: FR_qx
+    valueReference: 8
+    description: FR_qx
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: FR_qy
+    valueReference: 9
+    description: FR_qy
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: RL_gz
+    valueReference: 10
+    description: RL_gz
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: RL_qx
+    valueReference: 11
+    description: RL_qx
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: RL_qy
+    valueReference: 12
+    description: RL_qy
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: RR_gz
+    valueReference: 13
+    description: RR_gz
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: RR_qx
+    valueReference: 14
+    description: RR_qx
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: RR_qy
+    valueReference: 15
+    description: RR_qy
+    causality: input
+    variability: continuous
+    initial: 
+    type: 0
+    start: 0
+  - name: body_x
+    valueReference: 16
+    description: body_x
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: body_y
+    valueReference: 17
+    description: body_y
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: body_z
+    valueReference: 18
+    description: body_z
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: 'body_q[1,1]'
+    valueReference: 19
+    description: body_q(1,1)
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: 'body_q[2,1]'
+    valueReference: 20
+    description: body_q(2,1)
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: 'body_q[3,1]'
+    valueReference: 21
+    description: body_q(3,1)
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: 'body_q[4,1]'
+    valueReference: 22
+    description: body_q(4,1)
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: body_vx
+    valueReference: 23
+    description: body_vx
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: body_vy
+    valueReference: 24
+    description: body_vy
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FLWheelOutput
+    valueReference: 25
+    description: FL Wheel Output
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FRWheelOutput
+    valueReference: 26
+    description: FR Wheel Output
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RLWheelOutput
+    valueReference: 27
+    description: RL Wheel Output
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RRWheelOutput
+    valueReference: 28
+    description: RR Wheel Output
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FL_x
+    valueReference: 29
+    description: FL_x
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FL_y
+    valueReference: 30
+    description: FL_y
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FL_z
+    valueReference: 31
+    description: FL_z
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FR_x
+    valueReference: 32
+    description: FR_x
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FR_y
+    valueReference: 33
+    description: FR_y
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: FR_z
+    valueReference: 34
+    description: FR_z
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RL_x
+    valueReference: 35
+    description: RL_x
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RL_y
+    valueReference: 36
+    description: RL_y
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RL_z
+    valueReference: 37
+    description: RL_z
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RR_x
+    valueReference: 38
+    description: RR_x
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RR_y
+    valueReference: 39
+    description: RR_y
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: RR_z
+    valueReference: 40
+    description: RR_z
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: ToeLeft
+    valueReference: 41
+    description: Toe Left
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: ToeRight
+    valueReference: 42
+    description: Toe Right
+    causality: output
+    variability: continuous
+    initial: calculated
+    type: 0
+    start: 
+  - name: time
+    valueReference: 43
+    description: time
+    causality: independent
+    variability: continuous
+    initial: 
+    type: 0
+    start: 
+  - name: Veh_AeroArea
+    valueReference: 44
+    description: Veh_AeroArea
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 2.594
+  - name: Veh_AeroCd
+    valueReference: 45
+    description: Veh_AeroCd
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.2888
+  - name: Veh_AeroCl
+    valueReference: 46
+    description: Veh_AeroCl
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.149
+  - name: Veh_AeroRho
+    valueReference: 47
+    description: Veh_AeroRho
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1.205
+  - name: 'Veh_BodyInertia[1,1]'
+    valueReference: 48
+    description: Veh_BodyInertia(1,1)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 600
+  - name: 'Veh_BodyInertia[1,2]'
+    valueReference: 49
+    description: Veh_BodyInertia(1,2)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 3000
+  - name: 'Veh_BodyInertia[1,3]'
+    valueReference: 50
+    description: Veh_BodyInertia(1,3)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 3200
+  - name: Veh_BodyMass
+    valueReference: 51
+    description: Veh_BodyMass
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1600
+  - name: Veh_BodyRefZ0
+    valueReference: 52
+    description: Veh_BodyRefZ0
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.6147
+  - name: Veh_BodytoWheelCenter
+    valueReference: 53
+    description: Veh_BodytoWheelCenter
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.2647
+  - name: Veh_FrontAxleX
+    valueReference: 54
+    description: Veh_FrontAxleX
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1.5
+  - name: Veh_SteerRatio
+    valueReference: 55
+    description: Veh_SteerRatio
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 16
+  - name: Veh_SuspF_BumpC
+    valueReference: 56
+    description: Veh_SuspF_BumpC
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 3000
+  - name: Veh_SuspF_BumpK
+    valueReference: 57
+    description: Veh_SuspF_BumpK
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 200000
+  - name: Veh_SuspF_BumpLimit
+    valueReference: 58
+    description: Veh_SuspF_BumpLimit
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: -0.08400000000000001
+  - name: Veh_SuspF_BumpWidth
+    valueReference: 59
+    description: Veh_SuspF_BumpWidth
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.003
+  - name: Veh_SuspF_C
+    valueReference: 60
+    description: Veh_SuspF_C
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1750
+  - name: Veh_SuspF_EqPos
+    valueReference: 61
+    description: Veh_SuspF_EqPos
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.1126
+  - name: Veh_SuspF_K
+    valueReference: 62
+    description: Veh_SuspF_K
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 35000
+  - name: Veh_SuspF_ReboundC
+    valueReference: 63
+    description: Veh_SuspF_ReboundC
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 3000
+  - name: Veh_SuspF_ReboundK
+    valueReference: 64
+    description: Veh_SuspF_ReboundK
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 200000
+  - name: Veh_SuspF_ReboundLimit
+    valueReference: 65
+    description: Veh_SuspF_ReboundLimit
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.056
+  - name: Veh_SuspF_ReboundWidth
+    valueReference: 66
+    description: Veh_SuspF_ReboundWidth
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.003
+  - name: 'Veh_SuspF_UnsprungInertia[1,1]'
+    valueReference: 67
+    description: Veh_SuspF_UnsprungInertia(1,1)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1
+  - name: 'Veh_SuspF_UnsprungInertia[1,2]'
+    valueReference: 68
+    description: Veh_SuspF_UnsprungInertia(1,2)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1
+  - name: 'Veh_SuspF_UnsprungInertia[1,3]'
+    valueReference: 69
+    description: Veh_SuspF_UnsprungInertia(1,3)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1
+  - name: Veh_SuspF_UnsprungMass
+    valueReference: 70
+    description: Veh_SuspF_UnsprungMass
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 48
+  - name: Veh_SuspR_BumpC
+    valueReference: 71
+    description: Veh_SuspR_BumpC
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 4000
+  - name: Veh_SuspR_BumpK
+    valueReference: 72
+    description: Veh_SuspR_BumpK
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 300000
+  - name: Veh_SuspR_BumpLimit
+    valueReference: 73
+    description: Veh_SuspR_BumpLimit
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: -0.095
+  - name: Veh_SuspR_BumpWidth
+    valueReference: 74
+    description: Veh_SuspR_BumpWidth
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.003
+  - name: Veh_SuspR_C
+    valueReference: 75
+    description: Veh_SuspR_C
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 2200
+  - name: Veh_SuspR_EqPos
+    valueReference: 76
+    description: Veh_SuspR_EqPos
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.0985
+  - name: Veh_SuspR_K
+    valueReference: 77
+    description: Veh_SuspR_K
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 40000
+  - name: Veh_SuspR_ReboundC
+    valueReference: 78
+    description: Veh_SuspR_ReboundC
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 4000
+  - name: Veh_SuspR_ReboundK
+    valueReference: 79
+    description: Veh_SuspR_ReboundK
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 300000
+  - name: Veh_SuspR_ReboundLimit
+    valueReference: 80
+    description: Veh_SuspR_ReboundLimit
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.04
+  - name: Veh_SuspR_ReboundWidth
+    valueReference: 81
+    description: Veh_SuspR_ReboundWidth
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 0.003
+  - name: 'Veh_SuspR_UnsprungInertia[1,1]'
+    valueReference: 82
+    description: Veh_SuspR_UnsprungInertia(1,1)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1
+  - name: 'Veh_SuspR_UnsprungInertia[1,2]'
+    valueReference: 83
+    description: Veh_SuspR_UnsprungInertia(1,2)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1
+  - name: 'Veh_SuspR_UnsprungInertia[1,3]'
+    valueReference: 84
+    description: Veh_SuspR_UnsprungInertia(1,3)
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1
+  - name: Veh_SuspR_UnsprungMass
+    valueReference: 85
+    description: Veh_SuspR_UnsprungMass
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 45
+  - name: Veh_TrackF
+    valueReference: 86
+    description: Veh_TrackF
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1.6
