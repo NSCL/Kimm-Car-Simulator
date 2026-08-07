@@ -517,6 +517,8 @@ MonoBehaviour:
   distanceFromGround: 0
   penetration: 0
   hitPointY: 0
+  hitQx: 0
+  hitQy: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!1 &47938711
@@ -5917,6 +5919,8 @@ MonoBehaviour:
   distanceFromGround: 0
   penetration: 0
   hitPointY: 0
+  hitQx: 0
+  hitQy: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!1 &1021984418
@@ -8111,6 +8115,8 @@ MonoBehaviour:
   distanceFromGround: 0
   penetration: 0
   hitPointY: 0
+  hitQx: 0
+  hitQy: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!4 &1326229849
@@ -10075,6 +10081,8 @@ MonoBehaviour:
   distanceFromGround: 0
   penetration: 0
   hitPointY: 0
+  hitQx: 0
+  hitQy: 0
   isGrounded: 0
   enableDebugLog: 1
 --- !u!1 &1745928117
@@ -12783,6 +12791,8 @@ MonoBehaviour:
     sensor: {fileID: 1326229848}
     var_WheelOmega_In: 
     var_GroundDist_In: FL_gz
+    var_GroundQx_In: FL_qy
+    var_GroundQy_In: FL_qx
     var_WheelPos_X: FL_x
     var_WheelPos_Y: FL_y
     var_WheelPos_Z: FL_z
@@ -12797,6 +12807,8 @@ MonoBehaviour:
     sensor: {fileID: 1002873613}
     var_WheelOmega_In: 
     var_GroundDist_In: FR_gz
+    var_GroundQx_In: FR_qy
+    var_GroundQy_In: FR_qx
     var_WheelPos_X: FR_x
     var_WheelPos_Y: FR_y
     var_WheelPos_Z: FR_z
@@ -12811,6 +12823,8 @@ MonoBehaviour:
     sensor: {fileID: 29990727}
     var_WheelOmega_In: 
     var_GroundDist_In: RL_gz
+    var_GroundQx_In: RL_qy
+    var_GroundQy_In: RL_qx
     var_WheelPos_X: RL_x
     var_WheelPos_Y: RL_y
     var_WheelPos_Z: RL_z
@@ -12825,6 +12839,8 @@ MonoBehaviour:
     sensor: {fileID: 1733673711}
     var_WheelOmega_In: 
     var_GroundDist_In: RR_gz
+    var_GroundQx_In: RR_qy
+    var_GroundQy_In: RR_qx
     var_WheelPos_X: RR_x
     var_WheelPos_Y: RR_y
     var_WheelPos_Z: RR_z

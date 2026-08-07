@@ -110,6 +110,20 @@ public class VehicleController : MonoBehaviour
                 float relativeGroundY = w.sensor.isGrounded ? (w.sensor.hitPointY - _spawnPos.y) : 0f;
                 fmuManager.SetValue(w.var_GroundDist_In, relativeGroundY);
             }
+
+            // [원리]: 유니티 좌표계(Y-up, Z-forward)와 FMU 모델 좌표계 간의 회전축 방향 차이를 보정하기 위해
+            // 지면 기울기 사원수 qx, qy 값의 부호를 반전(-hitQx, -hitQy)하여 FMU 모델에 전달합니다.
+            if (!string.IsNullOrEmpty(w.var_GroundQx_In))
+            {
+                float qx = w.sensor.isGrounded ? -w.sensor.hitQx : 0f;
+                fmuManager.SetValue(w.var_GroundQx_In, qx);
+            }
+
+            if (!string.IsNullOrEmpty(w.var_GroundQy_In))
+            {
+                float qy = w.sensor.isGrounded ? -w.sensor.hitQy : 0f;
+                fmuManager.SetValue(w.var_GroundQy_In, qy);
+            }
         }
 
         // --- [STEP 2] Simulation ---

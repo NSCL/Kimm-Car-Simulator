@@ -11,6 +11,8 @@ public class WheelGroundSensor : MonoBehaviour
     public float distanceFromGround;// 지면까지의 실제 거리
     public float penetration;// (반지름 - 거리) : 양수면 눌림, 음수면 뜸
     public float hitPointY; // [원리]: FMU 패치 높이(gz) 조절을 위한 충돌 지면의 실제 월드 Y 좌표
+    public float hitQx; // [원리]: FMU 패치 롤/피치 지면 기울기 조절을 위한 사원수 Qx 성분
+    public float hitQy; // [원리]: FMU 패치 롤/피치 지면 기울기 조절을 위한 사원수 Qy 성분
     public bool isGrounded;// 지면 감지 여부
 
     [Header("Debug")]
@@ -33,6 +35,13 @@ public class WheelGroundSensor : MonoBehaviour
             distanceFromGround = hit.distance;
             hitPointY = hit.point.y; // 실제 충돌 지면의 Y 좌표 저장
 
+            // [원리]: 수직 상방 벡터(Vector3.up)로부터 충돌 지면의 법선 벡터(hit.normal)까지의 회전 사원수 Q_ground를 계산합니다.
+            // 지면 회전 Q = Quaternion.FromToRotation(Vector3.up, hit.normal)
+            // 이를 통해 경사로의 롤(Roll) 및 피치(Pitch) 기울기 사원수 x, y 성분을 추출합니다.
+            Quaternion groundRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            hitQx = groundRotation.x;
+            hitQy = groundRotation.y;
+
             // 핵심: FMU 타이어 모델은 보통 "얼마나 눌렸냐(penetration)"를 원함
             // 반지름(0.35) - 거리(0.30) = 0.05 (0.05만큼 타이어가 찌그러짐)
             penetration = wheelRadius - distanceFromGround;
@@ -50,6 +59,10 @@ public class WheelGroundSensor : MonoBehaviour
             isGrounded = false;
             distanceFromGround = maxRayDistance;
             hitPointY = transform.position.y - maxRayDistance;
+
+            // 공중에 떴을 때는 지면 기울기를 평지 상태(Q_identity, qx=0, qy=0)로 초기화합니다.
+            hitQx = 0f;
+            hitQy = 0f;
 
             // 공중에 떴을 때는 penetration이 0 이하가 되어야 함 (FMU가 힘을 0으로 계산하도록)
             penetration = wheelRadius - maxRayDistance;
