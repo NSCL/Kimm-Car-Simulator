@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: KIMMCar
   m_EditorClassIdentifier: Assembly-CSharp::ModelDescription
   fmiVersion: 2.0
-  guid: 7b00380065003800640030006100320035002d0033006200350066002d0036003400640063002d0037003700630036002d003500340066003400650062006100300035003500380063007d00
+  guid: 7b00340035003400650034006500620033002d0039003200390032002d0035003000650037002d0065006300630036002d003900340033003900390038006100340038003300320030007d00
   modelName: KIMMCar
   coSimulation:
     modelIdentifier: KIMMCar
@@ -458,8 +458,16 @@ MonoBehaviour:
     initial: exact
     type: 0
     start: 1.5
-  - name: Veh_SteerRatio
+  - name: Veh_RearAxleX
     valueReference: 55
+    description: Veh_RearAxleX
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: -1.5
+  - name: Veh_SteerRatio
+    valueReference: 56
     description: Veh_SteerRatio
     causality: parameter
     variability: tunable
@@ -467,7 +475,7 @@ MonoBehaviour:
     type: 0
     start: 16
   - name: Veh_SuspF_BumpC
-    valueReference: 56
+    valueReference: 57
     description: Veh_SuspF_BumpC
     causality: parameter
     variability: tunable
@@ -475,7 +483,7 @@ MonoBehaviour:
     type: 0
     start: 3000
   - name: Veh_SuspF_BumpK
-    valueReference: 57
+    valueReference: 58
     description: Veh_SuspF_BumpK
     causality: parameter
     variability: tunable
@@ -483,7 +491,7 @@ MonoBehaviour:
     type: 0
     start: 200000
   - name: Veh_SuspF_BumpLimit
-    valueReference: 58
+    valueReference: 59
     description: Veh_SuspF_BumpLimit
     causality: parameter
     variability: tunable
@@ -491,7 +499,7 @@ MonoBehaviour:
     type: 0
     start: -0.08400000000000001
   - name: Veh_SuspF_BumpWidth
-    valueReference: 59
+    valueReference: 60
     description: Veh_SuspF_BumpWidth
     causality: parameter
     variability: tunable
@@ -499,7 +507,7 @@ MonoBehaviour:
     type: 0
     start: 0.003
   - name: Veh_SuspF_C
-    valueReference: 60
+    valueReference: 61
     description: Veh_SuspF_C
     causality: parameter
     variability: tunable
@@ -507,7 +515,7 @@ MonoBehaviour:
     type: 0
     start: 1750
   - name: Veh_SuspF_EqPos
-    valueReference: 61
+    valueReference: 62
     description: Veh_SuspF_EqPos
     causality: parameter
     variability: tunable
@@ -515,7 +523,7 @@ MonoBehaviour:
     type: 0
     start: 0.1126
   - name: Veh_SuspF_K
-    valueReference: 62
+    valueReference: 63
     description: Veh_SuspF_K
     causality: parameter
     variability: tunable
@@ -523,7 +531,7 @@ MonoBehaviour:
     type: 0
     start: 35000
   - name: Veh_SuspF_ReboundC
-    valueReference: 63
+    valueReference: 64
     description: Veh_SuspF_ReboundC
     causality: parameter
     variability: tunable
@@ -531,7 +539,7 @@ MonoBehaviour:
     type: 0
     start: 3000
   - name: Veh_SuspF_ReboundK
-    valueReference: 64
+    valueReference: 65
     description: Veh_SuspF_ReboundK
     causality: parameter
     variability: tunable
@@ -539,7 +547,7 @@ MonoBehaviour:
     type: 0
     start: 200000
   - name: Veh_SuspF_ReboundLimit
-    valueReference: 65
+    valueReference: 66
     description: Veh_SuspF_ReboundLimit
     causality: parameter
     variability: tunable
@@ -547,7 +555,7 @@ MonoBehaviour:
     type: 0
     start: 0.056
   - name: Veh_SuspF_ReboundWidth
-    valueReference: 66
+    valueReference: 67
     description: Veh_SuspF_ReboundWidth
     causality: parameter
     variability: tunable
@@ -555,7 +563,7 @@ MonoBehaviour:
     type: 0
     start: 0.003
   - name: 'Veh_SuspF_UnsprungInertia[1,1]'
-    valueReference: 67
+    valueReference: 68
     description: Veh_SuspF_UnsprungInertia(1,1)
     causality: parameter
     variability: tunable
@@ -563,7 +571,7 @@ MonoBehaviour:
     type: 0
     start: 1
   - name: 'Veh_SuspF_UnsprungInertia[1,2]'
-    valueReference: 68
+    valueReference: 69
     description: Veh_SuspF_UnsprungInertia(1,2)
     causality: parameter
     variability: tunable
@@ -571,7 +579,7 @@ MonoBehaviour:
     type: 0
     start: 1
   - name: 'Veh_SuspF_UnsprungInertia[1,3]'
-    valueReference: 69
+    valueReference: 70
     description: Veh_SuspF_UnsprungInertia(1,3)
     causality: parameter
     variability: tunable
@@ -579,7 +587,7 @@ MonoBehaviour:
     type: 0
     start: 1
   - name: Veh_SuspF_UnsprungMass
-    valueReference: 70
+    valueReference: 71
     description: Veh_SuspF_UnsprungMass
     causality: parameter
     variability: tunable
@@ -587,7 +595,7 @@ MonoBehaviour:
     type: 0
     start: 48
   - name: Veh_SuspR_BumpC
-    valueReference: 71
+    valueReference: 72
     description: Veh_SuspR_BumpC
     causality: parameter
     variability: tunable
@@ -595,7 +603,7 @@ MonoBehaviour:
     type: 0
     start: 4000
   - name: Veh_SuspR_BumpK
-    valueReference: 72
+    valueReference: 73
     description: Veh_SuspR_BumpK
     causality: parameter
     variability: tunable
@@ -603,7 +611,7 @@ MonoBehaviour:
     type: 0
     start: 300000
   - name: Veh_SuspR_BumpLimit
-    valueReference: 73
+    valueReference: 74
     description: Veh_SuspR_BumpLimit
     causality: parameter
     variability: tunable
@@ -611,7 +619,7 @@ MonoBehaviour:
     type: 0
     start: -0.095
   - name: Veh_SuspR_BumpWidth
-    valueReference: 74
+    valueReference: 75
     description: Veh_SuspR_BumpWidth
     causality: parameter
     variability: tunable
@@ -619,7 +627,7 @@ MonoBehaviour:
     type: 0
     start: 0.003
   - name: Veh_SuspR_C
-    valueReference: 75
+    valueReference: 76
     description: Veh_SuspR_C
     causality: parameter
     variability: tunable
@@ -627,7 +635,7 @@ MonoBehaviour:
     type: 0
     start: 2200
   - name: Veh_SuspR_EqPos
-    valueReference: 76
+    valueReference: 77
     description: Veh_SuspR_EqPos
     causality: parameter
     variability: tunable
@@ -635,7 +643,7 @@ MonoBehaviour:
     type: 0
     start: 0.0985
   - name: Veh_SuspR_K
-    valueReference: 77
+    valueReference: 78
     description: Veh_SuspR_K
     causality: parameter
     variability: tunable
@@ -643,7 +651,7 @@ MonoBehaviour:
     type: 0
     start: 40000
   - name: Veh_SuspR_ReboundC
-    valueReference: 78
+    valueReference: 79
     description: Veh_SuspR_ReboundC
     causality: parameter
     variability: tunable
@@ -651,7 +659,7 @@ MonoBehaviour:
     type: 0
     start: 4000
   - name: Veh_SuspR_ReboundK
-    valueReference: 79
+    valueReference: 80
     description: Veh_SuspR_ReboundK
     causality: parameter
     variability: tunable
@@ -659,7 +667,7 @@ MonoBehaviour:
     type: 0
     start: 300000
   - name: Veh_SuspR_ReboundLimit
-    valueReference: 80
+    valueReference: 81
     description: Veh_SuspR_ReboundLimit
     causality: parameter
     variability: tunable
@@ -667,7 +675,7 @@ MonoBehaviour:
     type: 0
     start: 0.04
   - name: Veh_SuspR_ReboundWidth
-    valueReference: 81
+    valueReference: 82
     description: Veh_SuspR_ReboundWidth
     causality: parameter
     variability: tunable
@@ -675,7 +683,7 @@ MonoBehaviour:
     type: 0
     start: 0.003
   - name: 'Veh_SuspR_UnsprungInertia[1,1]'
-    valueReference: 82
+    valueReference: 83
     description: Veh_SuspR_UnsprungInertia(1,1)
     causality: parameter
     variability: tunable
@@ -683,7 +691,7 @@ MonoBehaviour:
     type: 0
     start: 1
   - name: 'Veh_SuspR_UnsprungInertia[1,2]'
-    valueReference: 83
+    valueReference: 84
     description: Veh_SuspR_UnsprungInertia(1,2)
     causality: parameter
     variability: tunable
@@ -691,7 +699,7 @@ MonoBehaviour:
     type: 0
     start: 1
   - name: 'Veh_SuspR_UnsprungInertia[1,3]'
-    valueReference: 84
+    valueReference: 85
     description: Veh_SuspR_UnsprungInertia(1,3)
     causality: parameter
     variability: tunable
@@ -699,7 +707,7 @@ MonoBehaviour:
     type: 0
     start: 1
   - name: Veh_SuspR_UnsprungMass
-    valueReference: 85
+    valueReference: 86
     description: Veh_SuspR_UnsprungMass
     causality: parameter
     variability: tunable
@@ -707,8 +715,16 @@ MonoBehaviour:
     type: 0
     start: 45
   - name: Veh_TrackF
-    valueReference: 86
+    valueReference: 87
     description: Veh_TrackF
+    causality: parameter
+    variability: tunable
+    initial: exact
+    type: 0
+    start: 1.6
+  - name: Veh_TrackR
+    valueReference: 88
+    description: Veh_TrackR
     causality: parameter
     variability: tunable
     initial: exact

@@ -10776,7 +10776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 254f959b433198f41a55e6206be45ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FMUManager
-  selectedFMUName: HeaveRollCar
+  selectedFMUName: KIMMCar
   variables:
   - name: SteerInput
     value: 0
@@ -10910,6 +10910,135 @@ MonoBehaviour:
   - name: time
     value: 0
     causality: independent
+  - name: Veh_AeroArea
+    value: 0
+    causality: parameter
+  - name: Veh_AeroCd
+    value: 0
+    causality: parameter
+  - name: Veh_AeroCl
+    value: 0
+    causality: parameter
+  - name: Veh_AeroRho
+    value: 0
+    causality: parameter
+  - name: 'Veh_BodyInertia[1,1]'
+    value: 0
+    causality: parameter
+  - name: 'Veh_BodyInertia[1,2]'
+    value: 0
+    causality: parameter
+  - name: 'Veh_BodyInertia[1,3]'
+    value: 0
+    causality: parameter
+  - name: Veh_BodyMass
+    value: 0
+    causality: parameter
+  - name: Veh_BodyRefZ0
+    value: 0
+    causality: parameter
+  - name: Veh_BodytoWheelCenter
+    value: 0
+    causality: parameter
+  - name: Veh_FrontAxleX
+    value: 0
+    causality: parameter
+  - name: Veh_SteerRatio
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_BumpC
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_BumpK
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_BumpLimit
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_BumpWidth
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_C
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_EqPos
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_K
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_ReboundC
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_ReboundK
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_ReboundLimit
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_ReboundWidth
+    value: 0
+    causality: parameter
+  - name: 'Veh_SuspF_UnsprungInertia[1,1]'
+    value: 0
+    causality: parameter
+  - name: 'Veh_SuspF_UnsprungInertia[1,2]'
+    value: 0
+    causality: parameter
+  - name: 'Veh_SuspF_UnsprungInertia[1,3]'
+    value: 0
+    causality: parameter
+  - name: Veh_SuspF_UnsprungMass
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_BumpC
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_BumpK
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_BumpLimit
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_BumpWidth
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_C
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_EqPos
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_K
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_ReboundC
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_ReboundK
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_ReboundLimit
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_ReboundWidth
+    value: 0
+    causality: parameter
+  - name: 'Veh_SuspR_UnsprungInertia[1,1]'
+    value: 0
+    causality: parameter
+  - name: 'Veh_SuspR_UnsprungInertia[1,2]'
+    value: 0
+    causality: parameter
+  - name: 'Veh_SuspR_UnsprungInertia[1,3]'
+    value: 0
+    causality: parameter
+  - name: Veh_SuspR_UnsprungMass
+    value: 0
+    causality: parameter
+  - name: Veh_TrackF
+    value: 0
+    causality: parameter
   stepSize: 0.001
 --- !u!1 &1843607452
 GameObject:

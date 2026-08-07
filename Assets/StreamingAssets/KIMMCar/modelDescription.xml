@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-08-07T09:16:03Z" generationTool="Simulink (R2024b)" guid="{8e8d0a25-3b5f-64dc-77c6-54f4eba0558c}" modelName="KIMMCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.368">
+<fmiModelDescription description="Vehicle Dynamics, Heave and Roll DOFs Per Axle" fmiVersion="2.0" generationDateAndTime="2026-08-07T09:32:28Z" generationTool="Simulink (R2024b)" guid="{454e4eb3-9292-50e7-ecc6-943998a48320}" modelName="KIMMCar" numberOfEventIndicators="0" variableNamingConvention="structured" version="12.372">
   <CoSimulation canBeInstantiatedOnlyOncePerProcess="true" canGetAndSetFMUstate="true" canHandleVariableCommunicationStepSize="false" canNotUseMemoryManagementFunctions="true" canSerializeFMUstate="true" modelIdentifier="KIMMCar"/>
   <UnitDefinitions>
     <Unit name="N*s/m"/>
@@ -283,133 +283,141 @@
       <Real start="1.5" unit="m"/>
       <!--Index = 55-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SteerRatio" initial="exact" name="Veh_SteerRatio" valueReference="55" variability="tunable">
-      <Real start="16"/>
+    <ScalarVariable causality="parameter" description="Veh_RearAxleX" initial="exact" name="Veh_RearAxleX" valueReference="55" variability="tunable">
+      <Real start="-1.5" unit="m"/>
       <!--Index = 56-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpC" initial="exact" name="Veh_SuspF_BumpC" valueReference="56" variability="tunable">
-      <Real start="3000" unit="N*s/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SteerRatio" initial="exact" name="Veh_SteerRatio" valueReference="56" variability="tunable">
+      <Real start="16"/>
       <!--Index = 57-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpK" initial="exact" name="Veh_SuspF_BumpK" valueReference="57" variability="tunable">
-      <Real start="200000" unit="N/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpC" initial="exact" name="Veh_SuspF_BumpC" valueReference="57" variability="tunable">
+      <Real start="3000" unit="N*s/m"/>
       <!--Index = 58-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpLimit" initial="exact" name="Veh_SuspF_BumpLimit" valueReference="58" variability="tunable">
-      <Real start="-0.08400000000000001" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpK" initial="exact" name="Veh_SuspF_BumpK" valueReference="58" variability="tunable">
+      <Real start="200000" unit="N/m"/>
       <!--Index = 59-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpWidth" initial="exact" name="Veh_SuspF_BumpWidth" valueReference="59" variability="tunable">
-      <Real start="0.003" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpLimit" initial="exact" name="Veh_SuspF_BumpLimit" valueReference="59" variability="tunable">
+      <Real start="-0.08400000000000001" unit="m"/>
       <!--Index = 60-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_C" initial="exact" name="Veh_SuspF_C" valueReference="60" variability="tunable">
-      <Real start="1750" unit="N*s/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_BumpWidth" initial="exact" name="Veh_SuspF_BumpWidth" valueReference="60" variability="tunable">
+      <Real start="0.003" unit="m"/>
       <!--Index = 61-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_EqPos" initial="exact" name="Veh_SuspF_EqPos" valueReference="61" variability="tunable">
-      <Real start="0.1126" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_C" initial="exact" name="Veh_SuspF_C" valueReference="61" variability="tunable">
+      <Real start="1750" unit="N*s/m"/>
       <!--Index = 62-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_K" initial="exact" name="Veh_SuspF_K" valueReference="62" variability="tunable">
-      <Real start="35000" unit="N/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_EqPos" initial="exact" name="Veh_SuspF_EqPos" valueReference="62" variability="tunable">
+      <Real start="0.1126" unit="m"/>
       <!--Index = 63-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundC" initial="exact" name="Veh_SuspF_ReboundC" valueReference="63" variability="tunable">
-      <Real start="3000" unit="N*s/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_K" initial="exact" name="Veh_SuspF_K" valueReference="63" variability="tunable">
+      <Real start="35000" unit="N/m"/>
       <!--Index = 64-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundK" initial="exact" name="Veh_SuspF_ReboundK" valueReference="64" variability="tunable">
-      <Real start="200000" unit="N/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundC" initial="exact" name="Veh_SuspF_ReboundC" valueReference="64" variability="tunable">
+      <Real start="3000" unit="N*s/m"/>
       <!--Index = 65-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundLimit" initial="exact" name="Veh_SuspF_ReboundLimit" valueReference="65" variability="tunable">
-      <Real start="0.056" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundK" initial="exact" name="Veh_SuspF_ReboundK" valueReference="65" variability="tunable">
+      <Real start="200000" unit="N/m"/>
       <!--Index = 66-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundWidth" initial="exact" name="Veh_SuspF_ReboundWidth" valueReference="66" variability="tunable">
-      <Real start="0.003" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundLimit" initial="exact" name="Veh_SuspF_ReboundLimit" valueReference="66" variability="tunable">
+      <Real start="0.056" unit="m"/>
       <!--Index = 67-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,1)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,1]" valueReference="67" variability="tunable">
-      <Real start="1" unit="kg*m^2"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_ReboundWidth" initial="exact" name="Veh_SuspF_ReboundWidth" valueReference="67" variability="tunable">
+      <Real start="0.003" unit="m"/>
       <!--Index = 68-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,2)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,2]" valueReference="68" variability="tunable">
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,1)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,1]" valueReference="68" variability="tunable">
       <Real start="1" unit="kg*m^2"/>
       <!--Index = 69-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,3)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,3]" valueReference="69" variability="tunable">
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,2)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,2]" valueReference="69" variability="tunable">
       <Real start="1" unit="kg*m^2"/>
       <!--Index = 70-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungMass" initial="exact" name="Veh_SuspF_UnsprungMass" valueReference="70" variability="tunable">
-      <Real start="48" unit="kg"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungInertia(1,3)" initial="exact" name="Veh_SuspF_UnsprungInertia[1,3]" valueReference="70" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
       <!--Index = 71-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpC" initial="exact" name="Veh_SuspR_BumpC" valueReference="71" variability="tunable">
-      <Real start="4000" unit="N*s/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspF_UnsprungMass" initial="exact" name="Veh_SuspF_UnsprungMass" valueReference="71" variability="tunable">
+      <Real start="48" unit="kg"/>
       <!--Index = 72-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpK" initial="exact" name="Veh_SuspR_BumpK" valueReference="72" variability="tunable">
-      <Real start="300000" unit="N/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpC" initial="exact" name="Veh_SuspR_BumpC" valueReference="72" variability="tunable">
+      <Real start="4000" unit="N*s/m"/>
       <!--Index = 73-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpLimit" initial="exact" name="Veh_SuspR_BumpLimit" valueReference="73" variability="tunable">
-      <Real start="-0.095" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpK" initial="exact" name="Veh_SuspR_BumpK" valueReference="73" variability="tunable">
+      <Real start="300000" unit="N/m"/>
       <!--Index = 74-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpWidth" initial="exact" name="Veh_SuspR_BumpWidth" valueReference="74" variability="tunable">
-      <Real start="0.003" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpLimit" initial="exact" name="Veh_SuspR_BumpLimit" valueReference="74" variability="tunable">
+      <Real start="-0.095" unit="m"/>
       <!--Index = 75-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_C" initial="exact" name="Veh_SuspR_C" valueReference="75" variability="tunable">
-      <Real start="2200" unit="N*s/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_BumpWidth" initial="exact" name="Veh_SuspR_BumpWidth" valueReference="75" variability="tunable">
+      <Real start="0.003" unit="m"/>
       <!--Index = 76-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_EqPos" initial="exact" name="Veh_SuspR_EqPos" valueReference="76" variability="tunable">
-      <Real start="0.0985" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_C" initial="exact" name="Veh_SuspR_C" valueReference="76" variability="tunable">
+      <Real start="2200" unit="N*s/m"/>
       <!--Index = 77-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_K" initial="exact" name="Veh_SuspR_K" valueReference="77" variability="tunable">
-      <Real start="40000" unit="N/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_EqPos" initial="exact" name="Veh_SuspR_EqPos" valueReference="77" variability="tunable">
+      <Real start="0.0985" unit="m"/>
       <!--Index = 78-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundC" initial="exact" name="Veh_SuspR_ReboundC" valueReference="78" variability="tunable">
-      <Real start="4000" unit="N*s/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_K" initial="exact" name="Veh_SuspR_K" valueReference="78" variability="tunable">
+      <Real start="40000" unit="N/m"/>
       <!--Index = 79-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundK" initial="exact" name="Veh_SuspR_ReboundK" valueReference="79" variability="tunable">
-      <Real start="300000" unit="N/m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundC" initial="exact" name="Veh_SuspR_ReboundC" valueReference="79" variability="tunable">
+      <Real start="4000" unit="N*s/m"/>
       <!--Index = 80-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundLimit" initial="exact" name="Veh_SuspR_ReboundLimit" valueReference="80" variability="tunable">
-      <Real start="0.04" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundK" initial="exact" name="Veh_SuspR_ReboundK" valueReference="80" variability="tunable">
+      <Real start="300000" unit="N/m"/>
       <!--Index = 81-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundWidth" initial="exact" name="Veh_SuspR_ReboundWidth" valueReference="81" variability="tunable">
-      <Real start="0.003" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundLimit" initial="exact" name="Veh_SuspR_ReboundLimit" valueReference="81" variability="tunable">
+      <Real start="0.04" unit="m"/>
       <!--Index = 82-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,1)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,1]" valueReference="82" variability="tunable">
-      <Real start="1" unit="kg*m^2"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_ReboundWidth" initial="exact" name="Veh_SuspR_ReboundWidth" valueReference="82" variability="tunable">
+      <Real start="0.003" unit="m"/>
       <!--Index = 83-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,2)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,2]" valueReference="83" variability="tunable">
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,1)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,1]" valueReference="83" variability="tunable">
       <Real start="1" unit="kg*m^2"/>
       <!--Index = 84-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,3)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,3]" valueReference="84" variability="tunable">
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,2)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,2]" valueReference="84" variability="tunable">
       <Real start="1" unit="kg*m^2"/>
       <!--Index = 85-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungMass" initial="exact" name="Veh_SuspR_UnsprungMass" valueReference="85" variability="tunable">
-      <Real start="45" unit="kg"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungInertia(1,3)" initial="exact" name="Veh_SuspR_UnsprungInertia[1,3]" valueReference="85" variability="tunable">
+      <Real start="1" unit="kg*m^2"/>
       <!--Index = 86-->
     </ScalarVariable>
-    <ScalarVariable causality="parameter" description="Veh_TrackF" initial="exact" name="Veh_TrackF" valueReference="86" variability="tunable">
-      <Real start="1.6" unit="m"/>
+    <ScalarVariable causality="parameter" description="Veh_SuspR_UnsprungMass" initial="exact" name="Veh_SuspR_UnsprungMass" valueReference="86" variability="tunable">
+      <Real start="45" unit="kg"/>
       <!--Index = 87-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_TrackF" initial="exact" name="Veh_TrackF" valueReference="87" variability="tunable">
+      <Real start="1.6" unit="m"/>
+      <!--Index = 88-->
+    </ScalarVariable>
+    <ScalarVariable causality="parameter" description="Veh_TrackR" initial="exact" name="Veh_TrackR" valueReference="88" variability="tunable">
+      <Real start="1.6" unit="m"/>
+      <!--Index = 89-->
     </ScalarVariable>
   </ModelVariables>
   <ModelStructure>
