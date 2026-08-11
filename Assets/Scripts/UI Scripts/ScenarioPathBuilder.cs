@@ -16,13 +16,16 @@ public class WaypointData
     public GameObject visualMarker;
 }
 
+/// <summary>
+/// 시나리오 모드에서 보행자의 이동 경로(Waypoint)를 생성 및 편집하는 빌더 클래스.
+/// LayerMask의 수동 설정 필요 없이 UI 및 Ignore Raycast를 제외한 모든 맵 지면 위에 경로를 생성합니다.
+/// </summary>
 public class ScenarioPathBuilder : MonoBehaviour
 {
     [Header("Settings")]
     public GameObject waypointMarkerPrefab;
     public GameObject ghostPrefab;
     public GameObject pedestrianActorPrefab;
-    public LayerMask groundLayer;
     public float rotationSpeed = 10f;
     public GameObject pathEditorPanel;
     public TMP_Dropdown stateDropdown;
@@ -41,19 +44,20 @@ public class ScenarioPathBuilder : MonoBehaviour
     private ActorState currentStateFromUI = ActorState.Idle;
     private bool isBuildingPath = false;
     private bool isPointerOverUI = false;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    // 레이캐스트 감지 시 무시할 레이어 마스크 (Ignore Raycast 및 UI 제외)
+    private static int _groundLayerMask = -1;
+
     void Start()
     {
-        // [원리]: 인스펙터에서 groundLayer가 설정되지 않은 경우(0/Nothing),
-        // "Ignore Raycast" 및 "UI" 레이어를 제외한 모든 레이어(~ (Ignore Raycast | UI))를 
-        // 감지 마스크로 설정하여 맵 지형의 레이어 설정(Default, Ground, Map 등)에 관계없이 보행자 경로 배치가 동작하도록 합니다.
-        if (groundLayer.value == 0)
+        // [원리]: Ignore Raycast 및 UI 레이어를 제외한 레이어 마스크를 자동 비트 연산으로 초기화
+        if (_groundLayerMask == -1)
         {
             int ignoreLayerBit = LayerMask.GetMask("Ignore Raycast", "UI");
-            groundLayer = ~ignoreLayerBit;
+            _groundLayerMask = ~ignoreLayerBit;
         }
 
-        if(SimulatorManager.Instance !=null)
+        if (SimulatorManager.Instance != null)
         {
             controls = SimulatorManager.Instance.inputActions;
             controls.EditCamera.Place.performed += OnPlaceInput;
@@ -68,8 +72,9 @@ public class ScenarioPathBuilder : MonoBehaviour
     private void OnDestroy()
     {
         if (controls != null) controls.EditCamera.Place.performed -= OnPlaceInput;
-        SimulatorManager.Instance.OnModeChanged -= HandleModeChanged;
+        if (SimulatorManager.Instance != null) SimulatorManager.Instance.OnModeChanged -= HandleModeChanged;
     }
+
     private void HandleModeChanged(SimulatorMode newMode)
     {
         if (newMode == SimulatorMode.Simulation)
@@ -81,6 +86,7 @@ public class ScenarioPathBuilder : MonoBehaviour
             ShowWaypointMarkers();
         }
     }
+
     public void StartBuildingPath()
     {
         if (pathLine != null) 
@@ -89,7 +95,7 @@ public class ScenarioPathBuilder : MonoBehaviour
             pathLine.loop = false;
         }
         if (walkSpeedInput != null) walkSpeedInput.text = "3";
-        if(runSpeedInput!=null) runSpeedInput.text = "5";
+        if (runSpeedInput != null) runSpeedInput.text = "5";
         isBuildingPath = true;
         currentPath.Clear();
         currentYRotation = 0f;
@@ -98,7 +104,7 @@ public class ScenarioPathBuilder : MonoBehaviour
         {
             currentStateFromUI = (ActorState)stateDropdown.value;
         }
-        if (currentGhost==null && ghostPrefab!=null)
+        if (currentGhost == null && ghostPrefab != null)
         {
             currentGhost = Instantiate(ghostPrefab);
             foreach (var c in currentGhost.GetComponentsInChildren<Collider>())
@@ -107,13 +113,13 @@ public class ScenarioPathBuilder : MonoBehaviour
             }
         }
     }
-    // Update is called once per frame
+
     void Update()
     {
         isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
-        if(!isBuildingPath||SimulatorManager.Instance.IsSimulationActive())
+        if (!isBuildingPath || SimulatorManager.Instance.IsSimulationActive())
         {
-            if(currentGhost != null) currentGhost.SetActive(false);
+            if (currentGhost != null) currentGhost.SetActive(false);
             return;
         }
 
@@ -127,17 +133,17 @@ public class ScenarioPathBuilder : MonoBehaviour
         Ray ray = editCam.ScreenPointToRay(mousePos);
         RaycastHit hit;
 
-        if(Physics.Raycast(ray, out hit,1000f,groundLayer))
+        if (Physics.Raycast(ray, out hit, 1000f, _groundLayerMask))
         {
             currentGhost.SetActive(true);
             currentGhost.transform.position = hit.point;
 
             float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
-            if (Mathf.Abs(scrollInput)>0.1f)
+            if (Mathf.Abs(scrollInput) > 0.1f)
             {
                 currentYRotation += scrollInput * rotationSpeed;
             }
-            currentGhost.transform.rotation = Quaternion.Euler(0,currentYRotation,0);
+            currentGhost.transform.rotation = Quaternion.Euler(0, currentYRotation, 0);
         }
         else
         {
@@ -147,32 +153,27 @@ public class ScenarioPathBuilder : MonoBehaviour
 
     private void OnPlaceInput(InputAction.CallbackContext context)
     {
-        // 1. UI 클릭 방어
         if (isPointerOverUI) return;
-
-        // 2. 모드 확인
         if (!isBuildingPath || SimulatorManager.Instance.IsSimulationActive()) return;
 
         if (currentGhost != null && currentGhost.activeSelf)
         {
-            // 3. (수정됨) 마커를 먼저 씬에 생성하고 변수에 담습니다!
             GameObject newMarker = null;
             if (waypointMarkerPrefab != null)
             {
                 newMarker = Instantiate(waypointMarkerPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
             }
 
-            // 4. 생성된 마커(newMarker)를 장부에 확실하게 기록합니다.
             WaypointData newPoint = new WaypointData
             {
                 position = currentGhost.transform.position,
                 rotation = currentGhost.transform.rotation,
                 state = currentStateFromUI,
-                visualMarker = newMarker // 이제 null이 아니라 실제 생성된 오브젝트가 들어갑니다!
+                visualMarker = newMarker
             };
 
             currentPath.Add(newPoint);
-            Debug.Log($"웨이포인트 추가됨! 현재 총 {currentPath.Count}개의 점이 있습니다.");
+            Debug.Log($"웨이포인트 추가됨. 현재 총 {currentPath.Count}개의 포인트가 존재합니다.");
             UpdatePathLine();
         }
     }
@@ -180,14 +181,14 @@ public class ScenarioPathBuilder : MonoBehaviour
     public void FinishBuildingPath()
     {
         isBuildingPath = false;
-        if(currentGhost != null) Destroy(currentGhost);
-        Debug.Log("경로 작성 완료! 저장된 점의 개수: " + currentPath.Count);
-        if(pathEditorPanel != null) pathEditorPanel.SetActive(false);
+        if (currentGhost != null) Destroy(currentGhost);
+        Debug.Log("경로 생성 완료! 생성된 포인트 개수: " + currentPath.Count);
+        if (pathEditorPanel != null) pathEditorPanel.SetActive(false);
         if (pathLine != null && currentPath.Count > 1)
         {
             pathLine.loop = true;
         }
-        if (pedestrianActorPrefab!= null && currentPath.Count>0)
+        if (pedestrianActorPrefab != null && currentPath.Count > 0)
         {
             GameObject newActor = Instantiate(pedestrianActorPrefab);
             float wSpeed = 3f;
@@ -196,9 +197,9 @@ public class ScenarioPathBuilder : MonoBehaviour
             if (runSpeedInput != null && float.TryParse(runSpeedInput.text, out float parsedRun)) rSpeed = parsedRun;
             newActor.GetComponent<PedestrianActor>().InitializePath(currentPath, wSpeed, rSpeed);
 
-            foreach(var point in currentPath)
+            foreach (var point in currentPath)
             {
-                if(point.visualMarker != null)
+                if (point.visualMarker != null)
                 {
                     newActor.GetComponent<PedestrianActor>().myMarkers.Add(point.visualMarker);
                 }
@@ -213,14 +214,13 @@ public class ScenarioPathBuilder : MonoBehaviour
         if (currentGhost != null) Destroy(currentGhost);
         if (pathEditorPanel != null) pathEditorPanel.SetActive(false);
 
-        // 화면에 찍어둔 마커들을 싹 다 지워버립니다.
         foreach (var point in currentPath)
         {
             if (point.visualMarker != null) Destroy(point.visualMarker);
         }
-        currentPath.Clear(); // 장부도 초기화
+        currentPath.Clear();
     }
-    // 시뮬레이션 모드 진입 시 호출할 함수
+
     public void HideWaypointMarkers()
     {
         if (pathLine != null) pathLine.enabled = false;
@@ -228,12 +228,11 @@ public class ScenarioPathBuilder : MonoBehaviour
         {
             if (point.visualMarker != null)
             {
-                point.visualMarker.SetActive(false); // 눈에서만 숨김! 데이터는 살아있음.
+                point.visualMarker.SetActive(false);
             }
         }
     }
 
-    // (옵션) 다시 Edit Mode로 돌아왔을 때 보이게 하려면
     public void ShowWaypointMarkers()
     {
         if (pathLine != null) pathLine.enabled = true;
@@ -256,25 +255,23 @@ public class ScenarioPathBuilder : MonoBehaviour
     {
         if (pathLine == null) return;
 
-        pathLine.positionCount = currentPath.Count; // 점의 개수만큼 선의 꺾임 포인트를 만듦
+        pathLine.positionCount = currentPath.Count;
         for (int i = 0; i < currentPath.Count; i++)
         {
-            // 선이 땅에 파묻히지 않게 Y축으로 살짝(0.1f) 띄워줍니다!
             pathLine.SetPosition(i, currentPath[i].position + Vector3.up * 0.1f);
         }
     }
+
     public void ClearAllPedestrians()
     {
-        // 1. 혹시 경로를 그리고 있던 중이라면 취소
         CancelBuildingPath();
 
-        // 2. 씬에 있는 모든 보행자(PedestrianActor)를 찾아서 싹 지웁니다.
         PedestrianActor[] allActors = FindObjectsByType<PedestrianActor>(FindObjectsSortMode.None);
         foreach (PedestrianActor actor in allActors)
         {
             Destroy(actor.gameObject);
         }
 
-        Debug.Log($"총 {allActors.Length}명의 보행자를 삭제했습니다.");
+        Debug.Log($"총 {allActors.Length}명의 보행자를 제거하였습니다.");
     }
 }

@@ -38,19 +38,7 @@ public class VehicleController : MonoBehaviour
     private Vector3 _spawnPos = Vector3.zero;
     private Quaternion _spawnRot = Quaternion.identity;
     private bool _isRespawning = false;
-    public LayerMask mapLayer;
 
-    private void Awake()
-    {
-        // 인스펙터 설정과 상관없이 Default, Road, Map 레이어를 충돌 감지 대상에 자동 포함
-        int defaultLayer = LayerMask.NameToLayer("Default");
-        int roadLayer = LayerMask.NameToLayer("Road");
-        int mapLayerIndex = LayerMask.NameToLayer("Map");
-
-        if (defaultLayer != -1) mapLayer |= (1 << defaultLayer);
-        if (roadLayer != -1) mapLayer |= (1 << roadLayer);
-        if (mapLayerIndex != -1) mapLayer |= (1 << mapLayerIndex);
-    }
     void Start()
     {
         // 시작할 때 스폰 포인트의 위치/회전을 기억해둡니다.
@@ -247,16 +235,12 @@ public class VehicleController : MonoBehaviour
     {
         if (_isRespawning) return;
 
-        // 부딪힌 놈(other)의 레이어가 Map인지 확인
-        // (비트 연산: 내 mapLayer에 포함된 놈인가?)
-        if ((mapLayer.value & (1 << other.gameObject.layer)) != 0)
+        // [원리]: 레이어 제한 없이 트리거 충돌 발생 시 시각 효과 및 리스폰 루틴 발동
+        if (UIManager.Instance != null)
         {
-            if (UIManager.Instance != null)
-            {
-                UIManager.Instance.StartCollisionEffect();
-            }
-            Debug.Log($"{other.gameObject.name}에 충돌");
-            StartCoroutine(CollisionRespawnRoutine());
+            UIManager.Instance.StartCollisionEffect();
         }
+        Debug.Log($"{other.gameObject.name}와 충돌");
+        StartCoroutine(CollisionRespawnRoutine());
     }
 }

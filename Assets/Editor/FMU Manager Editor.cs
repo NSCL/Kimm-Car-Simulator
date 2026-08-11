@@ -2,14 +2,20 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
-// using FMI; // ÇÊ¿ä½Ã ÁÖ¼® ÇØÁ¦
+using System.Globalization;
 
+/// <summary>
+/// FMUManagerì˜ ìœ ë‹ˆí‹° ì»¤ìŠ¤í…€ ì¸ìŠ¤í™í„° ì—ë””í„° í´ë˜ìŠ¤.
+/// ModelDescription ì—ì…‹ìœ¼ë¡œë¶€í„° FMU ë³€ìˆ˜ ë° íŒŒë¼ë¯¸í„°(Inputs, Outputs, Parameters) ëª©ë¡ì„ ë¡œë“œí•˜ê³ ,
+/// FMU ì´ˆê¸°ê°’(start value)ì„ ì˜¬ë°”ë¥´ê²Œ íŒŒì‹±í•˜ì—¬ ì¸ìŠ¤í™í„° ìƒì—ì„œ ì§ê´€ì ìœ¼ë¡œ í™•ì¸ ë° ì¡°ì‘í•  ìˆ˜ ìˆë„ë¡ ì§€ì›í•©ë‹ˆë‹¤.
+/// </summary>
 [CustomEditor(typeof(FMUManager))]
 public class FMUManagerEditor : Editor
 {
-    // Åä±Û »óÅÂ¸¦ ±â¾ïÇÏ±â À§ÇÑ º¯¼ö (true¸é ÆîÄ§, false¸é Á¢À½)
+    // ì¸ìŠ¤í™í„° í´ë“œì•„ì›ƒ(Foldout) ì„¹ì…˜ í‘œì‹œ ì—¬ë¶€ ì œì–´ í”Œë˜ê·¸
     private bool _showInputs = true;
-    private bool _showOutputs = false; // OutputÀº º¸Åë ¸¹À¸´Ï ±âº»ÀûÀ¸·Î Á¢¾îµÒ
+    private bool _showParameters = true; // ì°¨ëŸ‰ ì§ˆëŸ‰, ì¶•ê±° ë“± íŒŒë¼ë¯¸í„°(Parameter) í‘œì‹œìš©
+    private bool _showOutputs = false;   // Outputì€ ê¸°ë³¸ì ìœ¼ë¡œ ì ‘ì–´ë‘ 
 
     public override void OnInspectorGUI()
     {
@@ -18,7 +24,7 @@ public class FMUManagerEditor : Editor
         GUIStyle boldStyle = new GUIStyle(EditorStyles.boldLabel);
 
         // =========================================================
-        // 1. FMU ¼±ÅÃ
+        // 1. FMU ì„ íƒ ë“œë¡­ë‹¤ìš´ (Resources ë‚´ ModelDescription ì—ì…‹ ê²€ìƒ‰)
         // =========================================================
         GUILayout.Label("FMU Configuration", boldStyle);
 
@@ -40,43 +46,56 @@ public class FMUManagerEditor : Editor
         GUILayout.Space(10);
 
         // =========================================================
-        // 2. º¯¼ö ¸ñ·Ï (Æúµå¾Æ¿ô Àû¿ë)
+        // 2. FMU ë³€ìˆ˜ ë° íŒŒë¼ë¯¸í„° ëª©ë¡ í‘œì‹œ (Input / Parameter / Output)
         // =========================================================
         if (script.variables.Count > 0)
         {
-            // --- [Input º¯¼öµé] ---
-            // ¸ÕÀú Input º¯¼ö¸¸ µû·Î ¸®½ºÆ®¸¦ »Ì¾Æº¾´Ï´Ù (°³¼ö ¼¼±â¿ë)
+            // --- [1] Input ë³€ìˆ˜ ì„¹ì…˜ (ì œì–´ ì…ë ¥: Steer, Throttle, Brake ë“±) ---
             var inputVars = script.variables.FindAll(v => v.causality == "input");
-
-            // Æúµå¾Æ¿ô Á¦¸ñ ±×¸®±â (¿¹: "Inputs (Write) [5]")
             _showInputs = EditorGUILayout.Foldout(_showInputs, $"Inputs (Write) [{inputVars.Count}]", true);
 
-            if (_showInputs) // ÆîÃÄÁ® ÀÖÀ» ¶§¸¸ ±×¸®±â
+            if (_showInputs)
             {
-                EditorGUI.indentLevel++; // µé¿©¾²±âÇØ¼­ °èÃş ±¸Á¶ Ç¥Çö
+                EditorGUI.indentLevel++;
                 foreach (var v in script.variables)
                 {
                     if (v.causality == "input")
                     {
-                        // º¯¼ö ÀÌ¸§ÀÌ ³Ê¹« ±æ¸é Àß¸± ¼ö ÀÖÀ¸´Ï ÅøÆÁ Ãß°¡ µî °¡´É
                         v.value = EditorGUILayout.DoubleField(v.name, v.value);
                     }
                 }
-                EditorGUI.indentLevel--; // µé¿©¾²±â ¿ø»óº¹±¸
+                EditorGUI.indentLevel--;
             }
 
             GUILayout.Space(5);
 
-            // --- [Output º¯¼öµé] ---
-            var outputVars = script.variables.FindAll(v => v.causality == "output");
+            // --- [2] Parameter ë³€ìˆ˜ ì„¹ì…˜ (ì°¨ëŸ‰ ì œì›: ì§ˆëŸ‰, ì¶•ê±°, ìœ¤ê±°, ê´€ì„±ëª¨ë©˜íŠ¸ ë“±) ---
+            var paramVars = script.variables.FindAll(v => v.causality == "parameter");
+            _showParameters = EditorGUILayout.Foldout(_showParameters, $"Parameters (Tunable) [{paramVars.Count}]", true);
 
-            // OutputÀº º¸Åë ¸¹À¸´Ï±î ±âº»ÀûÀ¸·Î Á¢¾îµÎ°Ô ¼³Á¤Çß½À´Ï´Ù (_showOutputs ÃÊ±â°ª false)
+            if (_showParameters)
+            {
+                EditorGUI.indentLevel++;
+                foreach (var v in script.variables)
+                {
+                    if (v.causality == "parameter")
+                    {
+                        v.value = EditorGUILayout.DoubleField(v.name, v.value);
+                    }
+                }
+                EditorGUI.indentLevel--;
+            }
+
+            GUILayout.Space(5);
+
+            // --- [3] Output ë³€ìˆ˜ ì„¹ì…˜ (ë™ì—­í•™ ì¶œë ¥: body_x, body_y, wheel outputs ë“±) ---
+            var outputVars = script.variables.FindAll(v => v.causality == "output");
             _showOutputs = EditorGUILayout.Foldout(_showOutputs, $"Outputs (Read Only) [{outputVars.Count}]", true);
 
             if (_showOutputs)
             {
                 EditorGUI.indentLevel++;
-                GUI.enabled = false; // ÀĞ±â Àü¿ë ¸ğµå ½ÃÀÛ
+                GUI.enabled = false; // ì½ê¸° ì „ìš©ìœ¼ë¡œ ë¹„í™œì„±í™”
 
                 foreach (var v in script.variables)
                 {
@@ -86,30 +105,34 @@ public class FMUManagerEditor : Editor
                     }
                 }
 
-                GUI.enabled = true; // ÀĞ±â Àü¿ë ¸ğµå ³¡
+                GUI.enabled = true; // ì½ê¸° ì „ìš© í•´ì œ
                 EditorGUI.indentLevel--;
             }
         }
         else if (!string.IsNullOrEmpty(script.selectedFMUName))
         {
-            EditorGUILayout.HelpBox("º¯¼ö ¸®½ºÆ®°¡ ºñ¾îÀÖ½À´Ï´Ù.", MessageType.Warning);
+            EditorGUILayout.HelpBox("ë¡œë“œëœ FMU ë³€ìˆ˜ê°€ ì—†ìŠµë‹ˆë‹¤. ì•„ë˜ ë²„íŠ¼ì„ ëˆŒëŸ¬ ì—ì…‹ ë°ì´í„°ë¥¼ ìƒˆë¡œê³ ì¹¨í•˜ì„¸ìš”.", MessageType.Warning);
             if (GUILayout.Button("Reload Variables")) LoadVariablesFromAsset(script);
         }
 
         GUILayout.Space(20);
 
         // =========================================================
-        // 3. ³ª¸ÓÁö ±âº» º¯¼öµé
+        // 3. ê¸°ë³¸ ì¸ìŠ¤í™í„° ìš”ì†Œ ê·¸ë ¤ì£¼ê¸°
         // =========================================================
         DrawDefaultInspector();
     }
 
+    /// <summary>
+    /// Resources í´ë” ë‚´ ScriptableObject(ModelDescription)ë¡œë¶€í„° FMU ë³€ìˆ˜ íŒŒë¼ë¯¸í„° ìˆ˜ì§‘.
+    /// ModelDescriptionì˜ 'start' ì†ì„±ì„ íŒŒì‹±í•˜ì—¬ ì¸ìŠ¤í™í„° ë° RuntimeFMUVariable.value ì´ˆê¸°ê°’ìœ¼ë¡œ ì„¤ì •í•©ë‹ˆë‹¤.
+    /// </summary>
     void LoadVariablesFromAsset(FMUManager script)
     {
         script.variables.Clear();
         if (string.IsNullOrEmpty(script.selectedFMUName) || script.selectedFMUName == "None") return;
 
-        // ModelDescription Ã£±â
+        // Resources í´ë”ì—ì„œ ì—ì…‹ ë¡œë“œ
         ModelDescription fmuData = Resources.Load<ModelDescription>(script.selectedFMUName);
 
         if (fmuData != null)
@@ -119,12 +142,27 @@ public class FMUManagerEditor : Editor
                 RuntimeFMUVariable newVar = new RuntimeFMUVariable();
                 newVar.name = scalarVar.name;
                 newVar.causality = scalarVar.causality;
-                newVar.value = 0f;
+
+                // [í•µì‹¬ ë¡œì§] scalarVar.start ë¬¸ìì—´ì„ double ì‹¤ìˆ˜ ê°’ìœ¼ë¡œ ì•ˆì „í•˜ê²Œ íŒŒì‹±.
+                // InvariantCultureë¥¼ ì‚¬ìš©í•˜ì—¬ ì†Œìˆ˜ì (.) í˜•íƒœì˜ ë¬¸ìì—´ì„ í¬ë§· ì´ìŠˆ ì—†ì´ ì¼ê´€ì„± ìˆê²Œ íŒŒì‹±í•©ë‹ˆë‹¤.
+                if (!string.IsNullOrEmpty(scalarVar.start) &&
+                    double.TryParse(scalarVar.start, NumberStyles.Any, CultureInfo.InvariantCulture, out double parsedValue))
+                {
+                    newVar.value = parsedValue;
+                }
+                else
+                {
+                    newVar.value = 0.0;
+                }
+
                 script.variables.Add(newVar);
             }
         }
     }
 
+    /// <summary>
+    /// Resources í´ë” ë‚´ì— ì¡´ì¬í•˜ëŠ” ëª¨ë“  ModelDescription ì—ì…‹ íŒŒì¼ ì´ë¦„ ìˆ˜ì§‘
+    /// </summary>
     string[] GetFMUListFromResources()
     {
         List<string> names = new List<string> { "None" };

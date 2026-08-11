@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 각 바퀴(FL, FR, RL, RR)의 Transform, 지면 센서, FMU 입출력 핀 매핑 정보를 관리하는 데이터 구조체
+/// </summary>
 [System.Serializable]
 public class WheelData
 {
@@ -13,9 +16,9 @@ public class WheelData
 
     [Header("3. Inputs")]
     [FMUVariable(true)] public string var_WheelOmega_In; // 각속도 입력
-    [FMUVariable(true)] public string var_GroundDist_In; // Penetration / gz 입력
-    [FMUVariable(true)] public string var_GroundQx_In;   // 지면 패치 롤/피치 회전 Qx 입력
-    [FMUVariable(true)] public string var_GroundQy_In;   // 지면 패치 롤/피치 회전 Qy 입력
+    [FMUVariable(true)] public string var_GroundDist_In; // 지면 상대 고도(gz) 입력
+    [FMUVariable(true)] public string var_GroundQx_In;   // 지면 경사도 회전 Qx 입력
+    [FMUVariable(true)] public string var_GroundQy_In;   // 지면 경사도 회전 Qy 입력
 
     [Header("4. Outputs - Position")]
     [FMUVariable] public string var_WheelPos_X;
@@ -29,5 +32,5 @@ public class WheelData
     [FMUVariable] public string var_WheelRot_W;
 
     [Header("6. Outputs - Spin")]
-    [FMUVariable] public string var_WheelSpin_Out; // fmi_Angle_Out
+    [FMUVariable] public string var_WheelSpin_Out; // 바퀴 자전 각도 출력 (rad)
 }

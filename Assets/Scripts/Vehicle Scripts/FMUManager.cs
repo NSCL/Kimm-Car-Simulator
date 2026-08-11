@@ -3,35 +3,41 @@ using System.Collections.Generic;
 using FMI2;
 using System.Diagnostics;
 
-// [Áß¿ä] ÀÌ Å¬·¡½º´Â FMUImporter°¡ ¾²´Â ScalarVariable°ú´Â º°°³·Î
-// ¿ì¸® ½Ã¹Ä·¹ÀÌÅÍ°¡ ½ÇÁ¦·Î °ªÀ» ¼öÁ¤ÇÏ°í ³î ·±Å¸ÀÓ¿ë º¯¼öÀÔ´Ï´Ù.
+/// <summary>
+/// FMU ëŸ°íƒ€ì„ ë³€ìˆ˜ ë° íŒŒë¼ë¯¸í„° ë§¤í•‘ì„ ìœ„í•œ ë°ì´í„° êµ¬ì¡°ì²´
+/// ModelDescriptionì—ì„œ ì¶”ì¶œí•œ ì´ë¦„, ê°’, causality(input, output, parameter ë“±) ì •ë³´ë¥¼ ìœ ì§€í•©ë‹ˆë‹¤.
+/// </summary>
 [System.Serializable]
 public class RuntimeFMUVariable
 {
-    public string name;      // º¯¼ö ÀÌ¸§ (steering µî)
-    public double value;      // ÇöÀç °ª
-    public string causality; // input, output, local, parameter µî
+    public string name;      // ë³€ìˆ˜/íŒŒë¼ë¯¸í„° ì´ë¦„ (ì˜ˆ: SteerInput, Veh_BodyMass)
+    public double value;     // ë³€ìˆ˜/íŒŒë¼ë¯¸í„° ê°’
+    public string causality; // ë³€ìˆ˜ ì†ì„± (input, output, local, parameter ë“±)
 }
 
+/// <summary>
+/// FMU ì‹¤í–‰ ë° ëŸ°íƒ€ì„ ì…ì¶œë ¥/íŒŒë¼ë¯¸í„° ì œì–´ë¥¼ ì´ê´„í•˜ëŠ” ìœ ë‹ˆí‹° MonoBehaviour ë§¤ë‹ˆì € í´ë˜ìŠ¤
+/// </summary>
 public class FMUManager : MonoBehaviour
 {
     [HideInInspector]
     public string selectedFMUName;
 
-    // ÀÎ½ºÆåÅÍ¿¡ º¸¿©Áú º¯¼ö ¸®½ºÆ®
+    // ì¸ìŠ¤í™í„° ë° ëŸ°íƒ€ì„ì— ê´€ë¦¬ë˜ëŠ” FMU ë³€ìˆ˜/íŒŒë¼ë¯¸í„° ë¦¬ìŠ¤íŠ¸
     public List<RuntimeFMUVariable> variables = new List<RuntimeFMUVariable>();
     public double stepSize = 0.001;
-    //  [Ãß°¡µÊ] ¼º´É Æø¹ß ÃÖÀûÈ­: ¸Å ÇÁ·¹ÀÓ¸¶´Ù ¸®½ºÆ®¸¦ µÚÁöÁö ¾Êµµ·Ï µñ¼Å³Ê¸®·Î °ü¸®ÇÕ´Ï´Ù.
+
+    // ë³€ìˆ˜ëª…ìœ¼ë¡œ ë¹ ë¥¸ ì¡°íšŒë¥¼ ìœ„í•œ ë”•ì…”ë„ˆë¦¬
     private Dictionary<string, RuntimeFMUVariable> varDict = new Dictionary<string, RuntimeFMUVariable>();
 
-    // ½ÇÁ¦ ½Ã¹Ä·¹ÀÌ¼Ç ¿£Áø
+    // C++ DLL FMU ì¸ìŠ¤í„´ìŠ¤ ê°ì²´
     private FMU fmu;
 
     private double currentTime = 0.0;
 
     private void Awake()
     {
-        // ½ÃÀÛÇÏ±â Àü¿¡, ÀÎ½ºÆåÅÍ¿¡ ÀÖ´Â º¯¼öµéÀ» ºûÀÇ ¼Óµµ·Î Ã£À» ¼ö ÀÖ°Ô µñ¼Å³Ê¸®¿¡ ´ã¾ÆµÓ´Ï´Ù.
+        // ì”¬ ì‹œì‘ ì‹œ ë³€ìˆ˜ ë¦¬ìŠ¤íŠ¸ë¥¼ ë”•ì…”ë„ˆë¦¬ì— ë§¤í•‘í•˜ì—¬ ë¹ ë¥¸ ì¡°íšŒ ë³´ì¥
         foreach (var v in variables)
         {
             varDict[v.name] = v;
@@ -42,7 +48,7 @@ public class FMUManager : MonoBehaviour
     {
         if (string.IsNullOrEmpty(selectedFMUName))
         {
-            UnityEngine.Debug.LogError("FMU is Null or Empty.");
+            UnityEngine.Debug.LogError("FMU Name is Null or Empty.");
             return;
         }
 
@@ -52,7 +58,7 @@ public class FMUManager : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            UnityEngine.Debug.LogError($"[FMU Init Error]{e.Message}");
+            UnityEngine.Debug.LogError($"[FMU Init Error] {e.Message}");
         }
     }
 
@@ -65,12 +71,14 @@ public class FMUManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// FMU ì¸ìŠ¤í„´ìŠ¤ë¥¼ ì¬ì„¤ì •í•˜ê³  ì´ˆê¸°í™” ëª¨ë“œì—ì„œ ì„¤ì •ëœ íŒŒë¼ë¯¸í„°(Mass, Wheelbase ë“±)ë¥¼ FMU C++ DLLì— ì£¼ì…í•©ë‹ˆë‹¤.
+    /// </summary>
     public void ResetFMU()
     {
-        //  [ÇÙ½É ¹ö±× ¼öÁ¤µÊ] VehicleController¿¡¼­ ResetÀ» ºÎ¸¦ ¶§¸¶´Ù ±âÁ¸ C++ ¸Ş¸ğ¸®°¡ ÅÍÁö´Â °É ¸·½À´Ï´Ù!
         if (fmu != null)
         {
-            fmu.Dispose(); // ±âÁ¸ ¸Ş¸ğ¸® ¾ÈÀüÇÏ°Ô ÇØÁ¦
+            fmu.Dispose();
             fmu = null;
         }
 
@@ -78,15 +86,30 @@ public class FMUManager : MonoBehaviour
         fmu = new FMU(selectedFMUName, this.name);
         fmu.Reset();
         fmu.SetupExperiment(Time.fixedTimeAsDouble);
+
+        // FMU ì´ˆê¸°í™” ëª¨ë“œ ì§„ì…
         fmu.EnterInitializationMode();
+
+        // [í•µì‹¬ ë¡œì§] EnterInitializationModeì™€ ExitInitializationMode ì‚¬ì´ì—ì„œ
+        // ì¸ìŠ¤í™í„° ë˜ëŠ” Configì— ì„¤ì •ëœ parameter ë° initial input ê°’ë“¤ì„ FMU C++ DLL íŒŒë¼ë¯¸í„°ë¡œ ì£¼ì…
+        foreach (var v in variables)
+        {
+            if (v.causality == "parameter" || v.causality == "input")
+            {
+                fmu.SetReal(v.name, v.value);
+            }
+        }
+
+        // FMU ì´ˆê¸°í™” ëª¨ë“œ ì¢…ë£Œ (ê³„ì‚° ì¤€ë¹„ ì™„ë£Œ)
         fmu.ExitInitializationMode();
         UnityEngine.Debug.Log($"[FMUManager] {selectedFMUName} Set up finished.");
     }
 
-    // ¿ÜºÎ¿¡¼­ °ªÀ» ³Ö¾îÁÙ ¶§ ¾²´Â ÇÔ¼ö (Input)
+    /// <summary>
+    /// FMU ì…ë ¥(Input) ë˜ëŠ” íŒŒë¼ë¯¸í„°(Parameter) ê°’ ì„¤ì •
+    /// </summary>
     public void SetValue(string varName, double value)
     {
-        //  [¼öÁ¤µÊ] ¸Å ÇÁ·¹ÀÓ ¾²·¹±â¸¦ ¸¸µé´ø Find ÇÔ¼ö ´ë½Å, µñ¼Å³Ê¸®¿¡¼­ ¹Ù·Î ²¨³À´Ï´Ù.
         if (varDict.TryGetValue(varName, out RuntimeFMUVariable v))
         {
             v.value = value;
@@ -98,7 +121,9 @@ public class FMUManager : MonoBehaviour
         }
     }
 
-    // ¿ÜºÎ(Â÷·® ¹°¸® µî)¿¡¼­ °ªÀ» °¡Á®°¥ ¶§ ¾²´Â ÇÔ¼ö
+    /// <summary>
+    /// FMU ì¶œë ¥(Output) ë˜ëŠ” í˜„ì¬ ë³€ìˆ˜ ê°’ ì¡°íšŒ
+    /// </summary>
     public double GetValue(string varName)
     {
         double result = 0.0;
@@ -109,14 +134,12 @@ public class FMUManager : MonoBehaviour
         }
         else
         {
-            // FMU°¡ ¾øÀ» ¶§µµ µñ¼Å³Ê¸®¿¡¼­ ¾ÈÀüÇÏ°Ô Ã£½À´Ï´Ù.
             if (varDict.TryGetValue(varName, out RuntimeFMUVariable v))
             {
                 result = v.value;
             }
         }
 
-        // ÀÎ½ºÆåÅÍ ¾÷µ¥ÀÌÆ®¿ë
         if (varDict.TryGetValue(varName, out RuntimeFMUVariable targetVar))
         {
             targetVar.value = result;
@@ -125,6 +148,9 @@ public class FMUManager : MonoBehaviour
         return result;
     }
 
+    /// <summary>
+    /// FMU ê³ ì • ì‹œê°„ ìŠ¤í…(Fixed Delta Time) ì—°ì‚° ìˆ˜í–‰
+    /// </summary>
     public void DoStep()
     {
         if (fmu != null)
@@ -132,21 +158,5 @@ public class FMUManager : MonoBehaviour
             fmu.DoStep(currentTime, (double)Time.fixedDeltaTime);
             currentTime += (double)Time.fixedDeltaTime;
         }
-        //if (fmu != null)
-        //{
-        //    double cleanStep = 0.001;
-
-        //    Stopwatch sw = new Stopwatch(); // ÃÊ½Ã°è ÁØºñ
-        //    sw.Start(); // ÃøÁ¤ ½ÃÀÛ
-
-        //    fmu.DoStep(currentTime, cleanStep); // ½ÇÁ¦ C++ DLL ¿¬»ê
-
-        //    sw.Stop(); // ÃøÁ¤ Á¾·á
-
-        //    // 1¹ø °è»êÇÏ´Â µ¥ Çö½Ç¿¡¼­ ¸î ÃÊ °É·È´ÂÁö ·Î±× Ãâ·Â
-        //    UnityEngine.Debug.Log($"1½ºÅÜ °è»ê ¼Ò¿ä Çö½Ç ½Ã°£: {sw.Elapsed.TotalSeconds:F5} ÃÊ");
-
-        //    currentTime += cleanStep;
-        //}
     }
 }
