@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using FMI2;
-using System.Diagnostics;
 
 /// <summary>
 /// FMU 런타임 변수 및 파라미터 매핑을 위한 데이터 구조체
@@ -54,6 +53,16 @@ public class FMUManager : MonoBehaviour
 
         try
         {
+            // VehicleConfigManager가 존재하면 로드된 JSON 파라미터 업데이트
+            if (VehicleConfigManager.Instance != null && VehicleConfigManager.Instance.loadedParameters.Count > 0)
+            {
+                foreach (var kvp in VehicleConfigManager.Instance.loadedParameters)
+                {
+                    var v = variables.Find(varItem => varItem.name == kvp.Key);
+                    if (v != null) v.value = kvp.Value;
+                }
+            }
+
             ResetFMU();
         }
         catch (System.Exception e)
@@ -90,11 +99,22 @@ public class FMUManager : MonoBehaviour
         // FMU 초기화 모드 진입
         fmu.EnterInitializationMode();
 
-        // [핵심 로직] EnterInitializationMode와 ExitInitializationMode 사이에서
-        // 인스펙터 또는 Config에 설정된 parameter 및 initial input 값들을 FMU C++ DLL 파라미터로 주입
+        // [핵심 로직] VehicleConfigManager의 최근 로드 파라미터가 있다면 우선 갱신
+        if (VehicleConfigManager.Instance != null && VehicleConfigManager.Instance.loadedParameters.Count > 0)
+        {
+            foreach (var kvp in VehicleConfigManager.Instance.loadedParameters)
+            {
+                var v = variables.Find(varItem => varItem.name == kvp.Key);
+                if (v != null) v.value = kvp.Value;
+            }
+        }
+
+        // [주의]: EnterInitializationMode와 ExitInitializationMode 사이에서는
+        // 오직 causality가 "parameter"인 구조 파라미터만 주입해야 합니다.
+        // input 변수(FL_gz, Throttle 등)를 초기화 모드에서 0으로 덮어쓰면 지면 고도 오차로 진동이 발생합니다.
         foreach (var v in variables)
         {
-            if (v.causality == "parameter" || v.causality == "input")
+            if (v.causality == "parameter")
             {
                 fmu.SetReal(v.name, v.value);
             }

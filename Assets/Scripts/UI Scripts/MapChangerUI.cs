@@ -3,7 +3,7 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// MapChanger와 UI TextMeshPro Dropdown을 연결해주는 UI 연동 스크립트
+/// MapChanger와 UI TextMeshPro Dropdown을 연결해주는 UI 바인딩 스크립트
 /// </summary>
 public class MapChangerUI : MonoBehaviour
 {
@@ -21,28 +21,22 @@ public class MapChangerUI : MonoBehaviour
         if (mapDropdown != null)
         {
             PopulateDropdownOptions();
-            mapDropdown.onValueChanged.AddListener(OnDropdownValueChanged);
         }
 
-        // MapChanger 이벤트 구독
+        // MapChanger 이벤트 구독 (C# System.Action event 표준 형식)
         if (MapChanger.Instance != null)
         {
-            MapChanger.Instance.OnMapChangeStarted.AddListener(OnMapChangeStarted);
-            MapChanger.Instance.OnMapChangeCompleted.AddListener(OnMapChangeCompleted);
+            MapChanger.Instance.OnMapChangeStarted += OnMapChangeStarted;
+            MapChanger.Instance.OnMapChangeCompleted += OnMapChangeCompleted;
         }
     }
 
     private void OnDestroy()
     {
-        if (mapDropdown != null)
-        {
-            mapDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged);
-        }
-
         if (MapChanger.Instance != null)
         {
-            MapChanger.Instance.OnMapChangeStarted.RemoveListener(OnMapChangeStarted);
-            MapChanger.Instance.OnMapChangeCompleted.RemoveListener(OnMapChangeCompleted);
+            MapChanger.Instance.OnMapChangeStarted -= OnMapChangeStarted;
+            MapChanger.Instance.OnMapChangeCompleted -= OnMapChangeCompleted;
         }
     }
 
@@ -69,14 +63,6 @@ public class MapChangerUI : MonoBehaviour
         // 현재 맵 인덱스로 선택 상태 맞춤
         mapDropdown.SetValueWithoutNotify(MapChanger.Instance.currentMapIndex);
         mapDropdown.RefreshShownValue();
-    }
-
-    private void OnDropdownValueChanged(int index)
-    {
-        if (MapChanger.Instance != null)
-        {
-            MapChanger.Instance.ChangeMap(index);
-        }
     }
 
     private void OnMapChangeStarted()

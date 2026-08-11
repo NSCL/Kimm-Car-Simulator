@@ -2,57 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Events;
+using TMPro;
 
-/// <summary>
-/// 맵 정보 데이터 구조체
-/// </summary>
 [System.Serializable]
 public class MapInfo
 {
-    [Tooltip("UI 드롭다운에 표시할 맵 이름")]
-    public string mapName = "K-City";
-
-    [Tooltip("유니티 Build Settings에 등록된 씬(Scene) 파일 이름")]
-    public string sceneName = "K-City";
-
-    [Tooltip("SpawnPoint 오브젝트가 없을 경우 사용할 기본 스폰 위치")]
-    public Vector3 spawnPosition = Vector3.zero;
-
-    [Tooltip("SpawnPoint 오브젝트가 없을 경우 사용할 기본 스폰 회전각 (Euler)")]
+    public string mapName;
+    public string sceneName;
+    public Sprite mapThumbnail; // UI 썸네일 이미지 지원
+    public Vector3 spawnPosition = new Vector3(0f, 0.5f, 0f);
     public Vector3 spawnRotation = Vector3.zero;
-
-    [Tooltip("맵 미리보기 이미지 (옵션)")]
-    public Sprite mapThumbnail;
 }
 
 /// <summary>
-/// 시뮬레이터 맵 비동기 전환 매니저 (Core Scene + Additive Map Scene 방식)
+/// 맵 Scene을 Additive 비동기 로드하고, 차량 위치를 해당 맵의 SpawnPoint로 이동시키는 매니저 클래스.
+/// UI 드롭다운 및 '맵 이동' 버튼 클릭 시 맵 전환을 총괄합니다.
 /// </summary>
 public class MapChanger : MonoBehaviour
 {
-    public static MapChanger Instance;
-
-    [Header("Map Configuration")]
-    [Tooltip("전환 가능한 맵 목록")]
-    public List<MapInfo> mapList = new List<MapInfo>();
-
-    [Tooltip("현재 로드되어 있는 맵 인덱스")]
-    public int currentMapIndex = 0;
+    public static MapChanger Instance { get; private set; }
 
     [Header("Vehicle Reference")]
-    [Tooltip("맵 전환 시 이동시킬 차량 Transform")]
     public Transform vehicleTransform;
 
-    [Header("Events")]
-    [Tooltip("맵 전환 시작 시 실행할 이벤트 (UI 비활성화, 로딩창 켜기 등)")]
-    public UnityEvent OnMapChangeStarted;
+    [Header("Available Maps")]
+    public List<MapInfo> mapList = new List<MapInfo>();
 
-    [Tooltip("맵 전환 완료 시 실행할 이벤트 (UI 활성화, 로딩창 끄기 등)")]
-    public UnityEvent OnMapChangeCompleted;
+    [Header("State")]
+    public string activeMapSceneName;
+    public int currentMapIndex = 0;
+    public bool isTransitioning = false;
 
-    private string activeMapSceneName = "";
-    private bool isTransitioning = false;
+    public event System.Action OnMapChangeStarted;
+    public event System.Action OnMapChangeCompleted;
 
     private void Awake()
     {
@@ -63,30 +45,13 @@ public class MapChanger : MonoBehaviour
         else
         {
             Destroy(gameObject);
-            return;
         }
-
-        InitializeDefaultMaps();
     }
 
     private void Start()
     {
-        // 차량 참조 자동 검색
-        if (vehicleTransform == null)
-        {
-            VehicleController vc = Object.FindAnyObjectByType<VehicleController>();
-            if (vc != null)
-            {
-                vehicleTransform = vc.transform;
-            }
-            else
-            {
-                GameObject vehicle = GameObject.FindWithTag("Player");
-                if (vehicle != null) vehicleTransform = vehicle.transform;
-            }
-        }
+        InitializeDefaultMaps();
 
-        // 현재 씬에 로드되어 있는 맵 확인
         bool mapSceneLoaded = false;
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
@@ -100,10 +65,9 @@ public class MapChanger : MonoBehaviour
             }
         }
 
-        // 맵이 하나도 로드되어 있지 않다면 첫 번째 맵 자동 로드
         if (!mapSceneLoaded && mapList.Count > 0)
         {
-            Debug.Log($"[MapChanger] 초기 맵이 씬에 없어 기본 맵({mapList[0].mapName})을 자동 로드합니다.");
+            Debug.Log($"[MapChanger] 초기 맵이 로드되지 않아 기본 맵({mapList[0].mapName})을 자동 로드합니다.");
             ChangeMap(0);
         }
     }
@@ -118,7 +82,6 @@ public class MapChanger : MonoBehaviour
                 string scenePath = SceneUtility.GetScenePathByBuildIndex(i);
                 string sceneName = System.IO.Path.GetFileNameWithoutExtension(scenePath);
 
-                // Main, Core, SampleScene 등 프레임워크 전용 씬을 제외하고 Build Settings에 등록된 모든 맵 씬(Zalazone, K-City, M-City 등) 자동 등록
                 if (!string.IsNullOrEmpty(sceneName) && 
                     !sceneName.Equals("Main", System.StringComparison.OrdinalIgnoreCase) &&
                     !sceneName.Equals("Core", System.StringComparison.OrdinalIgnoreCase) &&
@@ -135,12 +98,22 @@ public class MapChanger : MonoBehaviour
                 }
             }
 
-            // 만약 Build Settings에 맵이 없었던 예외 경우 대비 하드코딩 백업
             if (mapList.Count == 0)
             {
                 mapList.Add(new MapInfo { mapName = "K-City", sceneName = "K-City", spawnPosition = new Vector3(0f, 0.5f, 0f) });
                 mapList.Add(new MapInfo { mapName = "M-City", sceneName = "M-City", spawnPosition = new Vector3(0f, 0.5f, 0f) });
             }
+        }
+    }
+
+    /// <summary>
+    /// TMP_Dropdown 참조를 받아 현재 드롭다운에서 선택된 항목의 맵으로 전환 (버튼 Click 용)
+    /// </summary>
+    public void ChangeToSelectedDropdownMap(TMP_Dropdown dropdown)
+    {
+        if (dropdown != null)
+        {
+            ChangeMap(dropdown.value);
         }
     }
 
@@ -172,7 +145,7 @@ public class MapChanger : MonoBehaviour
         MapInfo targetMap = mapList[targetIndex];
         Debug.Log($"[MapChanger] 맵 전환 시작: {targetMap.mapName} ({targetMap.sceneName})");
 
-        // 1. 기존 로드된 Additive 맵 씬 언로드
+        // 1. 기존 로드된 Additive 맵 언로드
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             Scene loadedScene = SceneManager.GetSceneAt(i);
@@ -180,7 +153,7 @@ public class MapChanger : MonoBehaviour
             {
                 if (loadedScene.isLoaded)
                 {
-                    Debug.Log($"[MapChanger] 기존 맵 씬 언로드 중: {loadedScene.name}");
+                    Debug.Log($"[MapChanger] 기존 맵 언로드 중: {loadedScene.name}");
                     AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(loadedScene);
                     while (unloadOp != null && !unloadOp.isDone)
                     {
@@ -190,11 +163,11 @@ public class MapChanger : MonoBehaviour
             }
         }
 
-        // 2. 신규 맵 씬 비동기 Additive 로드
+        // 2. 신규 맵 비동기 Additive 로드
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(targetMap.sceneName, LoadSceneMode.Additive);
         if (loadOp == null)
         {
-            Debug.LogError($"[MapChanger] '{targetMap.sceneName}' 씬을 로드할 수 없습니다. Build Settings를 확인하세요.");
+            Debug.LogError($"[MapChanger] '{targetMap.sceneName}' 맵을 로드할 수 없습니다. Build Settings를 확인하세요.");
             isTransitioning = false;
             yield break;
         }
@@ -204,9 +177,9 @@ public class MapChanger : MonoBehaviour
             yield return null;
         }
 
-        yield return null; // Hierarchy 동기화 1프레임 대기
+        yield return null;
 
-        // 3. 로드된 씬을 Active Scene으로 지정
+        // 3. 로드된 맵을 Active Scene으로 지정
         Scene newlyLoadedScene = SceneManager.GetSceneByName(targetMap.sceneName);
         if (newlyLoadedScene.IsValid())
         {
@@ -216,10 +189,10 @@ public class MapChanger : MonoBehaviour
         activeMapSceneName = targetMap.sceneName;
         currentMapIndex = targetIndex;
 
-        // 4. 차량을 신규 맵 씬의 SpawnPoint 위치로 이동
+        // 4. 차량을 신규 맵의 SpawnPoint 위치로 이동
         RelocateVehicle(newlyLoadedScene, targetMap);
 
-        Debug.Log($"[MapChanger] 맵 전환 완결: {targetMap.mapName}");
+        Debug.Log($"[MapChanger] 맵 전환 완료: {targetMap.mapName}");
         isTransitioning = false;
         OnMapChangeCompleted?.Invoke();
     }
@@ -237,7 +210,6 @@ public class MapChanger : MonoBehaviour
         Vector3 spawnPos = targetMap.spawnPosition;
         Quaternion spawnRot = Quaternion.Euler(targetMap.spawnRotation);
 
-        // 로드된 맵 씬 내부의 모든 오브젝트에서 SpawnPoint 탐색
         Transform foundSpawnTransform = null;
         foreach (GameObject rootObj in loadedMapScene.GetRootGameObjects())
         {
@@ -251,7 +223,6 @@ public class MapChanger : MonoBehaviour
             spawnRot = foundSpawnTransform.rotation;
         }
 
-        // 차량 위치 및 C++ FMU internal 위치 리셋
         VehicleController vehicleCtrl = vehicleTransform.GetComponent<VehicleController>();
         if (vehicleCtrl != null)
         {
@@ -283,7 +254,6 @@ public class MapChanger : MonoBehaviour
             return parent;
         }
 
-        // 유니티 Tag "SpawnPoint" 미등록 시 UnityException 발생 방지를 위한 안전한 비교
         try
         {
             if (string.Equals(parent.tag, "SpawnPoint", System.StringComparison.OrdinalIgnoreCase)) return parent;
