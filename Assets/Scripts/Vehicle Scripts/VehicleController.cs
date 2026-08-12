@@ -1,63 +1,78 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class VehicleController : MonoBehaviour
 {
-    [Header("1. Managers")]
-    public VehicleInputManager inputManager;
+    [Header("FMU Manager Reference")]
     public FMUManager fmuManager;
+    public VehicleInputManager inputManager;
 
-    [Header("2. Simulation Settings")]
-    // [NEW] 스폰 포인트 (빈 오브젝트를 만들어서 할당)
+    [Header("Visual Mesh & Auto-Fitting Settings")]
+    [Tooltip("3D 차량 섀시/차체 껍데기 Visual Mesh Transform")]
+    public Transform chassisVisualTransform;
+
+    [Tooltip("Baseline 윤거 (m) - 3D 섀시 모델 순정 기준 바퀴 간격")]
+    public float baseTrackWidth = 1.628f;
+
+    [Tooltip("Baseline 축거 (m) - 3D 섀시 모델 순정 기준 앞뒤 휠하우스 간격")]
+    public float baseWheelbase = 2.550f;
+
+    // 절대 변하지 않는 100% 퓨어 원본 스케일 및 위치
+    private Vector3 _pureOriginalScale = Vector3.one;
+    private Vector3 _pureOriginalLocalPos = Vector3.zero;
+    private bool _isOriginalCached = false;
+
+    [Header("Spawn Settings")]
     public Transform spawnPoint;
+    private Vector3 _spawnPos;
+    private Quaternion _spawnRot;
 
-    [Header("3. Vehicle FMU Inputs")]
-    [FMUVariable(true)] public string var_Steer_In;
-    [FMUVariable(true)] public string var_Throttle_In;
-    [FMUVariable(true)] public string var_Brake_In;
-    [FMUVariable(true)] public string var_Gear_In;
+    [Header("FMU Chassis Variable Names")]
+    public string var_Steer_In = "str_angle";
+    public string var_Throttle_In = "accel";
+    public string var_Brake_In = "brake";
+    public string var_Gear_In = "gear";
 
-    [Header("4. Vehicle FMU Outputs")]
-    [FMUVariable] public string out_ChassisPos_X;
-    [FMUVariable] public string out_ChassisPos_Y;
-    [FMUVariable] public string out_ChassisPos_Z;
+    public string out_ChassisPos_X = "Veh_BodyPos_X";
+    public string out_ChassisPos_Y = "Veh_BodyPos_Y";
+    public string out_ChassisPos_Z = "Veh_BodyPos_Z";
+    public string out_ChassisRot_X = "Veh_BodyRot_X";
+    public string out_ChassisRot_Y = "Veh_BodyRot_Y";
+    public string out_ChassisRot_Z = "Veh_BodyRot_Z";
+    public string out_ChassisRot_W = "Veh_BodyRot_W";
 
-    [FMUVariable] public string out_ChassisRot_X;
-    [FMUVariable] public string out_ChassisRot_Y;
-    [FMUVariable] public string out_ChassisRot_Z;
-    [FMUVariable] public string out_ChassisRot_W;
+    public string out_Toe_Left = "Veh_Steer_L";
+    public string out_Toe_Right = "Veh_Steer_R";
 
-    [Header("5. Toe & Wheels")]
-    [FMUVariable] public string out_Toe_Left;
-    [FMUVariable] public string out_Toe_Right;
-    public List<WheelData> wheels;
-    public Vector3 wheelRootCorrection = new Vector3(-90, 0, 0);
-    public Vector3 wheelVisualCorrection = new Vector3(0, 0, 0);
-    // 내부 계산용 변수
-    private Vector3 _spawnPos = Vector3.zero;
-    private Quaternion _spawnRot = Quaternion.identity;
+    [Header("Wheels Configuration")]
+    public List<WheelData> wheels = new List<WheelData>();
+
     private bool _isRespawning = false;
 
-    void Start()
+    private void Awake()
     {
-        // 시작할 때 스폰 포인트의 위치/회전을 기억해둡니다.
+        if (fmuManager == null) fmuManager = FindFirstObjectByType<FMUManager>();
+        if (inputManager == null) inputManager = FindFirstObjectByType<FMUManager>()?.GetComponent<VehicleInputManager>();
+
+        CachePureOriginalTransform();
+    }
+
+    private void Start()
+    {
+        CachePureOriginalTransform();
+        AttachSpoilerToChassis();
+
         if (spawnPoint != null)
         {
-            //_spawnPos = spawnPoint.position;
-            //_spawnRot = spawnPoint.rotation;
             ResetVehicle(spawnPoint.position, spawnPoint.rotation);
         }
         else
         {
-            // 스폰 포인트가 없으면 현재 차의 위치를 원점으로 삼음
-            //_spawnPos = transform.position;
-            //_spawnRot = transform.rotation;
             ResetVehicle(transform.position, transform.rotation);
-            Debug.LogWarning("Spawn Point가 없습니다! 현재 위치를 원점으로 사용합니다.");
         }
 
-        if(inputManager != null)
+        if (inputManager != null)
         {
             inputManager.OnResetTriggered += () =>
             {
@@ -67,40 +82,103 @@ public class VehicleController : MonoBehaviour
                 }
                 else
                 {
-                    ResetVehicle(Vector3.zero,Quaternion.identity);
+                    ResetVehicle(Vector3.zero, Quaternion.identity);
                 }
             };
         }
-
-
     }
 
-    void FixedUpdate()
+    private void CachePureOriginalTransform()
+    {
+        if (_isOriginalCached) return;
+
+        if (chassisVisualTransform == null)
+        {
+            Transform visualChild = transform.Find("Chassis") ?? transform.Find("Visual") ?? transform.Find("Body");
+            if (visualChild != null)
+            {
+                chassisVisualTransform = visualChild;
+            }
+            else
+            {
+                MeshRenderer mr = GetComponentInChildren<MeshRenderer>();
+                if (mr != null) chassisVisualTransform = mr.transform;
+            }
+        }
+
+        if (chassisVisualTransform != null)
+        {
+            _pureOriginalScale = chassisVisualTransform.localScale;
+            _pureOriginalLocalPos = chassisVisualTransform.localPosition;
+            _isOriginalCached = true;
+        }
+    }
+
+    private void AttachSpoilerToChassis()
+    {
+        if (chassisVisualTransform == null) return;
+
+        Transform[] allTransforms = GetComponentsInChildren<Transform>(true);
+        foreach (Transform tf in allTransforms)
+        {
+            if (tf == null || tf == chassisVisualTransform) continue;
+
+            string nameLower = tf.name.ToLower();
+            if (nameLower.Contains("spoiler") || nameLower.Contains("wing") || nameLower.Contains("rearwing"))
+            {
+                if (!tf.IsChildOf(chassisVisualTransform))
+                {
+                    tf.SetParent(chassisVisualTransform, true);
+                    Debug.Log($"[VehicleController] 스포일러('{tf.name}')를 차체 껍데기 자식으로 자동 귀속 완료!");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Config 로드 시 추출된 윤거(currentTrackW)와 축거(currentWheelbase) 수치를 100% 직통 대입하여 3D 차체 스케일 변환
+    /// </summary>
+    public void ApplyChassisScale(float currentTrackW, float currentWheelbase)
+    {
+        CachePureOriginalTransform();
+        if (chassisVisualTransform == null) return;
+        if (baseTrackWidth <= 0 || baseWheelbase <= 0) return;
+
+        // [핵심 해결]: C++ DLL 지연 오차 없이 파라미터 직통 수치(2.6m/3.2m/4.2m)를 100% 스케일에 반영!
+        float scaleXRatio = currentTrackW / baseTrackWidth;
+        float scaleZRatio = currentWheelbase / baseWheelbase;
+
+        Vector3 autoCalculatedScale = new Vector3(
+            _pureOriginalScale.x * scaleXRatio,
+            _pureOriginalScale.y,
+            _pureOriginalScale.z * scaleZRatio
+        );
+
+        chassisVisualTransform.localScale = autoCalculatedScale;
+
+        Debug.Log($"[VehicleController] Config 100% 직통 3D 차체 스케일 변환 완료! ScaleX={autoCalculatedScale.x:F3}, ScaleZ={autoCalculatedScale.z:F3} (윤거={currentTrackW:F2}m, 축거={currentWheelbase:F2}m)");
+    }
+
+    private void FixedUpdate()
     {
         if (fmuManager == null || inputManager == null) return;
 
-        // --- [STEP 1] Input (기존 동일) ---
-        float targetSteer = inputManager.Steering * (450.0f * Mathf.Deg2Rad); // 임시 계수
+        float targetSteer = inputManager.Steering * (450.0f * Mathf.Deg2Rad);
         if (!string.IsNullOrEmpty(var_Steer_In)) fmuManager.SetValue(var_Steer_In, targetSteer);
         if (!string.IsNullOrEmpty(var_Throttle_In)) fmuManager.SetValue(var_Throttle_In, inputManager.Accel);
         if (!string.IsNullOrEmpty(var_Brake_In)) fmuManager.SetValue(var_Brake_In, inputManager.Brake);
         if (!string.IsNullOrEmpty(var_Gear_In)) fmuManager.SetValue(var_Gear_In, (int)inputManager.Gear);
 
-
         foreach (var w in wheels)
         {
             if (w.sensor != null) w.sensor.CalculateGroundForces();
 
-            // [원리]: FMU 모델 내부의 바퀴 패치 높이(gz) 조절을 위해,
-            // 침투량이 아닌 '스폰 위치 대비 실제 지면의 상대적 Y 높이 (hitPointY - _spawnPos.y)'를 FMU에 전달합니다.
             if (!string.IsNullOrEmpty(w.var_GroundDist_In))
             {
                 float relativeGroundY = w.sensor.isGrounded ? (w.sensor.hitPointY - _spawnPos.y) : 0f;
                 fmuManager.SetValue(w.var_GroundDist_In, relativeGroundY);
             }
 
-            // [원리]: 유니티 좌표계(Y-up, Z-forward)와 FMU 모델 좌표계 간의 회전축 방향 차이를 보정하기 위해
-            // 지면 기울기 사원수 qx, qy 값의 부호를 반전(-hitQx, -hitQy)하여 FMU 모델에 전달합니다.
             if (!string.IsNullOrEmpty(w.var_GroundQx_In))
             {
                 float qx = w.sensor.isGrounded ? -w.sensor.hitQx : 0f;
@@ -114,25 +192,19 @@ public class VehicleController : MonoBehaviour
             }
         }
 
-        // --- [STEP 2] Simulation ---
         fmuManager.DoStep();
 
-        // --- [STEP 3] Output (좌표 변환 추가!) ---
         ApplyChassisWithSpawn();
         ApplyWheels();
     }
 
-    // ★ 핵심: 스폰 포인트 기준으로 좌표 변환
-    void ApplyChassisWithSpawn()
+    private void ApplyChassisWithSpawn()
     {
-        // 1. FMU에서 계산된 로컬 좌표 (0,0,0 기준) 가져오기
         float cx = (float)fmuManager.GetValue(out_ChassisPos_X);
         float cy = (float)fmuManager.GetValue(out_ChassisPos_Y);
         float cz = (float)fmuManager.GetValue(out_ChassisPos_Z);
-        //Vector3 fmuPos = new Vector3(-cy, cz, cx); // 좌표계(Z-up) 확인 필요시 (cx, cz, cy)
         Vector3 fmuPos = new Vector3(cx, cy, cz);
 
-        // 2. FMU 회전 가져오기
         float qx = (float)fmuManager.GetValue(out_ChassisRot_X);
         float qy = (float)fmuManager.GetValue(out_ChassisRot_Y);
         float qz = (float)fmuManager.GetValue(out_ChassisRot_Z);
@@ -140,27 +212,17 @@ public class VehicleController : MonoBehaviour
 
         Quaternion fmuRot = new Quaternion(qx, qy, qz, qw);
 
-        // 3. [좌표 변환] 유니티 월드 좌표 = 스폰위치 + (스폰회전 * FMU이동량)
-        // 이렇게 하면 스폰 포인트가 90도 꺾여 있어도, 차가 그 방향 기준으로 앞으로 갑니다.
-        //transform.position = _spawnPos + (_spawnRot * fmuPos);
-        transform.position = _spawnPos +(_spawnRot * fmuPos);
-
-        // 4. [회전 변환] 유니티 월드 회전 = 스폰회전 * FMU회전
+        transform.position = _spawnPos + (_spawnRot * fmuPos);
         transform.rotation = _spawnRot * fmuRot;
     }
 
-    void ApplyWheels()
+    private void ApplyWheels()
     {
-        // 바퀴는 Chassis(부모)가 이미 이동했으므로, 
-        // localPosition을 쓰면 Chassis를 따라 자연스럽게 이동합니다.
-        // (기존 코드 유지)
-
         float toeL = (float)fmuManager.GetValue(out_Toe_Left);
         float toeR = (float)fmuManager.GetValue(out_Toe_Right);
 
         foreach (var w in wheels)
         {
-            // 위치 (Chassis 기준 상대 좌표라고 가정)
             if (!string.IsNullOrEmpty(w.var_WheelPos_X))
             {
                 float wx = (float)fmuManager.GetValue(w.var_WheelPos_X);
@@ -169,7 +231,6 @@ public class VehicleController : MonoBehaviour
                 w.wheelRoot.localPosition = new Vector3(wx, wy, wz);
             }
 
-            // 회전 (Steering 및 Quaternion 회전)
             if (!string.IsNullOrEmpty(w.var_WheelRot_X))
             {
                 float rx = (float)fmuManager.GetValue(w.var_WheelRot_X);
@@ -186,7 +247,6 @@ public class VehicleController : MonoBehaviour
                 w.wheelRoot.localRotation = toeRot;
             }
 
-            // 스핀 (Rolling)
             if (!string.IsNullOrEmpty(w.var_WheelSpin_Out))
             {
                 float spin = (float)fmuManager.GetValue(w.var_WheelSpin_Out);
@@ -200,7 +260,7 @@ public class VehicleController : MonoBehaviour
         _spawnPos = targetAnchorPos;
         _spawnRot = targetAnchorRot;
 
-        if(fmuManager != null)
+        if (fmuManager != null)
         {
             fmuManager.ResetFMU();
         }
@@ -209,7 +269,7 @@ public class VehicleController : MonoBehaviour
         Debug.Log($"Spawned at {_spawnPos}");
     }
 
-    IEnumerator CollisionRespawnRoutine()
+    private IEnumerator CollisionRespawnRoutine()
     {
         _isRespawning = true;
         if (inputManager != null) inputManager.SetInputActive(false);
@@ -217,14 +277,11 @@ public class VehicleController : MonoBehaviour
         forwardVec.y = 0;
         forwardVec.Normalize();
         Vector3 backPos = transform.position - (forwardVec * 10.0f);
-        // [수정]: 맵마다 지면 높이 Y가 다르므로 Y=0으로 강제 고정하던 코드를 주석 처리합니다.
-        // // backPos.y = 0;
         Quaternion flatRotation = Quaternion.LookRotation(forwardVec);
         ResetVehicle(backPos, flatRotation);
         yield return new WaitForSeconds(1f);
         if (UIManager.Instance != null)
         {
-            // 코루틴은 Instance 함수를 빌려서 실행
             UIManager.Instance.EndCollisionEffect();
         }
         if (inputManager != null) inputManager.SetInputActive(true);
@@ -235,7 +292,6 @@ public class VehicleController : MonoBehaviour
     {
         if (_isRespawning) return;
 
-        // [원리]: 레이어 제한 없이 트리거 충돌 발생 시 시각 효과 및 리스폰 루틴 발동
         if (UIManager.Instance != null)
         {
             UIManager.Instance.StartCollisionEffect();

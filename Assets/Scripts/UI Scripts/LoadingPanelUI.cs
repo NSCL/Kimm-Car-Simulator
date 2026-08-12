@@ -4,8 +4,8 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// 맵 전환(MapChanger) 진행 중일 때 화면 최상단에 Loading... 오버레이 UI 팝업창을 띄우고,
-/// 로딩이 끝나면 감쪽같이 비활성화해주는 런타임 UI 로더 컨트롤러.
+/// 맵 전환(MapChanger) 진행 중일 때 화면 테두리 및 4개 모서리까지 1픽셀의 오차도 없이 100% 완전 불투명(100% Opaque) 
+/// 오버플로우 다크 화면으로 가려주는 런타임 UI 로더.
 /// </summary>
 public class LoadingPanelUI : MonoBehaviour
 {
@@ -41,13 +41,11 @@ public class LoadingPanelUI : MonoBehaviour
 
     private void Start()
     {
-        // 씬 시작 시 로딩 패널은 끄기
         if (loadingPanel != null)
         {
             loadingPanel.SetActive(false);
         }
 
-        // MapChanger 이벤트 구독
         if (MapChanger.Instance != null)
         {
             MapChanger.Instance.OnMapChangeStarted += ShowLoadingUI;
@@ -65,13 +63,31 @@ public class LoadingPanelUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 맵 로딩 시작 시 호출 (OnMapChangeStarted 이벤트)
+    /// 맵 로딩 시작 시 호출 (화면 상하좌우 테두리와 4개 모서리 픽셀까지 100% 완벽히 가림)
     /// </summary>
     public void ShowLoadingUI()
     {
         if (loadingPanel != null)
         {
             loadingPanel.SetActive(true);
+
+            // [핵심 100% 차단 보완 1]: 둥근 모서리 스프라이트 지우기 (순수 직사각형으로 변경)
+            Image img = loadingPanel.GetComponent<Image>();
+            if (img != null)
+            {
+                img.sprite = null; // 둥근 템플릿 제거
+                img.color = new Color(0.08f, 0.09f, 0.12f, 1f); // #14171F 불투명 다크 컬러
+            }
+
+            // [핵심 100% 차단 보완 2]: 화면 크기보다 상하좌우 100px씩 더 밖으로 돌출(Overfill)시켜 모서리 틈새 100% 차단!
+            RectTransform rt = loadingPanel.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = new Vector2(-100f, -100f); // 좌하단 100px 돌출
+                rt.offsetMax = new Vector2(100f, 100f);   // 우상단 100px 돌출
+            }
         }
 
         if (loadingText != null)
@@ -84,13 +100,12 @@ public class LoadingPanelUI : MonoBehaviour
             loadingSlider.value = 0f;
         }
 
-        // 부드러운 프로그레스 연출 코루틴 시작
         if (progressCoroutine != null) StopCoroutine(progressCoroutine);
         progressCoroutine = StartCoroutine(AnimateProgressRoutine());
     }
 
     /// <summary>
-    /// 맵 로딩 및 배치 완료 시 호출 (OnMapChangeCompleted 이벤트)
+    /// 맵 로딩 및 배치 완료 시 호출
     /// </summary>
     public void HideLoadingUI()
     {
@@ -114,7 +129,7 @@ public class LoadingPanelUI : MonoBehaviour
         while (loadingPanel != null && loadingPanel.activeSelf)
         {
             timer += Time.unscaledDeltaTime;
-            float simulatedProgress = Mathf.Clamp01(timer / 1.5f); // 부드러운 연출
+            float simulatedProgress = Mathf.Clamp01(timer / 1.2f);
 
             if (loadingSlider != null)
             {

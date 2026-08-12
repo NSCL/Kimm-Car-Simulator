@@ -16,7 +16,7 @@ public class MapInfo
 
 /// <summary>
 /// 맵 Scene을 Additive 비동기 로드하고, 차량 위치를 해당 맵의 SpawnPoint로 이동시키는 매니저 클래스.
-/// UI 드롭다운 및 '맵 이동' 버튼 클릭 시 맵 전환을 총괄합니다.
+/// UI 드롭다운 및 '맵 이동' 버튼 클릭 시 맵 전환 및 물리 최적화를 총괄하고, 전환 완료 시 ESC 메뉴를 자동 닫고 주행 복귀시킵니다.
 /// </summary>
 public class MapChanger : MonoBehaviour
 {
@@ -145,7 +145,7 @@ public class MapChanger : MonoBehaviour
         MapInfo targetMap = mapList[targetIndex];
         Debug.Log($"[MapChanger] 맵 전환 시작: {targetMap.mapName} ({targetMap.sceneName})");
 
-        // 1. 기존 로드된 Additive 맵 언로드
+        // 1. 기존 로드된 Additive 맵 언로드 및 메모리 정리
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             Scene loadedScene = SceneManager.GetSceneAt(i);
@@ -162,6 +162,9 @@ public class MapChanger : MonoBehaviour
                 }
             }
         }
+
+        // 사용하지 않는 그래픽 에셋 메모리 정리 (프레임 최적화)
+        Resources.UnloadUnusedAssets();
 
         // 2. 신규 맵 비동기 Additive 로드
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(targetMap.sceneName, LoadSceneMode.Additive);
@@ -192,9 +195,21 @@ public class MapChanger : MonoBehaviour
         // 4. 차량을 신규 맵의 SpawnPoint 위치로 이동
         RelocateVehicle(newlyLoadedScene, targetMap);
 
-        Debug.Log($"[MapChanger] 맵 전환 완료: {targetMap.mapName}");
+        // 5. 신규 맵의 3D 오브젝트 정밀 MeshCollider 자동 생성 및 물리 최적화 스캔
+        if (MapPhysicsOptimizer.Instance != null)
+        {
+            MapPhysicsOptimizer.Instance.OptimizeCurrentMap();
+        }
+
+        Debug.Log($"[MapChanger] 맵 전환 및 물리 최적화 완료: {targetMap.mapName}");
         isTransitioning = false;
         OnMapChangeCompleted?.Invoke();
+
+        // [스마트 UX]: 맵 로딩이 완료되면 ESC 메뉴창을 감쪽같이 자동으로 닫고 주행 재개(Resume)!
+        if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
+        {
+            EscMenuController.Instance.OnClickResume();
+        }
     }
 
     private void RelocateVehicle(Scene loadedMapScene, MapInfo targetMap)

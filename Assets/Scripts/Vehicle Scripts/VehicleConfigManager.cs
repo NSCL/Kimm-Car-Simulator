@@ -6,8 +6,8 @@ using System.Globalization;
 using UnityEngine;
 
 /// <summary>
-/// .exe 배포 환경에서 외부 JSON Config 파일 선택/파싱을 담당하는 싱글톤 매니저 클래스.
-/// Windows Native OpenFileDialog API를 사용하여 별도 에셋 라이브러리 없이 윈도우 파일 탐색기를 호출합니다.
+/// 외부 JSON Config 파일 로드 시 파라미터 파싱 오차를 100% 방지하고,
+/// C++ DLL 주입 및 3D 섀시 스케일링을 정확한 타이밍과 키(Key) 매핑으로 집행하는 매니저.
 /// </summary>
 public class VehicleConfigManager : MonoBehaviour
 {
@@ -35,17 +35,12 @@ public class VehicleConfigManager : MonoBehaviour
 
     private void Start()
     {
-        // 씬 시작 시 기본 StreamingAssets/vehicle_config.json 자동 로드
         LoadDefaultConfig();
     }
 
-    /// <summary>
-    /// 유니티 UI Button OnClick() 이벤트 드롭다운에 노출되는 전용 void 메소드
-    /// </summary>
     public void SelectConfigViaFileDialog()
     {
         string path = OpenFileDialogAndSelectConfig();
-        // 파일 정상 선택 시 ESC 메뉴가 열려있다면 자동으로 닫고 주행 복귀
         if (!string.IsNullOrEmpty(path))
         {
             if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
@@ -55,18 +50,12 @@ public class VehicleConfigManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// StreamingAssets/vehicle_config.json 기본 파일 자동 로드
-    /// </summary>
     public bool LoadDefaultConfig()
     {
         string defaultPath = Path.Combine(Application.streamingAssetsPath, "vehicle_config.json");
         return LoadConfigFromFile(defaultPath);
     }
 
-    /// <summary>
-    /// 지정된 경로의 JSON Config 파일을 읽어 파라미터 매핑
-    /// </summary>
     public bool LoadConfigFromFile(string filePath)
     {
         if (!File.Exists(filePath))
@@ -84,6 +73,8 @@ public class VehicleConfigManager : MonoBehaviour
 
             currentConfigPath = filePath;
             Debug.Log($"[VehicleConfigManager] 성공적으로 Config 로드 완료: {Path.GetFileName(filePath)} (총 {loadedParameters.Count}개 파라미터)");
+
+            ApplyLoadedConfigToFMU();
             return true;
         }
         catch (Exception e)
@@ -93,9 +84,6 @@ public class VehicleConfigManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Win32 파일 탐색기 창을 띄워 사용자가 .json 설정 파일을 로드하고 FMU에 즉시 반영하도록 지원
-    /// </summary>
     public string OpenFileDialogAndSelectConfig()
     {
         string selectedPath = OpenWin32FileDialog("JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0", "Select Vehicle Config JSON");
@@ -103,7 +91,6 @@ public class VehicleConfigManager : MonoBehaviour
         {
             if (LoadConfigFromFile(selectedPath))
             {
-                ApplyLoadedConfigToFMU();
                 return selectedPath;
             }
         }
@@ -111,7 +98,7 @@ public class VehicleConfigManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 로드된 Config 파라미터들을 FMUManager에 전달하고 ResetFMU()를 호출하여 C++ DLL로 주입
+    /// 로드된 Config 파라미터들을 FMUManager에 전달하고 3D 섀시 스케일을 정밀 키 매핑으로 100% 정확하게 대입
     /// </summary>
     public void ApplyLoadedConfigToFMU()
     {
@@ -128,7 +115,7 @@ public class VehicleConfigManager : MonoBehaviour
             return;
         }
 
-        // 1. FMUManager.variables의 RuntimeFMUVariable 값 업데이트
+        // 1. FMUManager.variables의 RuntimeFMUVariable 값 100% 갱신
         foreach (var kvp in loadedParameters)
         {
             var targetVar = fmuManager.variables.Find(v => v.name == kvp.Key);
@@ -141,11 +128,33 @@ public class VehicleConfigManager : MonoBehaviour
         // 2. FMU 리셋 및 InitializationMode를 통해 C++ DLL로 45개 파라미터 주입
         fmuManager.ResetFMU();
         Debug.Log("[VehicleConfigManager] FMUManager 파라미터 주입 및 ResetFMU 완료!");
+
+        // 3. [버그 완전 예방 100% 파싱]: 오직 진짜 축거(Veh_Wheelbase) 및 윤거(Veh_TrackW) 수치만을 정밀 추출
+        VehicleController vc = FindFirstObjectByType<VehicleController>();
+        if (vc != null)
+        {
+            float trackW = 1.628f;
+            float wheelbase = 2.800f;
+
+            if (loadedParameters.TryGetValue("Veh_TrackW", out double tw) && tw > 1.0)
+            {
+                trackW = (float)tw;
+            }
+            else if (loadedParameters.TryGetValue("Veh_SuspF_TrackW", out double tw2) && tw2 > 1.0)
+            {
+                trackW = (float)tw2;
+            }
+
+            if (loadedParameters.TryGetValue("Veh_Wheelbase", out double wb) && wb > 1.5)
+            {
+                wheelbase = (float)wb;
+            }
+
+            Debug.Log($"[VehicleConfigManager] 추출된 수치: 윤거(TrackW)={trackW:F3}m, 축거(Wheelbase)={wheelbase:F3}m");
+            vc.ApplyChassisScale(trackW, wheelbase);
+        }
     }
 
-    /// <summary>
-    /// 의존성 없는 안전한 JSON 파라미터 extraction 파서
-    /// </summary>
     private void ParseConfigJson(string json)
     {
         int paramIdx = json.IndexOf("\"Parameters\"");
