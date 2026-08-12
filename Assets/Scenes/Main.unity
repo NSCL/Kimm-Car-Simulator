@@ -1619,7 +1619,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f233d16f8d714f44841e2cb4918c2c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapPhysicsOptimizer
-  vehicleTransform: {fileID: 1880317207217554254}
+  autoOptimizeOnMapChange: 1
 --- !u!4 &180823984
 Transform:
   m_ObjectHideFlags: 0
@@ -2091,8 +2091,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SmoothCameraController
   targetVehicle: {fileID: 0}
   offset: {x: 0, y: 3, z: -8}
-  lookAtHeightOffset: 1
-  smoothTime: 0.08
+  lookAtHeightOffset: 1.5
+  pitchAngleOffset: 4
+  positionSmoothTime: 0.12
   rotationSmoothSpeed: 10
 --- !u!1 &291993778
 GameObject:
@@ -13603,12 +13604,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VehicleInputManager
   currentGear: 0
-  currentSteering: 0
-  currentAccel: 0
-  currentBrake: 0
-  steeringSpeed: 5
-  pedalSpeed: 10
+  steeringSensitivity: 4
+  accelSensitivity: 5
+  brakeSensitivity: 5
   returnSpeed: 10
+  Steering: 0
+  Accel: 0
+  Brake: 0
 --- !u!114 &1815478317
 MonoBehaviour:
   m_ObjectHideFlags: 0

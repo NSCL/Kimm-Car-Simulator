@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 키보드(Keyboard), 게임패드(Gamepad), 레이싱 휠/조이스틱(Joystick/HID Wheel Controller)의 
-/// 아날로그 조향/가속/브레이크 및 기어 변속 입력을 100% 통합 합성하는 하이브리드 차량 입력 매니저.
+/// WASD 키보드 조향(D 키) 시 전진 기어(Drive)로 기어가 강제 튕기는 버그를 100% 소탕하고,
+/// Shift(전진), Ctrl(후진), N(중립), P(주차) 정석 기어 핫키 및 휠/게임패드 입력을 합성하는 매니저.
 /// </summary>
 public class VehicleInputManager : MonoBehaviour
 {
@@ -61,7 +61,8 @@ public class VehicleInputManager : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            if (keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame)
+            // [핵심 버그 완치]: 조향키 'D' 키 누름 시 기어가 Drive 로 튕기는 오차 원천 차단! (Shift = Drive)
+            if (keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame)
                 ShiftGear(GearState.Drive);
             if (keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame)
                 ShiftGear(GearState.Reverse);
@@ -72,6 +73,7 @@ public class VehicleInputManager : MonoBehaviour
             if (keyboard.rKey.wasPressedThisFrame)
                 OnResetTriggered?.Invoke();
 
+            // WASD 및 화살표 조향 (D 키는 순수 조향 전용!)
             if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) targetSteer -= 1.0f;
             if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) targetSteer += 1.0f;
             if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) targetAccel += 1.0f;
@@ -82,26 +84,21 @@ public class VehicleInputManager : MonoBehaviour
         var gamepad = Gamepad.current;
         if (gamepad != null)
         {
-            // 스티어링 (왼쪽 아날로그 스틱 X축)
             float padSteer = gamepad.leftStick.x.ReadValue();
             if (Mathf.Abs(padSteer) > 0.05f) targetSteer = padSteer;
 
-            // 가속 (오른쪽 트리거 R2 / Throttle)
             float padAccel = gamepad.rightTrigger.ReadValue();
             if (padAccel > 0.05f) targetAccel = padAccel;
 
-            // 브레이크 (왼쪽 트리거 L2 / Brake)
             float padBrake = gamepad.leftTrigger.ReadValue();
             if (padBrake > 0.05f) targetBrake = padBrake;
 
-            // 패들 쉬프트 기어 변속 (Right Shoulder = Drive, Left Shoulder = Reverse)
             if (gamepad.rightShoulder.wasPressedThisFrame) ShiftGear(GearState.Drive);
             if (gamepad.leftShoulder.wasPressedThisFrame) ShiftGear(GearState.Reverse);
-            if (gamepad.buttonSouth.wasPressedThisFrame) ShiftGear(GearState.Drive); // A 버튼
-            if (gamepad.buttonNorth.wasPressedThisFrame) ShiftGear(GearState.Reverse); // Y 버튼
+            if (gamepad.buttonSouth.wasPressedThisFrame) ShiftGear(GearState.Drive);
+            if (gamepad.buttonNorth.wasPressedThisFrame) ShiftGear(GearState.Reverse);
         }
 
-        // 3. 범용 USB 레이싱 휠 / 조이스틱 스캔 (Joystick.current)
         var joystick = Joystick.current;
         if (joystick != null)
         {
