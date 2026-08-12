@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// .exe 배포 및 런타임 환경에서 ESC 키 입력 시 메인 메뉴/세팅 패널을 토글 팝업하고,
-/// 일시정지(Pause), 차량 Config 선택, 맵 전환, 단축키 매뉴얼, 프로그램 종료(Quit)를 제어하는 통합 컨트롤러.
+/// 일시정지(Pause), 차량 Config 선택, 단축키 매뉴얼, 차량 리셋, 프로그램 종료(Quit)를 제어하는 통합 컨트롤러.
 /// </summary>
 public class EscMenuController : MonoBehaviour
 {
@@ -11,8 +11,7 @@ public class EscMenuController : MonoBehaviour
 
     [Header("UI Panels")]
     public GameObject escMenuPanel;          // ESC 눌렀을 때 뜰 메인 일시정지 메뉴 패널
-    public GameObject mapSelectPanel;        // 맵 선택 패널
-    public GameObject controlsManualPanel;   // 단축키 매뉴얼 / 도움말 패널
+    public GameObject controlsManualPanel;   // 단축키 매뉴얼 / 도움말 팝업 패널
 
     [Header("State")]
     public bool isMenuOpen = false;
@@ -31,9 +30,8 @@ public class EscMenuController : MonoBehaviour
 
     private void Start()
     {
-        // 씬 시작 시 모든 메뉴/도움말 패널 비활성화
+        // 씬 시작 시 메뉴/도움말 패널 비활성화
         if (escMenuPanel != null) escMenuPanel.SetActive(false);
-        if (mapSelectPanel != null) mapSelectPanel.SetActive(false);
         if (controlsManualPanel != null) controlsManualPanel.SetActive(false);
     }
 
@@ -58,10 +56,9 @@ public class EscMenuController : MonoBehaviour
             escMenuPanel.SetActive(isMenuOpen);
         }
 
-        // 세부 패널이 열려있었다면 닫기
+        // 세부 도움말 패널이 열려있었다면 닫기
         if (!isMenuOpen)
         {
-            if (mapSelectPanel != null) mapSelectPanel.SetActive(false);
             if (controlsManualPanel != null) controlsManualPanel.SetActive(false);
         }
 
@@ -90,13 +87,20 @@ public class EscMenuController : MonoBehaviour
 
     /// <summary>
     /// [🚗 Vehicle Parameters / Config 선택] 버튼 클릭 시
+    /// 사용자가 파일 탐색기에서 [열기]를 딱 누르는 순간 FMU 파라미터 주입과 함께 ESC 메뉴가 자동으로 닫히고 주행 복귀!
     /// </summary>
     public void OnClickSelectVehicleConfig()
     {
         if (VehicleConfigManager.Instance != null)
         {
             // 윈도우 파일 탐색기를 열어 Config 선택 및 FMU 파라미터 자동 적용
-            VehicleConfigManager.Instance.SelectConfigViaFileDialog();
+            string selectedPath = VehicleConfigManager.Instance.OpenFileDialogAndSelectConfig();
+
+            // 사용자가 취소하지 않고 파일을 정상적으로 [열기] 선택했다면 ESC 메뉴를 자동으로 닫고 주행 재개!
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                OnClickResume();
+            }
         }
         else
         {
@@ -151,17 +155,6 @@ public class EscMenuController : MonoBehaviour
 
         // 리셋 후 메뉴 닫기
         OnClickResume();
-    }
-
-    /// <summary>
-    /// [🗺️ Map Select] 맵 선택 패널 열기
-    /// </summary>
-    public void OnClickOpenMapSelect()
-    {
-        if (mapSelectPanel != null)
-        {
-            mapSelectPanel.SetActive(true);
-        }
     }
 
     /// <summary>

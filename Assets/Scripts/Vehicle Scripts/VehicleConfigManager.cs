@@ -44,7 +44,15 @@ public class VehicleConfigManager : MonoBehaviour
     /// </summary>
     public void SelectConfigViaFileDialog()
     {
-        OpenFileDialogAndSelectConfig();
+        string path = OpenFileDialogAndSelectConfig();
+        // 파일 정상 선택 시 ESC 메뉴가 열려있다면 자동으로 닫고 주행 복귀
+        if (!string.IsNullOrEmpty(path))
+        {
+            if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
+            {
+                EscMenuController.Instance.OnClickResume();
+            }
+        }
     }
 
     /// <summary>
