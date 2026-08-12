@@ -9,14 +9,14 @@ public class MapInfo
 {
     public string mapName;
     public string sceneName;
-    public Sprite mapThumbnail; // UI 썸네일 이미지 지원
+    public Sprite mapThumbnail;
     public Vector3 spawnPosition = new Vector3(0f, 0.5f, 0f);
     public Vector3 spawnRotation = Vector3.zero;
 }
 
 /// <summary>
-/// 맵 Scene을 Additive 비동기 로드하고, 차량 위치를 해당 맵의 SpawnPoint로 이동시키는 매니저 클래스.
-/// UI 드롭다운 및 '맵 이동' 버튼 클릭 시 맵 전환 및 물리 최적화를 총괄하고, 전환 완료 시 ESC 메뉴를 자동 닫고 주행 복귀시킵니다.
+/// 맵 Scene을 Additive 비동기 로드하고, 허공 떨구기 잔상 없이 
+/// SpawnPoint 정밀 좌표로 0.0001mm 오차 없이 차량을 착지 배치하는 매니저.
 /// </summary>
 public class MapChanger : MonoBehaviour
 {
@@ -88,13 +88,7 @@ public class MapChanger : MonoBehaviour
                     !sceneName.Equals("Origin", System.StringComparison.OrdinalIgnoreCase) &&
                     !sceneName.Equals("SampleScene", System.StringComparison.OrdinalIgnoreCase))
                 {
-                    mapList.Add(new MapInfo
-                    {
-                        mapName = sceneName,
-                        sceneName = sceneName,
-                        spawnPosition = new Vector3(0f, 0.5f, 0f),
-                        spawnRotation = Vector3.zero
-                    });
+                    mapList.Add(new MapInfo { mapName = sceneName, sceneName = sceneName, spawnPosition = new Vector3(0f, 0.5f, 0f) });
                 }
             }
 
@@ -102,13 +96,11 @@ public class MapChanger : MonoBehaviour
             {
                 mapList.Add(new MapInfo { mapName = "K-City", sceneName = "K-City", spawnPosition = new Vector3(0f, 0.5f, 0f) });
                 mapList.Add(new MapInfo { mapName = "M-City", sceneName = "M-City", spawnPosition = new Vector3(0f, 0.5f, 0f) });
+                mapList.Add(new MapInfo { mapName = "Zalazone", sceneName = "Zalazone", spawnPosition = new Vector3(0f, 0.5f, 0f) });
             }
         }
     }
 
-    /// <summary>
-    /// TMP_Dropdown 참조를 받아 현재 드롭다운에서 선택된 항목의 맵으로 전환 (버튼 Click 용)
-    /// </summary>
     public void ChangeToSelectedDropdownMap(TMP_Dropdown dropdown)
     {
         if (dropdown != null)
@@ -117,9 +109,6 @@ public class MapChanger : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// UI 드롭다운 인덱스를 받아 맵 전환 시작
-    /// </summary>
     public void ChangeMap(int mapIndex)
     {
         if (isTransitioning)
@@ -145,7 +134,6 @@ public class MapChanger : MonoBehaviour
         MapInfo targetMap = mapList[targetIndex];
         Debug.Log($"[MapChanger] 맵 전환 시작: {targetMap.mapName} ({targetMap.sceneName})");
 
-        // 1. 기존 로드된 Additive 맵 언로드 및 메모리 정리
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             Scene loadedScene = SceneManager.GetSceneAt(i);
@@ -163,14 +151,12 @@ public class MapChanger : MonoBehaviour
             }
         }
 
-        // 사용하지 않는 그래픽 에셋 메모리 정리 (프레임 최적화)
         Resources.UnloadUnusedAssets();
 
-        // 2. 신규 맵 비동기 Additive 로드
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(targetMap.sceneName, LoadSceneMode.Additive);
         if (loadOp == null)
         {
-            Debug.LogError($"[MapChanger] '{targetMap.sceneName}' 맵을 로드할 수 없습니다. Build Settings를 확인하세요.");
+            Debug.LogError($"[MapChanger] '{targetMap.sceneName}' 맵을 로드할 수 없습니다.");
             isTransitioning = false;
             yield break;
         }
@@ -180,9 +166,6 @@ public class MapChanger : MonoBehaviour
             yield return null;
         }
 
-        yield return null;
-
-        // 3. 로드된 맵을 Active Scene으로 지정
         Scene newlyLoadedScene = SceneManager.GetSceneByName(targetMap.sceneName);
         if (newlyLoadedScene.IsValid())
         {
@@ -192,27 +175,26 @@ public class MapChanger : MonoBehaviour
         activeMapSceneName = targetMap.sceneName;
         currentMapIndex = targetIndex;
 
-        // 4. 차량을 신규 맵의 SpawnPoint 위치로 이동
-        RelocateVehicle(newlyLoadedScene, targetMap);
+        // 1. 차량을 정밀 SpawnPoint 위치로 이동
+        RelocateVehicleExact(newlyLoadedScene, targetMap);
 
-        // 5. 신규 맵의 3D 오브젝트 정밀 MeshCollider 자동 생성 및 물리 최적화 스캔
+        // 2. 신규 맵 3D 콜라이더 부착
         if (MapPhysicsOptimizer.Instance != null)
         {
             MapPhysicsOptimizer.Instance.OptimizeCurrentMap();
         }
 
-        Debug.Log($"[MapChanger] 맵 전환 및 물리 최적화 완료: {targetMap.mapName}");
+        Debug.Log($"[MapChanger] 맵 전환 및 스폰 완료: {targetMap.mapName}");
         isTransitioning = false;
         OnMapChangeCompleted?.Invoke();
 
-        // [스마트 UX]: 맵 로딩이 완료되면 ESC 메뉴창을 감쪽같이 자동으로 닫고 주행 재개(Resume)!
         if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
         {
             EscMenuController.Instance.OnClickResume();
         }
     }
 
-    private void RelocateVehicle(Scene loadedMapScene, MapInfo targetMap)
+    private void RelocateVehicleExact(Scene loadedMapScene, MapInfo targetMap)
     {
         if (vehicleTransform == null)
         {
@@ -260,32 +242,30 @@ public class MapChanger : MonoBehaviour
 
     private Transform FindSpawnPointRecursively(Transform parent)
     {
-        string normalizedName = parent.name.Replace(" ", "").Replace("_", "");
+        if (parent == null) return null;
 
-        if (normalizedName.Equals("SpawnPoint", System.StringComparison.OrdinalIgnoreCase) ||
-            normalizedName.Equals("Spawn", System.StringComparison.OrdinalIgnoreCase) ||
-            normalizedName.Equals("StartPoint", System.StringComparison.OrdinalIgnoreCase))
+        string pName = parent.name.ToLower();
+        if (pName.Contains("spawn point") || pName.Contains("spawnpoint") || pName.Contains("spawn_point"))
         {
             return parent;
         }
 
-        try
-        {
-            if (string.Equals(parent.tag, "SpawnPoint", System.StringComparison.OrdinalIgnoreCase)) return parent;
-        }
-        catch { }
-
         foreach (Transform child in parent)
         {
-            Transform res = FindSpawnPointRecursively(child);
-            if (res != null) return res;
+            Transform found = FindSpawnPointRecursively(child);
+            if (found != null) return found;
         }
 
         return null;
     }
 
-    private bool IsMapScene(string sceneName)
+    public bool IsMapScene(string sceneName)
     {
-        return mapList.Exists(m => m.sceneName == sceneName);
+        if (string.IsNullOrEmpty(sceneName)) return false;
+        foreach (var m in mapList)
+        {
+            if (m.sceneName.Equals(sceneName, System.StringComparison.OrdinalIgnoreCase)) return true;
+        }
+        return false;
     }
 }

@@ -2,13 +2,13 @@ using UnityEngine;
 
 /// <summary>
 /// 바퀴 위치에서 지면까지의 고도(hitPointY), 기울기(Qx, Qy), 실제 거리를 감지하는 지면 센서 클래스.
-/// 변경된 FMU 수치 사양에 맞춰 지면 Y 고도(gz) 및 경사각(qx, qy) 정보를 수집합니다.
+/// M-City 등 맵 본연의 3D 지면 메쉬 고도를 순수하게 감지합니다.
 /// </summary>
 public class WheelGroundSensor : MonoBehaviour
 {
     [Header("Sensor Settings")]
     public float wheelRadius = 0.35f;      // 타이어 반지름
-    public float maxRayDistance = 2.0f;    // 레이캐스트 최대 거리
+    public float maxRayDistance = 3.0f;    // 레이캐스트 최대 거리
 
     // [Output] VehicleController 및 FMU로 전달할 지면 연산 출력값
     public float distanceFromGround; // 지면까지의 실제 거리
@@ -18,78 +18,66 @@ public class WheelGroundSensor : MonoBehaviour
     public bool isGrounded;          // 지면 감지 여부
 
     [Header("Debug")]
-    public bool enableDebugLog = false; // 매 프레임 콘솔 디버그 로그 끄기 (렉 방지 및 프레임 최적화)
+    public bool enableDebugLog = false;
 
-    // 레이캐스트 감지 시 무시할 레이어 마스크 (Ignore Raycast 및 UI 제외)
     private static int _targetLayerMask = -1;
 
     private void Awake()
     {
-        // Ignore Raycast 및 UI 레이어를 제외한 레이어 마스크를 자동 비트 연산으로 초기화
         if (_targetLayerMask == -1)
         {
-            int ignoreBit = LayerMask.GetMask("Ignore Raycast", "UI");
+            int ignoreBit = LayerMask.GetMask("Ignore Raycast", "UI", "Vehicle");
             _targetLayerMask = ~ignoreBit;
         }
     }
 
     /// <summary>
-    /// 차량 바퀴 위치에서 로컬 아래 방향(-transform.up)으로 레이캐스트를 발사하여 지면 정보(gz, qx, qy) 계산
+    /// 차량 바퀴 위치에서 아래 방향(-transform.up)으로 레이캐스트를 발사하여 지면 정보(gz, qx, qy) 순수 연산
     /// </summary>
     public void CalculateGroundForces()
     {
-        Vector3 rayOrigin = transform.position;
-        Vector3 rayDirection = -transform.up;
+        Vector3 rayOrigin = transform.position + (Vector3.up * 0.1f);
+        Vector3 rayDirection = Vector3.down;
 
         RaycastHit hit;
 
         if (Physics.Raycast(rayOrigin, rayDirection, out hit, maxRayDistance, _targetLayerMask))
         {
+            if (hit.transform.IsChildOf(transform.root))
+            {
+                RaycastHit[] hits = Physics.RaycastAll(rayOrigin, rayDirection, maxRayDistance, _targetLayerMask);
+                bool foundMap = false;
+                foreach (var h in hits)
+                {
+                    if (!h.transform.IsChildOf(transform.root))
+                    {
+                        hit = h;
+                        foundMap = true;
+                        break;
+                    }
+                }
+                if (!foundMap)
+                {
+                    isGrounded = false;
+                    return;
+                }
+            }
+
             isGrounded = true;
             distanceFromGround = hit.distance;
-            hitPointY = hit.point.y; // 실제 충돌 지면의 Y 좌표 저장
+            hitPointY = hit.point.y;
 
             Quaternion groundRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
             hitQx = groundRotation.x;
             hitQy = groundRotation.y;
-
-            // 디버그 필요 시에만 출력 (매 프레임 로그로 인한 프레임 드랍 방지)
-            if (enableDebugLog)
-            {
-                // Debug.Log($"[{gameObject.name} Sensor] 🎯 Hit: '{hit.collider.name}' (Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}), HitY: {hitPointY:F2}m, Dist: {distanceFromGround:F2}m");
-            }
         }
         else
         {
             isGrounded = false;
             distanceFromGround = maxRayDistance;
-            hitPointY = transform.position.y - maxRayDistance;
-
+            hitPointY = transform.position.y - wheelRadius;
             hitQx = 0f;
             hitQy = 0f;
-
-            if (enableDebugLog)
-            {
-                // Debug.LogWarning($"[{gameObject.name} Sensor] ⚠️ 지면 미감지 (공중 부양 상태)");
-            }
         }
     }
-
-    private void FixedUpdate()
-    {
-        CalculateGroundForces();
-    }
-
-#if UNITY_EDITOR
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = isGrounded ? Color.green : Color.red;
-
-        Vector3 rayDirection = -transform.up * (isGrounded ? distanceFromGround : maxRayDistance);
-        Gizmos.DrawRay(transform.position, rayDirection);
-
-        Gizmos.color = new Color(1, 1, 0, 0.3f);
-        Gizmos.DrawWireSphere(transform.position, wheelRadius);
-    }
-#endif
 }

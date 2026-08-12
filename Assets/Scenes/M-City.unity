@@ -150,7 +150,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -134.302, z: 0}
---- !u!1001 &1781267119
+--- !u!1001 &1684334697
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -198,56 +198,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: -1868238115223966517, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
       propertyPath: m_Name
       value: mcity_agv
       objectReference: {fileID: 0}
-    - target: {fileID: 4190703037397430090, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8733687484057617092, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1781267121}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
---- !u!1 &1781267120 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8733687484057617092, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
-  m_PrefabInstance: {fileID: 1781267119}
-  m_PrefabAsset: {fileID: 0}
---- !u!64 &1781267121
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1781267120}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 0
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4565820446832466163, guid: 5910bc07aa000ce499717d2d22123aff, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1781267119}
   - {fileID: 535598305}
+  - {fileID: 1684334697}

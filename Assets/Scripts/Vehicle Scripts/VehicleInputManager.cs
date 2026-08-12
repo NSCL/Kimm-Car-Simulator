@@ -2,136 +2,133 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// í‚¤ë³´ë“œ(Keyboard), ê²Œì„íŒ¨ë“œ(Gamepad), ë ˆì´ì‹± íœ /ì¡°ì´ìŠ¤í‹±(Joystick/HID Wheel Controller)ì˜ 
+/// ì•„ë‚ ë¡œê·¸ ì¡°í–¥/ê°€ì†/ë¸Œë ˆì´í¬ ë° ê¸°ì–´ ë³€ì† ì…ë ¥ì„ 100% í†µí•© í•©ì„±í•˜ëŠ” í•˜ì´ë¸Œë¦¬ë“œ ì°¨ëŸ‰ ì…ë ¥ ë§¤ë‹ˆì €.
+/// </summary>
 public class VehicleInputManager : MonoBehaviour
 {
-    private VehicleInputControls _inputActions;
-
-    // ±â¾î »óÅÂ Á¤ÀÇ (Inspector¿¡¼­ µå·Ó´Ù¿îÀ¸·Î º¸ÀÓ)
     public enum GearState { Park, Reverse, Neutral, Drive }
 
     [Header("Gear Status")]
-    [SerializeField] private GearState currentGear = GearState.Neutral; // ±â¾î »óÅÂ
-    private bool isUsingKeyboard = false; // ÇöÀç Å°º¸µå ¸ğµåÀÎÁö È®ÀÎ¿ë
+    [SerializeField] private GearState currentGear = GearState.Drive;
+    public GearState CurrentGear => currentGear;
 
-    [Header("Current Value")]
-    [SerializeField] private float currentSteering;
-    [SerializeField] private float currentAccel;
-    [SerializeField] private float currentBrake;
+    [Header("Input Sensitivity")]
+    [SerializeField] private float steeringSensitivity = 4.0f;
+    [SerializeField] private float accelSensitivity = 5.0f;
+    [SerializeField] private float brakeSensitivity = 5.0f;
+    [SerializeField] private float returnSpeed = 6.0f;
 
-    [Header("Keyboard Input Settings")]
-    [SerializeField] private float steeringSpeed = 2.0f;
-    [SerializeField] private float pedalSpeed = 3.0f;
-    [SerializeField] private float returnSpeed = 5.0f;
+    [Header("Current Input Values")]
+    public float Steering;
+    public float Accel;
+    public float Brake;
 
-    public event Action OnResetTriggered;
-    // ¿ÜºÎ °ø°³ ÇÁ·ÎÆÛÆ¼
-    public float Steering => currentSteering;
-    public float Accel => currentAccel;
-    public float Brake => currentBrake;
     public int Gear
     {
         get
         {
             switch (currentGear)
             {
+                case GearState.Park:
+                    return 0;
                 case GearState.Reverse:
                     return -1;
+                case GearState.Neutral:
+                    return 0;
                 case GearState.Drive:
                     return 1;
                 default:
-                    return 0;
+                    return 1;
             }
-
         }
     }
 
-    // °¢ ÀÔ·Âº°·Î ¸¶Áö¸· »ç¿ë ÀåÄ¡°¡ Å°º¸µå¿´´ÂÁö ±â¾ïÇÏ´Â º¯¼öµé
-    private bool _steerWasKeyboard = false;
-    private bool _accelWasKeyboard = false;
-    private bool _brakeWasKeyboard = false;
-    public void SetInputActive(bool isActive)
-    {
-        if (isActive)
-        {
-            // 1. ÄÑ±â: ´Ù½Ã Update°¡ µ¹°Ô ÇÔ
-            this.enabled = true;
-        }
-        else
-        {
-            // 2. ²ô±â Àü ¾ÈÀüÀåÄ¡: ¹â°í ÀÖ´ø ¿¢¼¿/ºê·¹ÀÌÅ© °­Á¦ ÃÊ±âÈ­
-            // (ÀÌ°Å ¾È ÇÏ¸é ¿¢¼¿ 1ÀÎ »óÅÂ·Î ²¨Á®¼­ Â÷°¡ °è¼Ó ³ª°©´Ï´Ù)
-            currentSteering = 0f;
-            currentAccel = 0f;
-            currentBrake = 0f; // ¶Ç´Â 1f (¿ÏÀü Á¤Áö)
+    public event Action OnResetTriggered;
 
-            // 3. ²ô±â: ÀÌÁ¦ Update°¡ ¸ØÃß°í, OnDisableÀÌ ½ÇÇàµÇ¾î Input Systemµµ ½¬°Ô µÊ
-            this.enabled = false;
-        }
-    }
-    private void Awake() => _inputActions = new VehicleInputControls();
-    private void OnEnable()
-    {
-        _inputActions.Enable();
-
-        // ±â¾î º¯¼Ó ÀÌº¥Æ® ¿¬°á
-        _inputActions.Vehicle.GearDrive.performed += _ => ShiftGear(GearState.Drive);
-        _inputActions.Vehicle.GearReverse.performed += _ => ShiftGear(GearState.Reverse);
-        _inputActions.Vehicle.ResetPosition.performed += _ => OnResetTriggered?.Invoke();
-    }
-
-    private void OnDisable() => _inputActions.Disable();
+    private bool _isInputActive = true;
 
     private void Update()
     {
-        // °¢ ÀÔ·Â Ã³¸®
-        currentSteering = ProcessAxis(_inputActions.Vehicle.Steering, currentSteering, ref _steerWasKeyboard, steeringSpeed);
-        currentAccel = ProcessAxis(_inputActions.Vehicle.Accel, currentAccel, ref _accelWasKeyboard, pedalSpeed);
-        currentBrake = ProcessAxis(_inputActions.Vehicle.Brake, currentBrake, ref _brakeWasKeyboard, pedalSpeed * 2f); // ºê·¹ÀÌÅ©´Â Á» ´õ ºü¸£°Ô
+        if (!_isInputActive) return;
 
-        // µğ¹ö±ë¿ë: ÀüÃ¼ÀûÀ¸·Î Å°º¸µå ¾²°í ÀÖ´ÂÁö Ç¥½Ã
-        isUsingKeyboard = _steerWasKeyboard || _accelWasKeyboard || _brakeWasKeyboard;
+        float targetSteer = 0f;
+        float targetAccel = 0f;
+        float targetBrake = 0f;
+
+        // 1. í‚¤ë³´ë“œ ì…ë ¥ ìŠ¤ìº” (Keyboard.current)
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame || keyboard.dKey.wasPressedThisFrame)
+                ShiftGear(GearState.Drive);
+            if (keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame)
+                ShiftGear(GearState.Reverse);
+            if (keyboard.nKey.wasPressedThisFrame)
+                ShiftGear(GearState.Neutral);
+            if (keyboard.pKey.wasPressedThisFrame)
+                ShiftGear(GearState.Park);
+            if (keyboard.rKey.wasPressedThisFrame)
+                OnResetTriggered?.Invoke();
+
+            if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) targetSteer -= 1.0f;
+            if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) targetSteer += 1.0f;
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) targetAccel += 1.0f;
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed || keyboard.spaceKey.isPressed) targetBrake += 1.0f;
+        }
+
+        // 2. ê²Œì„íŒ¨ë“œ ë° Power Shift Revolution / USB ë ˆì´ì‹± íœ  ì»¨íŠ¸ë¡¤ëŸ¬ ìŠ¤ìº” (Gamepad.current / Joystick.current)
+        var gamepad = Gamepad.current;
+        if (gamepad != null)
+        {
+            // ìŠ¤í‹°ì–´ë§ (ì™¼ìª½ ì•„ë‚ ë¡œê·¸ ìŠ¤í‹± Xì¶•)
+            float padSteer = gamepad.leftStick.x.ReadValue();
+            if (Mathf.Abs(padSteer) > 0.05f) targetSteer = padSteer;
+
+            // ê°€ì† (ì˜¤ë¥¸ìª½ íŠ¸ë¦¬ê±° R2 / Throttle)
+            float padAccel = gamepad.rightTrigger.ReadValue();
+            if (padAccel > 0.05f) targetAccel = padAccel;
+
+            // ë¸Œë ˆì´í¬ (ì™¼ìª½ íŠ¸ë¦¬ê±° L2 / Brake)
+            float padBrake = gamepad.leftTrigger.ReadValue();
+            if (padBrake > 0.05f) targetBrake = padBrake;
+
+            // íŒ¨ë“¤ ì‰¬í”„íŠ¸ ê¸°ì–´ ë³€ì† (Right Shoulder = Drive, Left Shoulder = Reverse)
+            if (gamepad.rightShoulder.wasPressedThisFrame) ShiftGear(GearState.Drive);
+            if (gamepad.leftShoulder.wasPressedThisFrame) ShiftGear(GearState.Reverse);
+            if (gamepad.buttonSouth.wasPressedThisFrame) ShiftGear(GearState.Drive); // A ë²„íŠ¼
+            if (gamepad.buttonNorth.wasPressedThisFrame) ShiftGear(GearState.Reverse); // Y ë²„íŠ¼
+        }
+
+        // 3. ë²”ìš© USB ë ˆì´ì‹± íœ  / ì¡°ì´ìŠ¤í‹± ìŠ¤ìº” (Joystick.current)
+        var joystick = Joystick.current;
+        if (joystick != null)
+        {
+            float joySteer = joystick.stick.x.ReadValue();
+            if (Mathf.Abs(joySteer) > 0.05f) targetSteer = joySteer;
+        }
+
+        // ì…ë ¥ ê°’ ë³´ê°„ ì ìš©
+        Steering = Mathf.MoveTowards(Steering, targetSteer, (targetSteer != 0 ? steeringSensitivity : returnSpeed) * Time.deltaTime);
+        Accel = Mathf.MoveTowards(Accel, targetAccel, (targetAccel != 0 ? accelSensitivity : returnSpeed) * Time.deltaTime);
+        Brake = Mathf.MoveTowards(Brake, targetBrake, (targetBrake != 0 ? brakeSensitivity : returnSpeed) * Time.deltaTime);
     }
 
-    // [ÇÙ½É ·ÎÁ÷] ÀÔ·ÂÀ» Ã³¸®ÇÏ°í °ªÀ» ¹İÈ¯ÇÏ´Â ÇÔ¼ö
-    private float ProcessAxis(InputAction action, float currentVal, ref bool wasKeyboard, float sensitive)
-    {
-        float rawVal = action.ReadValue<float>();
-
-        // 1. ÇöÀç ÀÔ·ÂÀÌ ¾îµğ¼­ ¿Ô´ÂÁö ÆÇº°
-        if (action.activeControl != null)
-        {
-            // ÀÔ·Â ÀåÄ¡°¡ Å°º¸µå¶ó¸é -> È®½ÇÈ÷ Å°º¸µå ¸ğµå·Î ÀüÈ¯
-            if (action.activeControl.device is Keyboard)
-            {
-                wasKeyboard = true;
-            }
-            // ÀÔ·Â°ªÀÌ À¯ÀÇ¹ÌÇÏ°Ô Å©°í(³ëÀÌÁî 0.1 Á¦¿Ü), Å°º¸µå°¡ ¾Æ´Ï¶ó¸é -> ÈÙ ¸ğµå·Î ÀüÈ¯
-            else if (Mathf.Abs(rawVal) > 0.1f)
-            {
-                wasKeyboard = false;
-            }
-            // *Áß¿ä*: ÀÔ·ÂÀÌ 0ÀÌ°Å³ª ¹Ì¼¼ÇÒ ¶§´Â »óÅÂ¸¦ ¹Ù²ÙÁö ¾Ê°í '¸¶Áö¸· »óÅÂ'¸¦ À¯ÁöÇÕ´Ï´Ù.
-            // ±×·¡¾ß Å°º¸µå¸¦ ¶ÃÀ» ¶§(ÀÔ·Â 0)µµ wasKeyboard°¡ true·Î À¯ÁöµÇ¾î returnSpeed°¡ ÀÛµ¿ÇÕ´Ï´Ù.
-        }
-
-        // 2. ¸ğµå¿¡ µû¸¥ °ª Ã³¸®
-        if (wasKeyboard)
-        {
-            // Å°º¸µå ¸ğµå: MoveTowards·Î ºÎµå·´°Ô Áõ°¨
-            // ÀÔ·ÂÀÌ ÀÖÀ¸¸é sensitive ¼Óµµ, ¾øÀ¸¸é(º¹±Í) returnSpeed »ç¿ë
-            float targetSpeed = (rawVal != 0) ? sensitive : returnSpeed;
-            return Mathf.MoveTowards(currentVal, rawVal, targetSpeed * Time.deltaTime);
-        }
-        else
-        {
-            // ÈÙ ¸ğµå: ÀÔ·Â°ª Á÷°á (Direct)
-            return rawVal;
-        }
-    }
-
-    private void ShiftGear(GearState target)
+    public void ShiftGear(GearState target)
     {
         currentGear = target;
-        // ¿©±â¿¡ ±â¾î º¯°æ È¿°úÀ½ÀÌ³ª UI ¾÷µ¥ÀÌÆ® ·ÎÁ÷ Ãß°¡ °¡´É
+        Debug.Log($"[VehicleInputManager] ê¸°ì–´ ë³€ì† ì™„ë£Œ: {currentGear} (FMU ì „ë‹¬ê°’: {Gear})");
+    }
+
+    public void SetInputActive(bool active)
+    {
+        _isInputActive = active;
+        if (!active)
+        {
+            Steering = 0;
+            Accel = 0;
+            Brake = 0;
+        }
     }
 }

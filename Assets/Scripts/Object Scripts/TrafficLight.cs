@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditorInternal.VersionControl.ListControl;
 
 public class TrafficLight : MonoBehaviour
 {
@@ -10,14 +9,14 @@ public class TrafficLight : MonoBehaviour
         Yellow,
         Left,
         Green,
-        GreenAndLeft, // ³ì»ö+ÁÂÈ¸Àü µ¿½Ã ½ÅÈ£ ´ëÀÀ¿ë
-        AllOff        // ÀüÃ¼ ¼Òµî (ÇÊ¿ä ½Ã)
+        GreenAndLeft, // ë…¹ìƒ‰+ì¢ŒíšŒì „ ë™ì‹œ ì‹ í˜¸ ëŒ€ì‘ìš©
+        AllOff        // ì „ì²´ ì†Œë“± (í•„ìš” ì‹œ)
     }
     [System.Serializable]
     public struct LightGroup
     {
         public LightState state;
-        [Tooltip("ÀÌ »óÅÂ°¡ µÇ¾úÀ» ¶§ È°¼ºÈ­(On)ÇÒ Àü±¸ ¿ÀºêÁ§Æ®µéÀ» µî·ÏÇÏ¼¼¿ä.")]
+        [Tooltip("ì´ ìƒíƒœê°€ ë˜ì—ˆì„ ë•Œ í™œì„±í™”(On)í•  ì „êµ¬ ì˜¤ë¸Œì íŠ¸ë“¤ì„ ë“±ë¡í•˜ì„¸ìš”.")]
         public GameObject[] activeObjects;
     }
 
@@ -25,34 +24,34 @@ public class TrafficLight : MonoBehaviour
     public struct StateSequence
     {
         public LightState state;
-        [Tooltip("ÀÌ »óÅÂ¸¦ À¯ÁöÇÒ ½Ã°£(ÃÊ)")]
+        [Tooltip("ì´ ìƒíƒœë¥¼ ìœ ì§€í•  ì‹œê°„(ì´ˆ)")]
         public float duration;
     }
 
-    [Header("½ÅÈ£µî »óÅÂº° ¿ÀºêÁ§Æ® ¼³Á¤")]
+    [Header("ì‹ í˜¸ë“± ìƒíƒœë³„ ì˜¤ë¸Œì íŠ¸ ì„¤ì •")]
     [SerializeField]
     private List<LightGroup> lightGroups = new List<LightGroup>();
 
-    [Header("µ¶¸³ ÀÚµ¿ ÁÖÇà ¼³Á¤")]
-    [Tooltip("Ã¼Å©ÇÏ¸é ´Ù¸¥ ÄÁÆ®·Ñ·¯ ¾øÀÌ ÀÌ ½ÅÈ£µî ½º½º·Î Á¤ÇØÁø ½Ã°£Ç¥´ë·Î ·çÇÁ¸¦ µ½´Ï´Ù.")]
+    [Header("ë…ë¦½ ìë™ ì£¼í–‰ ì„¤ì •")]
+    [Tooltip("ì²´í¬í•˜ë©´ ë‹¤ë¥¸ ì»¨íŠ¸ë¡¤ëŸ¬ ì—†ì´ ì´ ì‹ í˜¸ë“± ìŠ¤ìŠ¤ë¡œ ì •í•´ì§„ ì‹œê°„í‘œëŒ€ë¡œ ë£¨í”„ë¥¼ ë•ë‹ˆë‹¤.")]
     [SerializeField] private bool useSequence = true;
 
-    [Tooltip("½º½º·Î µ¹ ¶§ ¼øÈ¯ÇÒ ½ÅÈ£ ½ÃÄö½º¿Í Áö¼Ó ½Ã°£ÀÔ´Ï´Ù.")]
+    [Tooltip("ìŠ¤ìŠ¤ë¡œ ëŒ ë•Œ ìˆœí™˜í•  ì‹ í˜¸ ì‹œí€€ìŠ¤ì™€ ì§€ì† ì‹œê°„ì…ë‹ˆë‹¤.")]
     [SerializeField] private List<StateSequence> sequenceList = new List<StateSequence>();
 
-    [Header("½Ã¹Ä·¹ÀÌ¼Ç ½Ã°£ ¹èÀ²")]
-    [Tooltip("½Ã¹Ä·¹ÀÌ¼Ç ½Ã°£ ¼Óµµ Á¶Àı¿ë ¹èÀ² (³ôÀ»¼ö·Ï ½ÅÈ£°¡ ºü¸£°Ô ¹Ù²ò´Ï´Ù.)")]
+    [Header("ì‹œë®¬ë ˆì´ì…˜ ì‹œê°„ ë°°ìœ¨")]
+    [Tooltip("ì‹œë®¬ë ˆì´ì…˜ ì‹œê°„ ì†ë„ ì¡°ì ˆìš© ë°°ìœ¨ (ë†’ì„ìˆ˜ë¡ ì‹ í˜¸ê°€ ë¹ ë¥´ê²Œ ë°”ë€ë‹ˆë‹¤.)")]
     [Range(0.1f, 10f)]
     public float timeScale = 1.0f;
 
-    // ÇöÀç »óÅÂ ¹× Å¸ÀÌ¸Ó º¯¼öµé
+    // í˜„ì¬ ìƒíƒœ ë° íƒ€ì´ë¨¸ ë³€ìˆ˜ë“¤
     public LightState CurrentState { get; private set; } = LightState.AllOff;
     private int currentSequenceIndex = 0;
     private float timer = 0f;
 
     private void Awake()
     {
-        // ½ÃÀÛÇÒ ¶§ ÃÖÃÊ »óÅÂ Àû¿ë
+        // ì‹œì‘í•  ë•Œ ìµœì´ˆ ìƒíƒœ ì ìš©
         if (useSequence && sequenceList.Count > 0)
         {
             currentSequenceIndex = 0;
@@ -66,21 +65,21 @@ public class TrafficLight : MonoBehaviour
 
     private void Update()
     {
-        // µ¶¸³ ÀÚµ¿ ÁÖÇà ¸ğµå°¡ ¾Æ´Ò ¶§³ª ½ÃÄö½º°¡ ºñ¾îÀÖÀ¸¸é Å¸ÀÌ¸Ó ÀÛµ¿ ¾È ÇÔ
+        // ë…ë¦½ ìë™ ì£¼í–‰ ëª¨ë“œê°€ ì•„ë‹ ë•Œë‚˜ ì‹œí€€ìŠ¤ê°€ ë¹„ì–´ìˆìœ¼ë©´ íƒ€ì´ë¨¸ ì‘ë™ ì•ˆ í•¨
         if (!useSequence || sequenceList.Count == 0) return;
 
         timer -= Time.deltaTime * timeScale;
 
         if (timer <= 0)
         {
-            // ´ÙÀ½ ½ÅÈ£ ´Ü°è·Î ÀÌµ¿ (¼øÈ¯ ±¸Á¶)
+            // ë‹¤ìŒ ì‹ í˜¸ ë‹¨ê³„ë¡œ ì´ë™ (ìˆœí™˜ êµ¬ì¡°)
             currentSequenceIndex = (currentSequenceIndex + 1) % sequenceList.Count;
             ApplyStateAndResetTimer(sequenceList[currentSequenceIndex].state);
         }
     }
 
     /// <summary>
-    /// »õ·Î¿î »óÅÂ¸¦ °¡µ¿ÇÏ°í ÇØ´ç ½ÃÄö½º ÀÎµ¦½ºÀÇ duration¿¡ ¸Â°Ô Å¸ÀÌ¸Ó¸¦ ¼¼ÆÃÇÕ´Ï´Ù.
+    /// ìƒˆë¡œìš´ ìƒíƒœë¥¼ ê°€ë™í•˜ê³  í•´ë‹¹ ì‹œí€€ìŠ¤ ì¸ë±ìŠ¤ì˜ durationì— ë§ê²Œ íƒ€ì´ë¨¸ë¥¼ ì„¸íŒ…í•©ë‹ˆë‹¤.
     /// </summary>
     private void ApplyStateAndResetTimer(LightState newState)
     {
@@ -92,13 +91,13 @@ public class TrafficLight : MonoBehaviour
     }
 
     /// <summary>
-    /// ¿ÜºÎ ÄÁÆ®·Ñ·¯(Intersection µî)°¡ ÀÌ ½ÅÈ£µîÀ» Àå¾ÇÇÒ ¶§ Á÷Á¢ Á¦¾îÇÏ´Â ÇÔ¼ö
+    /// ì™¸ë¶€ ì»¨íŠ¸ë¡¤ëŸ¬(Intersection ë“±)ê°€ ì´ ì‹ í˜¸ë“±ì„ ì¥ì•…í•  ë•Œ ì§ì ‘ ì œì–´í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
     public void SetState(LightState newState)
     {
         CurrentState = newState;
 
-        // 1. µî·ÏµÈ ¸ğµç ±×·ìÀÇ ¿ÀºêÁ§Æ®¸¦ ÀüºÎ ²ô±â
+        // 1. ë“±ë¡ëœ ëª¨ë“  ê·¸ë£¹ì˜ ì˜¤ë¸Œì íŠ¸ë¥¼ ì „ë¶€ ë„ê¸°
         foreach (var group in lightGroups)
         {
             if (group.activeObjects != null)
@@ -110,7 +109,7 @@ public class TrafficLight : MonoBehaviour
             }
         }
 
-        // 2. ÇöÀç »õ·Î ÁöÁ¤µÈ »óÅÂ¿¡ ÇØ´çÇÏ´Â ¿ÀºêÁ§Æ®µé¸¸ ÄÑ±â
+        // 2. í˜„ì¬ ìƒˆë¡œ ì§€ì •ëœ ìƒíƒœì— í•´ë‹¹í•˜ëŠ” ì˜¤ë¸Œì íŠ¸ë“¤ë§Œ ì¼œê¸°
         foreach (var group in lightGroups)
         {
             if (group.state == newState)
@@ -128,7 +127,7 @@ public class TrafficLight : MonoBehaviour
     }
 
     /// <summary>
-    /// ¿ÜºÎ ÄÁÆ®·Ñ·¯°¡ ÀÌ ½ÅÈ£µîÀ» Á¶À²ÇÏ±â À§ÇØ ÀÚÃ¼ ½ÃÄö½º ·çÇÁ¸¦ ÀáÀç¿ì´Â ÀÎÅÍÆäÀÌ½º
+    /// ì™¸ë¶€ ì»¨íŠ¸ë¡¤ëŸ¬ê°€ ì´ ì‹ í˜¸ë“±ì„ ì¡°ìœ¨í•˜ê¸° ìœ„í•´ ìì²´ ì‹œí€€ìŠ¤ ë£¨í”„ë¥¼ ì ì¬ìš°ëŠ” ì¸í„°í˜ì´ìŠ¤
     /// </summary>
     public void SetControlledByExternal(bool isControlled)
     {

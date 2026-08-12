@@ -115,7 +115,7 @@ public partial class @SimulatorControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3e06939e-5bc0-4bdf-98ab-88a91d0ef978"",
-                    ""path"": ""<Keyboard>/#(M)"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

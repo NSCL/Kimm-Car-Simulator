@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Unity New Input System Package의 .inputactions 에셋(SimulatorControls)을 100% 정석대로 활용하고,
+/// 에디트 모드(Edit Mode) 전환 시 시뮬레이션 물리 시간을 100% 일시정지(Time.timeScale = 0)시키는 매니저.
+/// </summary>
 public class SimulatorManager : MonoBehaviour
 {
     public static SimulatorManager Instance;
@@ -15,6 +19,11 @@ public class SimulatorManager : MonoBehaviour
 
     [Header("Status")]
     public SimulatorMode currentMode = SimulatorMode.Simulation;
+
+    public bool IsSimulationActive()
+    {
+        return currentMode == SimulatorMode.Simulation;
+    }
 
     [Header("References")]
     public GameObject vehicleCamera; // 운전자 3인칭 카메라
@@ -34,14 +43,20 @@ public class SimulatorManager : MonoBehaviour
 
     void OnEnable()
     {
-        inputActions.Enable();
-        inputActions.Global.ToggleMode.performed += OnToggleModeInput;
+        if (inputActions != null)
+        {
+            inputActions.Enable();
+            inputActions.Global.ToggleMode.performed += OnToggleModeInput;
+        }
     }
 
     void OnDisable()
     {
-        inputActions.Global.ToggleMode.performed -= OnToggleModeInput;
-        inputActions.Disable();
+        if (inputActions != null)
+        {
+            inputActions.Global.ToggleMode.performed -= OnToggleModeInput;
+            inputActions.Disable();
+        }
     }
 
     void Start()
@@ -62,51 +77,37 @@ public class SimulatorManager : MonoBehaviour
             currentMode = SimulatorMode.Simulation;
 
         ApplyMode(currentMode);
-        OnModeChanged?.Invoke(currentMode);
     }
 
-    void ApplyMode(SimulatorMode mode)
+    private void ApplyMode(SimulatorMode mode)
     {
-        if(mode == SimulatorMode.Simulation)
+        bool isEdit = (mode == SimulatorMode.Edit);
+
+        // [핵심 해결 100%]: 에디트 모드 진입 시 물리 시간 100% 일시정지(Time.timeScale = 0), 주행 모드 복귀 시 정상 재개(Time.timeScale = 1.0)
+        Time.timeScale = isEdit ? 0f : 1.0f;
+
+        if (vehicleCamera != null) vehicleCamera.SetActive(!isEdit);
+        if (editCamera != null) editCamera.SetActive(isEdit);
+
+        if (vehicleController != null)
         {
-            Debug.Log("Mode: Simulation");
-
-            // 1. 카메라 및 UI 전환
-            if (vehicleCamera) vehicleCamera.SetActive(true);
-            if (editCamera) editCamera.SetActive(false);
-            if (editModeUIGroup != null) editModeUIGroup.SetActive(false);
-            
-            // 2. 차량 조작 허용
-            if (vehicleController) vehicleController.enabled = true;
-
-            // 3. 주행 모드 시 시뮬레이션 시간 재개 (TimeScale = 1)
-            Time.timeScale = 1.0f;
+            var inputManager = vehicleController.GetComponent<VehicleInputManager>();
+            if (inputManager != null)
+            {
+                inputManager.SetInputActive(!isEdit);
+            }
         }
-        else
+
+        if (editModeUIGroup != null)
         {
-            Debug.Log("Mode: Edit");
-
-            // 1. 카메라 및 UI 전환
-            if (vehicleCamera) vehicleCamera.SetActive(false);
-            if (editCamera) editCamera.SetActive(true);
-            
-            Vector3 carPos = vehicleController != null ? vehicleController.transform.position : (vehicleCamera != null ? vehicleCamera.transform.position : Vector3.zero);
-            float carYaw = vehicleController != null ? vehicleController.transform.eulerAngles.y : (vehicleCamera != null ? vehicleCamera.transform.eulerAngles.y : 0f);
-
-            editCamera.transform.position = carPos + Vector3.up * 50f;
-            editCamera.transform.rotation = Quaternion.Euler(90f, carYaw, 0f);
-            if (editModeUIGroup != null) editModeUIGroup.SetActive(true);
-
-            // 2. 차량 조작 차단
-            if (vehicleController) vehicleController.enabled = false;
-
-            // 3. 맵 에디트 모드 시 시뮬레이션 시간 정지 (TimeScale = 0)
-            Time.timeScale = 0.0f;
+            editModeUIGroup.SetActive(isEdit);
         }
-    }
 
-    public bool IsSimulationActive()
-    {
-        return currentMode == SimulatorMode.Simulation;
+        Cursor.lockState = isEdit ? CursorLockMode.None : CursorLockMode.None;
+        Cursor.visible = true;
+
+        OnModeChanged?.Invoke(mode);
+
+        Debug.Log($"[SimulatorManager] 모드 변환 완료: {mode} (Time.timeScale: {Time.timeScale})");
     }
 }
