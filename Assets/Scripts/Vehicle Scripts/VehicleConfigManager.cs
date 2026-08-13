@@ -313,8 +313,9 @@ public class VehicleConfigManager : MonoBehaviour
         ofn.maxFile = ofn.file.Length;
         ofn.fileTitle = new string(new char[64]);
         ofn.maxFileTitle = ofn.fileTitle.Length;
-        string initDir = Application.streamingAssetsPath.Replace('/', '\\');
-        if (Directory.Exists(initDir)) ofn.initialDir = initDir;
+        string configDir = Path.Combine(Application.streamingAssetsPath, "VehicleConfigs").Replace('/', '\\');
+        if (!Directory.Exists(configDir)) Directory.CreateDirectory(configDir);
+        ofn.initialDir = configDir;
         ofn.title = title;
         ofn.flags = 0x00080000 | 0x00001000 | 0x00000800 | 0x00000200 | 0x00000008;
 
