@@ -3,9 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// Unity New Input System Package의 .inputactions 에셋(SimulatorControls)을 100% 정석대로 활용하고,
-/// 에디트 모드(Edit Mode) 전환 시 시뮬레이션 물리 시간을 100% 일시정지(Time.timeScale = 0)시키는 매니저.
-/// (빌드 최적화: 디버그 로그 제거)
+/// 에디트 모드 전환 시 카메라의 위치 및 차량 Heading Yaw 정렬을 100% 보장하는 매니저.
 /// </summary>
 public class SimulatorManager : MonoBehaviour
 {
@@ -76,18 +74,51 @@ public class SimulatorManager : MonoBehaviour
 
     public void ToggleMode()
     {
+        if (currentMode == SimulatorMode.Edit && SpawnPointManager.Instance != null && !SpawnPointManager.Instance.hasValidSpawnPoint)
+        {
+            Debug.LogWarning("[SimulatorManager] 차량 스폰 포인트를 지정해야 주행 모드로 전환할 수 있습니다!");
+            return;
+        }
+
         currentMode = (currentMode == SimulatorMode.Simulation) ? SimulatorMode.Edit : SimulatorMode.Simulation;
         ApplyMode(currentMode);
     }
 
-    private void ApplyMode(SimulatorMode mode)
+    public void SetEditMode()
     {
+        currentMode = SimulatorMode.Edit;
+        ApplyMode(currentMode);
+    }
+
+    public void SetSimulationMode()
+    {
+        if (SpawnPointManager.Instance != null && SpawnPointManager.Instance.hasValidSpawnPoint == false)
+        {
+            Debug.LogWarning("[SimulatorManager] 차량 스폰 포인트를 지정해야 주행 모드로 전환할 수 있습니다!");
+            return;
+        }
+
+        currentMode = SimulatorMode.Simulation;
+        ApplyMode(currentMode);
+    }
+
+    public void ApplyMode(SimulatorMode mode)
+    {
+        currentMode = mode;
         bool isSim = (mode == SimulatorMode.Simulation);
 
         Time.timeScale = isSim ? 1f : 0f;
 
         if (vehicleCamera != null) vehicleCamera.SetActive(isSim);
-        if (editCamera != null) editCamera.SetActive(!isSim);
+        if (editCamera != null)
+        {
+            editCamera.SetActive(!isSim);
+            if (!isSim)
+            {
+                FreeFlyCamera flyCam = editCamera.GetComponent<FreeFlyCamera>();
+                if (flyCam != null) flyCam.AlignToVehiclePosition();
+            }
+        }
 
         if (editModeUIGroup != null) editModeUIGroup.SetActive(!isSim);
 

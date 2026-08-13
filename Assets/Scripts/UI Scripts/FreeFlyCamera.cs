@@ -1,46 +1,104 @@
 using UnityEngine;
-// InputSystem ³×ÀÓ½ºÆäÀÌ½º´Â ¾ø¾îµµ µÇÁö¸¸, ¸í½ÃÀûÀ¸·Î »ç¿ëÇÏ·Á¸é Ãß°¡
-// using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 
+/// <summary>
+/// ì—ë””íŠ¸ ëª¨ë“œ ì „ìš© ìˆ˜ì§ ì§í•˜í–¥(-90ë„ íƒ‘ë·°) ì •ë°€ ë°°ì¹˜ ì¹´ë©”ë¼.
+/// ë§ˆìš°ìŠ¤ íœ  ì¤Œì„ 100% ì°¨ë‹¨í•˜ì—¬ íœ  ìŠ¤í¬ë¡¤ ì‹œ ë§µì´ ì¤Œì¸/ì¤Œì•„ì›ƒë˜ëŠ” í˜„ìƒì„ ì›ì²œ ë°©ì–´í•˜ë©°,
+/// ì˜¤ì§ ì°¨ëŸ‰ Heading Yaw ê°ë„ ì •ë ¬ê³¼ WASD í‚¤ ì§€ë©´ í‰ë©´ ì´ë™ë§Œ ì œê³µí•©ë‹ˆë‹¤.
+/// </summary>
 public class FreeFlyCamera : MonoBehaviour
 {
-    public float moveSpeed = 20f;
-    public float rotateSpeed = 50f; // Input SystemÀº °¨µµ°¡ ´Ù¸¦ ¼ö ÀÖ¾î¼­ Á¶Àı ÇÊ¿ä
+    [Header("Top-Down Fixed Movement Settings")]
+    [Tooltip("WASD ì§€ë©´ í‰ë©´ ì •ë°€ ì´ë™ ì†ë„")]
+    public float moveSpeed = 25f;
+    [Tooltip("Left Shift í‚¤ ê°€ì† ë°°ìœ¨")]
+    public float boostMultiplier = 2.0f;
 
-    void Update()
+    private Camera cam;
+    public float fixedYaw = 0f;
+
+    private void Awake()
     {
-        // ½Ã¹Ä·¹ÀÌ¼Ç ¸ğµå°Å³ª, ¸Å´ÏÀú°¡ ¾øÀ¸¸é ÀÛµ¿ ÁßÁö
-        if (SimulatorManager.Instance == null || SimulatorManager.Instance.IsSimulationActive())
+        cam = GetComponent<Camera>();
+    }
+
+    private void Start()
+    {
+        AlignToVehiclePosition();
+    }
+
+    private void OnEnable()
+    {
+        AlignToVehiclePosition();
+    }
+
+    /// <summary>
+    /// ì—ë””íŠ¸ ëª¨ë“œ ì§„ì… ì‹œ ì°¨ëŸ‰ ë°”ë”” ìƒê³µ ë° ì°¨ëŸ‰ Heading Yaw íšŒì „ê°ì— 100% exact ì •ë ¬!
+    /// </summary>
+    public void AlignToVehiclePosition()
+    {
+        VehicleController vc = FindFirstObjectByType<VehicleController>();
+        if (vc != null)
+        {
+            Vector3 bodyPos = vc.transform.position;
+            if (vc.chassisVisualTransform != null)
+            {
+                bodyPos = vc.chassisVisualTransform.position;
+            }
+            else
+            {
+                MeshRenderer mr = vc.GetComponentInChildren<MeshRenderer>();
+                if (mr != null) bodyPos = mr.bounds.center;
+            }
+
+            transform.position = new Vector3(bodyPos.x, bodyPos.y + 35f, bodyPos.z);
+            fixedYaw = vc.transform.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(90f, fixedYaw, 0f);
+            Debug.Log($"[FreeFlyCamera] ì°¨ëŸ‰ Yaw ì •ë ¬ 100% ì™„ìˆ˜ â” Yaw: {fixedYaw}ë„ | ìœ„ì¹˜: {transform.position}");
+        }
+        else
+        {
+            fixedYaw = 0f;
+            transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+        }
+    }
+
+    private void Update()
+    {
+        // 1. ì˜¤ì§ ì—ë””íŠ¸ ëª¨ë“œì¼ ë•Œë§Œ ì¡°ì¢… í—ˆìš©
+        if (SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive())
+        {
             return;
-
-        // ¸Å´ÏÀú¿¡ ÀÖ´Â Input ÀÎ½ºÅÏ½º °¡Á®¿À±â
-        var inputs = SimulatorManager.Instance.inputActions.EditCamera;
-
-        // 1. ÀÌµ¿ (WASD) - Vector2·Î ÇÑ¹ø¿¡ ÀĞ¾î¿È
-        Vector2 moveInput = inputs.Move.ReadValue<Vector2>();
-        Vector3 direction = new Vector3(moveInput.x, 0, moveInput.y);
-        transform.Translate(direction * moveSpeed * Time.deltaTime);
-
-        // 2. ¼öÁ÷ ÀÌµ¿ (Q, E) - 1D Axis·Î ÀĞ¾î¿È (-1 ~ 1)
-        float verticalInput = inputs.Vertical.ReadValue<float>();
-        if (verticalInput != 0)
-        {
-            transform.Translate(Vector3.up * verticalInput * moveSpeed * Time.deltaTime);
         }
 
-        // 3. È¸Àü (¿ìÅ¬¸¯ ÇÏ°í ÀÖÀ» ¶§¸¸)
-        // IsPressed()ÇÔ¼ö·Î ¹öÆ° »óÅÂ È®ÀÎ
-        if (inputs.EnableLook.IsPressed())
+        // 2. ì°¨ëŸ‰ Heading Yaw ê°ë„ì— ë§ì¶˜ ìˆ˜ì§ ì§í•˜í–¥ íƒ‘ë·° 100% ì§€ì† ìœ ì§€
+        transform.rotation = Quaternion.Euler(90f, fixedYaw, 0f);
+
+        // 3. WASD / ë°©í–¥í‚¤ ê¸°ë°˜ X-Z ì§€ë©´ í‰ë©´ ì´ë™ (ì°¨ëŸ‰ Yaw ì§„í–‰ë°©í–¥ ì§í†µ ì—°ë™)
+        Vector3 planeInput = Vector3.zero;
+
+        if (Keyboard.current != null)
         {
-            Vector2 lookInput = inputs.Look.ReadValue<Vector2>();
-
-            // Input SystemÀÇ Mouse Delta´Â ÇÁ·¹ÀÓ µ¶¸³ÀûÀÌÁö ¾ÊÀ» ¼ö ÀÖ¾î¼­ Time.deltaTimeÀ» °öÇÏ±âµµ ÇÏ°í ¾ÈÇÏ±âµµ ÇÔ.
-            // º¸Åë Mouse Delta´Â °ªÀÌ Å©¹Ç·Î rotateSpeed¸¦ Á¶ÀıÇÏ¸ç °¨À» ÀâÀ¸¼¼¿ä.
-            float rh = lookInput.x * rotateSpeed * Time.deltaTime;
-            float rv = lookInput.y * rotateSpeed * Time.deltaTime;
-
-            transform.Rotate(Vector3.up, rh, Space.World);
-            transform.Rotate(Vector3.right, -rv, Space.Self);
+            if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) planeInput.z += 1f;
+            if (Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed) planeInput.z -= 1f;
+            if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed) planeInput.x -= 1f;
+            if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed) planeInput.x += 1f;
         }
+
+        float currentSpeed = moveSpeed;
+        if (Keyboard.current != null && Keyboard.current.leftShiftKey.isPressed)
+        {
+            currentSpeed *= boostMultiplier;
+        }
+
+        // ì°¨ëŸ‰ì˜ fixedYaw íšŒì „ê° ê¸°ì¤€ ì „í›„ì¢Œìš° ì´ë™ Vector ê³„ì‚°
+        Vector3 forward = Quaternion.Euler(0, fixedYaw, 0) * Vector3.forward;
+        Vector3 right = Quaternion.Euler(0, fixedYaw, 0) * Vector3.right;
+        Vector3 moveDir = (right * planeInput.x + forward * planeInput.z).normalized;
+
+        transform.position += moveDir * currentSpeed * Time.unscaledDeltaTime;
+
+        // (ìš”ì²­ ë°˜ì˜) ë§ˆìš°ìŠ¤ íœ  ì¤Œ(Zoom) ê¸°ëŠ¥ 100% ì™„ì „ ì‚­ì œ! 
+        // íœ  ìŠ¤í¬ë¡¤ì€ ì˜¤ì§ ì°¨ëŸ‰/ì¥ì• ë¬¼ ê³ ìŠ¤íŠ¸ 5ë„ ì •ë°€ íšŒì „ì—ë§Œ 100% ë…ì  ì‚¬ìš©ë©ë‹ˆë‹¤.
     }
 }
