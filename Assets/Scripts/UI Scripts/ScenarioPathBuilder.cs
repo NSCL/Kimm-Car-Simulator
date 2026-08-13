@@ -18,7 +18,7 @@ public class WaypointData
 
 /// <summary>
 /// 시나리오 모드에서 보행자의 이동 경로(Waypoint)를 생성 및 편집하는 빌더 클래스.
-/// LayerMask의 수동 설정 필요 없이 UI 및 Ignore Raycast를 제외한 모든 맵 지면 위에 경로를 생성합니다.
+/// 보행자 기본 걷기 속도를 UI와 내부 파라미터 모두 2m/s로 100% 무조건 강제 세팅합니다.
 /// </summary>
 public class ScenarioPathBuilder : MonoBehaviour
 {
@@ -45,12 +45,10 @@ public class ScenarioPathBuilder : MonoBehaviour
     private bool isBuildingPath = false;
     private bool isPointerOverUI = false;
 
-    // 레이캐스트 감지 시 무시할 레이어 마스크 (Ignore Raycast 및 UI 제외)
     private static int _groundLayerMask = -1;
 
     void Start()
     {
-        // [원리]: Ignore Raycast 및 UI 레이어를 제외한 레이어 마스크를 자동 비트 연산으로 초기화
         if (_groundLayerMask == -1)
         {
             int ignoreLayerBit = LayerMask.GetMask("Ignore Raycast", "UI");
@@ -66,6 +64,16 @@ public class ScenarioPathBuilder : MonoBehaviour
             {
                 editCam = SimulatorManager.Instance.editCamera.GetComponent<Camera>();
             }
+        }
+
+        // [UI 100% 강제 세팅]: 인스펙터 텍스트에 3이 적혀있더라도 실행 시 무조건 2로 강제 세팅!
+        if (walkSpeedInput != null)
+        {
+            walkSpeedInput.text = "2";
+        }
+        if (runSpeedInput != null && string.IsNullOrEmpty(runSpeedInput.text))
+        {
+            runSpeedInput.text = "5";
         }
     }
 
@@ -87,46 +95,50 @@ public class ScenarioPathBuilder : MonoBehaviour
         }
     }
 
-    public void StartBuildingPath()
-    {
-        if (pathLine != null) 
-        { 
-            pathLine.positionCount = 0;
-            pathLine.loop = false;
-        }
-        if (walkSpeedInput != null) walkSpeedInput.text = "3";
-        if (runSpeedInput != null) runSpeedInput.text = "5";
-        isBuildingPath = true;
-        currentPath.Clear();
-        currentYRotation = 0f;
-        if (pathEditorPanel != null) pathEditorPanel.SetActive(true);
-        if (stateDropdown != null)
-        {
-            currentStateFromUI = (ActorState)stateDropdown.value;
-        }
-        if (currentGhost == null && ghostPrefab != null)
-        {
-            currentGhost = Instantiate(ghostPrefab);
-            foreach (var c in currentGhost.GetComponentsInChildren<Collider>())
-            {
-                c.enabled = false;
-            }
-        }
-    }
-
     void Update()
     {
-        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+        bool minimapHover = (MinimapController.Instance != null && MinimapController.Instance.IsMouseOverMinimap);
+        isPointerOverUI = (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) || minimapHover;
+
         if (!isBuildingPath || SimulatorManager.Instance.IsSimulationActive())
         {
             if (currentGhost != null) currentGhost.SetActive(false);
             return;
         }
 
-        UpdateGhostTransform();
+        if (currentGhost == null && ghostPrefab != null)
+        {
+            CreateGhost();
+        }
+
+        if (currentGhost != null)
+        {
+            UpdateGhostTransform();
+        }
     }
 
-    void UpdateGhostTransform()
+    public void StartBuildingPath()
+    {
+        CancelBuildingPath();
+        isBuildingPath = true;
+        if (pathEditorPanel != null) pathEditorPanel.SetActive(true);
+
+        // 경로 작성 시작 시 걷기 속도 UI 2m/s 강제 동기화
+        if (walkSpeedInput != null)
+        {
+            walkSpeedInput.text = "2";
+        }
+    }
+
+    private void CreateGhost()
+    {
+        currentGhost = Instantiate(ghostPrefab);
+        var colliders = currentGhost.GetComponentsInChildren<Collider>();
+        foreach (var c in colliders) c.enabled = false;
+        currentYRotation = 0f;
+    }
+
+    private void UpdateGhostTransform()
     {
         if (editCam == null || currentGhost == null) return;
         Vector2 mousePos = controls.EditCamera.MousePosition.ReadValue<Vector2>();
@@ -158,12 +170,7 @@ public class ScenarioPathBuilder : MonoBehaviour
 
         if (currentGhost != null && currentGhost.activeSelf)
         {
-            GameObject newMarker = null;
-            if (waypointMarkerPrefab != null)
-            {
-                newMarker = Instantiate(waypointMarkerPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
-            }
-
+            GameObject newMarker = Instantiate(waypointMarkerPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
             WaypointData newPoint = new WaypointData
             {
                 position = currentGhost.transform.position,
@@ -189,10 +196,10 @@ public class ScenarioPathBuilder : MonoBehaviour
         if (pedestrianActorPrefab != null && currentPath.Count > 0)
         {
             GameObject newActor = Instantiate(pedestrianActorPrefab);
-            float wSpeed = 3f;
+            float wSpeed = 2f;
             float rSpeed = 5f;
-            if (walkSpeedInput != null && float.TryParse(walkSpeedInput.text, out float parsedWalk)) wSpeed = parsedWalk;
-            if (runSpeedInput != null && float.TryParse(runSpeedInput.text, out float parsedRun)) rSpeed = parsedRun;
+            if (walkSpeedInput != null && !string.IsNullOrEmpty(walkSpeedInput.text) && float.TryParse(walkSpeedInput.text, out float parsedWalk)) wSpeed = parsedWalk;
+            if (runSpeedInput != null && !string.IsNullOrEmpty(runSpeedInput.text) && float.TryParse(runSpeedInput.text, out float parsedRun)) rSpeed = parsedRun;
             newActor.GetComponent<PedestrianActor>().InitializePath(currentPath, wSpeed, rSpeed);
 
             foreach (var point in currentPath)

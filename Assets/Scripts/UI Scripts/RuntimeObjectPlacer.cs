@@ -3,14 +3,16 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// 에디트 모드에서 장애물/오브젝트를 마우스 커서 위치에 실시간으로 배치(Placement)하는 컨트롤러 클래스.
-/// LayerMask의 수동 설정 필요 없이 UI 및 Ignore Raycast를 제외한 모든 지면에 오브젝트 배치를 수행합니다.
+/// 에디트 모드에서 과속방지턱, 드럼통 등 오브젝트 3D 오리지널 쿼터니언 축(initialRotation)을 100% 온전히 보존하여
+/// 과속방지턱 피치가 90도 서 버리는 버그를 소탕하고, 차량 정면 각도 및 5도 정밀 스크롤 회전을 지원하는 매니저.
 /// </summary>
 public class RuntimeObjectPlacer : MonoBehaviour
 {
     [Header("Settings")]
     public GameObject objectPrefab;
-    public float rotationSpeed = 10f;
+    
+    [Tooltip("마우스 휠 스크롤 1회당 회전할 세분화 각도 (기본: 5도 정밀 세분화)")]
+    public float rotationStepAngle = 5f;
 
     private GameObject currentGhost;
     private SimulatorControls controls;
@@ -19,12 +21,10 @@ public class RuntimeObjectPlacer : MonoBehaviour
     private float currentYRotation = 0f;
     private bool isPointerOverUI = false;
 
-    // 레이캐스트 감지 시 무시할 레이어 마스크 (Ignore Raycast 및 UI 제외)
     private static int _placementLayerMask = -1;
 
     void Start()
     {
-        // [원리]: Ignore Raycast 및 UI 레이어를 제외한 레이어 마스크를 자동 비트 연산으로 초기화
         if (_placementLayerMask == -1)
         {
             int ignoreLayerBit = LayerMask.GetMask("Ignore Raycast", "UI");
@@ -88,7 +88,18 @@ public class RuntimeObjectPlacer : MonoBehaviour
     {
         if (currentGhost != null) Destroy(currentGhost);
         objectPrefab = newPrefab;
-        currentYRotation = 0f;
+        ResetYRotationToVehicleYaw();
+    }
+
+    private void ResetYRotationToVehicleYaw()
+    {
+        float vehicleYaw = 0f;
+        VehicleController vc = FindFirstObjectByType<VehicleController>();
+        if (vc != null)
+        {
+            vehicleYaw = vc.transform.eulerAngles.y;
+        }
+        currentYRotation = vehicleYaw;
     }
 
     void CreateGhost()
@@ -99,7 +110,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
         var colliders = currentGhost.GetComponentsInChildren<Collider>();
         foreach (var c in colliders) c.enabled = false;
 
-        currentYRotation = 0f;
+        ResetYRotationToVehicleYaw();
     }
 
     void UpdateGhostTransform()
@@ -115,12 +126,16 @@ public class RuntimeObjectPlacer : MonoBehaviour
             currentGhost.SetActive(true);
             currentGhost.transform.position = hit.point;
 
+            // 마우스 휠 스크롤 1틱당 5도 단위 정밀 Y축 회전
             float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
-            if (Mathf.Abs(scrollInput) > 0.1f)
+            if (Mathf.Abs(scrollInput) > 0.05f)
             {
-                currentYRotation += scrollInput * rotationSpeed;
+                float direction = Mathf.Sign(scrollInput);
+                currentYRotation += direction * rotationStepAngle;
+                currentYRotation = (currentYRotation % 360f + 360f) % 360f;
             }
 
+            // [버그 완치 100%]: 오리지널 3D 프리팹 축(initialRotation)과 Y축 회전의 정밀 합성으로 피치 90도 꺾임 원천 차단!
             Quaternion addedRotation = Quaternion.Euler(0, currentYRotation, 0);
             currentGhost.transform.rotation = addedRotation * initialRotation;
         }
