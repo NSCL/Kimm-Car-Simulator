@@ -4,8 +4,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 텔레메트리 패널 하강 거리를 exact 17px 정밀 튜닝하여 
-/// 1920x1080 및 다양한 해상도 모니터에서도 100% 완벽한 핏을 선사하는 슬라이딩 컨트롤러.
+/// 텔레메트리 패널 지붕에 상단 모서리가 부드럽고 앙증맞은 둥근 모서리 탭(Rounded Corner Tab) 버튼을 자동 렌더링하고,
+/// 패널 본체 상단 비침 0% 및 부드러운 슬라이딩 접기/펼치기를 수행하는 컨트롤러.
 /// </summary>
 public class TelemetryUIController : MonoBehaviour
 {
@@ -80,7 +80,6 @@ public class TelemetryUIController : MonoBehaviour
         {
             _originalPanelPos = telemetryHUDPanel.anchoredPosition;
             
-            // [사용자 요청 exact 17px 정밀 피팅]: 1픽셀 단위 초정밀 하향 튜닝!
             float panelHeight = telemetryHUDPanel.rect.height;
             if (panelHeight < 50f) panelHeight = 160f;
             _computedHiddenYOffset = -(panelHeight + 1f);
@@ -105,8 +104,13 @@ public class TelemetryUIController : MonoBehaviour
         rect.anchoredPosition = Vector2.zero;
         rect.sizeDelta = new Vector2(28f, 16f);
 
-        // 2. 패널 본체 배경색 & Opacity 100% 일체형 예쁜 탭 배경
+        // 2. 상단 모서리가 부드럽고 둥글둥글한 둥근 모서리(Rounded Corners) 탭 스프라이트 렌더링
         Image btnBg = btnObj.GetComponent<Image>();
+        Texture2D roundedTex = MakeRoundedTabTexture(64, 36, 12);
+        Sprite roundedSprite = Sprite.Create(roundedTex, new Rect(0, 0, roundedTex.width, roundedTex.height), new Vector2(0.5f, 0f));
+        btnBg.sprite = roundedSprite;
+        btnBg.type = Image.Type.Simple;
+
         Image panelBg = targetPanel.GetComponent<Image>();
         if (panelBg != null)
         {
@@ -142,6 +146,44 @@ public class TelemetryUIController : MonoBehaviour
         Button btn = btnObj.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(ToggleTelemetryPanel);
+    }
+
+    /// <summary>
+    /// 상단 왼쪽/우측 모서리만 둥글둥글하게 라운딩(Rounded Top Corners)된 세련된 탭 텍스처 런타임 생성기
+    /// </summary>
+    private Texture2D MakeRoundedTabTexture(int width, int height, int radius)
+    {
+        Texture2D tex = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        Color[] colors = new Color[width * height];
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                bool inside = true;
+
+                // 상단 좌측 둥근 모서리 검사
+                if (x < radius && y > (height - radius))
+                {
+                    float dx = radius - x;
+                    float dy = y - (height - radius);
+                    if (dx * dx + dy * dy > radius * radius) inside = false;
+                }
+                // 상단 우측 둥근 모서리 검사
+                else if (x > (width - radius) && y > (height - radius))
+                {
+                    float dx = x - (width - radius);
+                    float dy = y - (height - radius);
+                    if (dx * dx + dy * dy > radius * radius) inside = false;
+                }
+
+                colors[y * width + x] = inside ? Color.white : new Color(1f, 1f, 1f, 0f);
+            }
+        }
+
+        tex.SetPixels(colors);
+        tex.Apply();
+        return tex;
     }
 
     private Texture2D MakeTextureTransparent(Texture2D source)
