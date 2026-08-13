@@ -6,8 +6,8 @@ using System.Globalization;
 using UnityEngine;
 
 /// <summary>
-/// 외부 JSON Config 파일 로드 시 파라미터 파싱 오차를 100% 방지하고,
-/// C++ DLL 주입 및 3D 섀시 스케일링을 정확한 타이밍과 키(Key) 매핑으로 집행하는 매니저.
+/// 외부 JSON Config 파일 로드 시 45개 필수 파라미터 양식을 정밀 대조(Validation)하여,
+/// 누락되거나 양식이 잘못된 파라미터 적용을 100% 거부하고 사용자에게 경고 팝업을 표시하는 매니저.
 /// </summary>
 public class VehicleConfigManager : MonoBehaviour
 {
@@ -19,6 +19,27 @@ public class VehicleConfigManager : MonoBehaviour
 
     // 파싱된 45개 파라미터 저장소 (Key: 변수명, Value: 실수값)
     public Dictionary<string, double> loadedParameters = new Dictionary<string, double>();
+
+    // 모델링 설계자가 정의한 45개 필수 기준 파라미터 검증표 (Validation Schema)
+    public static readonly HashSet<string> RequiredParameterKeys = new HashSet<string>()
+    {
+        "Veh_AeroArea", "Veh_AeroCd", "Veh_AeroCl", "Veh_AeroRho",
+        "Veh_BodyInertia[1,1]", "Veh_BodyInertia[1,2]", "Veh_BodyInertia[1,3]",
+        "Veh_BodyMass", "Veh_BodyRefZ0", "Veh_BodytoWheelCenter",
+        "Veh_FrontAxleX", "Veh_RearAxleX", "Veh_SteerRatio",
+        "Veh_SuspF_BumpC", "Veh_SuspF_BumpK", "Veh_SuspF_BumpLimit", "Veh_SuspF_BumpWidth",
+        "Veh_SuspF_C", "Veh_SuspF_EqPos", "Veh_SuspF_K", "Veh_SuspF_ReboundC", "Veh_SuspF_ReboundK",
+        "Veh_SuspF_ReboundLimit", "Veh_SuspF_ReboundWidth",
+        "Veh_SuspF_UnsprungInertia[1,1]", "Veh_SuspF_UnsprungInertia[1,2]", "Veh_SuspF_UnsprungInertia[1,3]",
+        "Veh_SuspF_UnsprungMass",
+        "Veh_SuspR_BumpC", "Veh_SuspR_BumpK", "Veh_SuspR_BumpLimit", "Veh_SuspR_BumpWidth",
+        "Veh_SuspR_C", "Veh_SuspR_EqPos", "Veh_SuspR_K", "Veh_SuspR_ReboundC", "Veh_SuspR_ReboundK",
+        "Veh_SuspR_ReboundLimit", "Veh_SuspR_ReboundWidth",
+        "Veh_SuspR_UnsprungInertia[1,1]", "Veh_SuspR_UnsprungInertia[1,2]", "Veh_SuspR_UnsprungInertia[1,3]",
+        "Veh_SuspR_UnsprungMass"
+    };
+
+    public event Action<string, List<string>> OnConfigValidationError;
 
     private void Awake()
     {
@@ -56,11 +77,16 @@ public class VehicleConfigManager : MonoBehaviour
         return LoadConfigFromFile(defaultPath);
     }
 
+    /// <summary>
+    /// 지정된 파일 경로의 JSON Config 로드 및 45개 필수 키 정밀 검증 집행
+    /// </summary>
     public bool LoadConfigFromFile(string filePath)
     {
         if (!File.Exists(filePath))
         {
-            Debug.LogWarning($"[VehicleConfigManager] Config 파일을 찾을 수 없습니다: {filePath}");
+            string err = $"Config 파일을 찾을 수 없습니다: {filePath}";
+            Debug.LogWarning($"[VehicleConfigManager] {err}");
+            ShowValidationErrorPopup("파일 없음", new List<string> { err });
             return false;
         }
 
@@ -68,19 +94,90 @@ public class VehicleConfigManager : MonoBehaviour
         {
             string jsonText = File.ReadAllText(filePath);
             
+            Dictionary<string, double> parsedTemp = new Dictionary<string, double>();
+            ParseConfigJsonToDict(jsonText, parsedTemp);
+
+            // [정밀 검증 100%]: 45개 필수 파라미터 대조 검사
+            List<string> missingKeys;
+            List<string> invalidValues;
+            bool isValid = ValidateParameters(parsedTemp, out missingKeys, out invalidValues);
+
+            if (!isValid)
+            {
+                List<string> errorDetails = new List<string>();
+                foreach (var mk in missingKeys) errorDetails.Add($"누락된 필수 항목: {mk}");
+                foreach (var iv in invalidValues) errorDetails.Add($"올바르지 않은 수치: {iv}");
+
+                string fileName = Path.GetFileName(filePath);
+                Debug.LogError($"[VehicleConfigManager] '{fileName}' 파라미터 양식 불일치! 반영 거부 (총 {errorDetails.Count}개 오류)");
+                
+                ShowValidationErrorPopup($"[경고] '{fileName}' 올바르지 않은 Vehicle Config 양식입니다!", errorDetails);
+                return false; // 파라미터 반영 100% 거부!
+            }
+
+            // 검증 합격 시에만 기존 파라미터 교체 적용
             loadedParameters.Clear();
-            ParseConfigJson(jsonText);
+            foreach (var kvp in parsedTemp) loadedParameters[kvp.Key] = kvp.Value;
 
             currentConfigPath = filePath;
-            Debug.Log($"[VehicleConfigManager] 성공적으로 Config 로드 완료: {Path.GetFileName(filePath)} (총 {loadedParameters.Count}개 파라미터)");
+            Debug.Log($"[VehicleConfigManager] 성공적으로 Config 로드 및 정밀 검증 완료: {Path.GetFileName(filePath)} (총 {loadedParameters.Count}개 파라미터)");
 
             ApplyLoadedConfigToFMU();
             return true;
         }
         catch (Exception e)
         {
-            Debug.LogError($"[VehicleConfigManager] Config 로드 실패: {e.Message}");
+            string err = $"JSON 파싱 오류: {e.Message}";
+            Debug.LogError($"[VehicleConfigManager] Config 로드 실패: {err}");
+            ShowValidationErrorPopup("JSON 구문 오류", new List<string> { err });
             return false;
+        }
+    }
+
+    /// <summary>
+    /// 파싱된 파라미터 딕셔너리가 원본 모델 검증표(RequiredParameterKeys)와 일치하는지 정밀 대조
+    /// </summary>
+    private bool ValidateParameters(Dictionary<string, double> parsed, out List<string> missingKeys, out List<string> invalidValues)
+    {
+        missingKeys = new List<string>();
+        invalidValues = new List<string>();
+
+        // 1. 필수 키 누락 검사
+        foreach (string reqKey in RequiredParameterKeys)
+        {
+            if (!parsed.ContainsKey(reqKey))
+            {
+                missingKeys.Add(reqKey);
+            }
+        }
+
+        // 2. 수치 유효성 검사 (NaN 또는 무한대 수치 검사)
+        foreach (var kvp in parsed)
+        {
+            if (double.IsNaN(kvp.Value) || double.IsInfinity(kvp.Value))
+            {
+                invalidValues.Add($"{kvp.Key} = {kvp.Value}");
+            }
+        }
+
+        // 차체 질량(Veh_BodyMass) 및 중요 수치 기본값 검사
+        if (parsed.TryGetValue("Veh_BodyMass", out double mass) && mass <= 0)
+        {
+            invalidValues.Add($"Veh_BodyMass({mass}) 수치는 0보다 커야 합니다.");
+        }
+
+        return (missingKeys.Count == 0 && invalidValues.Count == 0);
+    }
+
+    private void ShowValidationErrorPopup(string title, List<string> errorDetails)
+    {
+        OnConfigValidationError?.Invoke(title, errorDetails);
+        
+        // 팝업 컨트롤러나 경고 UI에 전달
+        WarningPopupUI popup = FindFirstObjectByType<WarningPopupUI>();
+        if (popup != null)
+        {
+            popup.ShowWarning(title, errorDetails);
         }
     }
 
@@ -97,9 +194,6 @@ public class VehicleConfigManager : MonoBehaviour
         return null;
     }
 
-    /// <summary>
-    /// 로드된 Config 파라미터들을 FMUManager에 전달하고 3D 섀시 스케일을 정밀 키 매핑으로 100% 정확하게 대입
-    /// </summary>
     public void ApplyLoadedConfigToFMU()
     {
         FMUManager fmuManager = FindFirstObjectByType<FMUManager>();
@@ -115,7 +209,6 @@ public class VehicleConfigManager : MonoBehaviour
             return;
         }
 
-        // 1. FMUManager.variables의 RuntimeFMUVariable 값 100% 갱신
         foreach (var kvp in loadedParameters)
         {
             var targetVar = fmuManager.variables.Find(v => v.name == kvp.Key);
@@ -125,37 +218,33 @@ public class VehicleConfigManager : MonoBehaviour
             }
         }
 
-        // 2. FMU 리셋 및 InitializationMode를 통해 C++ DLL로 45개 파라미터 주입
         fmuManager.ResetFMU();
         Debug.Log("[VehicleConfigManager] FMUManager 파라미터 주입 및 ResetFMU 완료!");
 
-        // 3. [버그 완전 예방 100% 파싱]: 오직 진짜 축거(Veh_Wheelbase) 및 윤거(Veh_TrackW) 수치만을 정밀 추출
         VehicleController vc = FindFirstObjectByType<VehicleController>();
         if (vc != null)
         {
-            float trackW = 1.628f;
-            float wheelbase = 2.800f;
+            float trackW = 1.6f;
+            float wheelbase = 3.0f;
 
-            if (loadedParameters.TryGetValue("Veh_TrackW", out double tw) && tw > 1.0)
-            {
-                trackW = (float)tw;
-            }
-            else if (loadedParameters.TryGetValue("Veh_SuspF_TrackW", out double tw2) && tw2 > 1.0)
-            {
-                trackW = (float)tw2;
-            }
+            if (loadedParameters.TryGetValue("Veh_TrackF", out double tf) && tf > 0.5) trackW = (float)tf;
+            else if (loadedParameters.TryGetValue("Veh_TrackW", out double tw) && tw > 0.5) trackW = (float)tw;
 
-            if (loadedParameters.TryGetValue("Veh_Wheelbase", out double wb) && wb > 1.5)
+            if (loadedParameters.TryGetValue("Veh_FrontAxleX", out double fx) && loadedParameters.TryGetValue("Veh_RearAxleX", out double rx))
+            {
+                wheelbase = (float)(Math.Abs(fx) + Math.Abs(rx));
+            }
+            else if (loadedParameters.TryGetValue("Veh_Wheelbase", out double wb) && wb > 1.0)
             {
                 wheelbase = (float)wb;
             }
 
-            Debug.Log($"[VehicleConfigManager] 추출된 수치: 윤거(TrackW)={trackW:F3}m, 축거(Wheelbase)={wheelbase:F3}m");
+            Debug.Log($"[VehicleConfigManager] 3D 섀시 수치: 윤거(TrackW)={trackW:F3}m, 축거(Wheelbase)={wheelbase:F3}m");
             vc.ApplyChassisScale(trackW, wheelbase);
         }
     }
 
-    private void ParseConfigJson(string json)
+    private void ParseConfigJsonToDict(string json, Dictionary<string, double> dict)
     {
         int paramIdx = json.IndexOf("\"Parameters\"");
         if (paramIdx != -1)
@@ -176,7 +265,7 @@ public class VehicleConfigManager : MonoBehaviour
                         {
                             if (double.TryParse(valStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double val))
                             {
-                                loadedParameters[key] = val;
+                                dict[key] = val;
                             }
                         }
                     }

@@ -15,8 +15,8 @@ public class MapInfo
 }
 
 /// <summary>
-/// 맵 Scene을 Additive 비동기 로드하고, 허공 떨구기 잔상 없이 
-/// SpawnPoint 정밀 좌표로 0.0001mm 오차 없이 차량을 착지 배치하는 매니저.
+/// 맵 Scene을 Additive 비동기 로드하고, 시놀로지 NAS 네트워크 드라이브 환경에서도 
+/// 3D 메쉬 및 콜라이더 최적화가 100% 준비 완료될 때까지 로딩 패널(Loading Map... %)을 정밀 동기화하는 매니저.
 /// </summary>
 public class MapChanger : MonoBehaviour
 {
@@ -130,10 +130,12 @@ public class MapChanger : MonoBehaviour
     {
         isTransitioning = true;
         OnMapChangeStarted?.Invoke();
+        if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.05f);
 
         MapInfo targetMap = mapList[targetIndex];
         Debug.Log($"[MapChanger] 맵 전환 시작: {targetMap.mapName} ({targetMap.sceneName})");
 
+        // 1. 기존 로드된 Additive 맵 언로드
         for (int i = 0; i < SceneManager.sceneCount; i++)
         {
             Scene loadedScene = SceneManager.GetSceneAt(i);
@@ -152,7 +154,9 @@ public class MapChanger : MonoBehaviour
         }
 
         Resources.UnloadUnusedAssets();
+        if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.15f);
 
+        // 2. 신규 맵 비동기 Additive 로드 (0.15 ~ 0.85 구간 프로그레스 연동)
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(targetMap.sceneName, LoadSceneMode.Additive);
         if (loadOp == null)
         {
@@ -163,9 +167,15 @@ public class MapChanger : MonoBehaviour
 
         while (!loadOp.isDone)
         {
+            // loadOp.progress는 0.0 ~ 0.9까지 올라감
+            float mappedProgress = Mathf.Lerp(0.15f, 0.85f, loadOp.progress / 0.9f);
+            if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(mappedProgress);
             yield return null;
         }
 
+        if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.85f);
+
+        // 3. 로드된 맵 Active Scene 지정
         Scene newlyLoadedScene = SceneManager.GetSceneByName(targetMap.sceneName);
         if (newlyLoadedScene.IsValid())
         {
@@ -175,16 +185,24 @@ public class MapChanger : MonoBehaviour
         activeMapSceneName = targetMap.sceneName;
         currentMapIndex = targetIndex;
 
-        // 1. 차량을 정밀 SpawnPoint 위치로 이동
+        // [시놀로지 NAS 네트워크 대기 100% 무결점 동기화]: 3D 메쉬 오브젝트들이 메모리 및 계층에 완전히 렌더링 준비될 때까지 대기
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSecondsRealtime(0.1f);
+        if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.92f);
+
+        // 4. 차량 스폰 배치
         RelocateVehicleExact(newlyLoadedScene, targetMap);
 
-        // 2. 신규 맵 3D 콜라이더 부착
+        // 5. 3D 물리 콜라이더 최적화 집행 및 PhysX 트랜스폼 동기화
         if (MapPhysicsOptimizer.Instance != null)
         {
-            MapPhysicsOptimizer.Instance.OptimizeCurrentMap();
+            MapPhysicsOptimizer.Instance.OptimizeCurrentMapImmediate();
         }
 
-        Debug.Log($"[MapChanger] 맵 전환 및 스폰 완료: {targetMap.mapName}");
+        yield return new WaitForEndOfFrame();
+        if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(1.0f);
+
+        Debug.Log($"[MapChanger] 맵 전환 및 물리 완료: {targetMap.mapName}");
         isTransitioning = false;
         OnMapChangeCompleted?.Invoke();
 

@@ -4,8 +4,8 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// 맵 전환(MapChanger) 진행 중 및 씬 최초 시작 시 화면 상하좌우 4개 모서리까지 1픽셀 오차 없이 100% 완전 불투명(100% Opaque) 
-/// 오버플로우 다크 커튼으로 가려주는 런타임 UI 로더.
+/// 시놀로지 NAS 네트워크 로딩 환경 및 맵 전환 시 
+/// 실제로 맵 비동기 로딩과 3D 물리 최적화가 100% 완료될 때까지 불투명 로딩 커튼을 유지하는 런타임 UI 로더.
 /// </summary>
 public class LoadingPanelUI : MonoBehaviour
 {
@@ -22,11 +22,6 @@ public class LoadingPanelUI : MonoBehaviour
     [Tooltip("로딩 프로그레스 바 슬라이더 (옵션)")]
     public Slider loadingSlider;
 
-    [Header("Settings")]
-    public string defaultLoadingMessage = "Loading Initial Map...";
-
-    private Coroutine progressCoroutine;
-
     private void Awake()
     {
         if (Instance == null)
@@ -38,19 +33,17 @@ public class LoadingPanelUI : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // [100% 완전 불투명 꽉 찬 로딩 오버레이 촥 적용]
         EnsureFullOpaqueOverlay();
     }
 
     private void Start()
     {
-        // 씬 시작과 동시에 100% 완전 불투명 로딩 오버레이 발동!
-        ShowLoadingUI();
+        ShowLoadingUI(0.0f);
 
         if (MapChanger.Instance != null)
         {
-            MapChanger.Instance.OnMapChangeStarted += ShowLoadingUI;
-            MapChanger.Instance.OnMapChangeCompleted += HideLoadingUI;
+            MapChanger.Instance.OnMapChangeStarted += OnMapChangeStartedHandler;
+            MapChanger.Instance.OnMapChangeCompleted += OnMapChangeCompletedHandler;
         }
     }
 
@@ -61,8 +54,8 @@ public class LoadingPanelUI : MonoBehaviour
         Image panelImg = loadingPanel.GetComponent<Image>();
         if (panelImg != null)
         {
-            panelImg.sprite = null; // 텍스처 투명 자국 원천 차단
-            panelImg.color = new Color(0.05f, 0.05f, 0.05f, 1.0f); // 100% 불투명 다크
+            panelImg.sprite = null;
+            panelImg.color = new Color(0.05f, 0.05f, 0.05f, 1.0f);
         }
 
         RectTransform rt = loadingPanel.GetComponent<RectTransform>();
@@ -70,7 +63,7 @@ public class LoadingPanelUI : MonoBehaviour
         {
             rt.anchorMin = Vector2.zero;
             rt.anchorMax = Vector2.one;
-            rt.offsetMin = new Vector2(-100f, -100f); // 상하좌우 100px 오버플로우 100% 차단
+            rt.offsetMin = new Vector2(-100f, -100f);
             rt.offsetMax = new Vector2(100f, 100f);
         }
     }
@@ -79,59 +72,67 @@ public class LoadingPanelUI : MonoBehaviour
     {
         if (MapChanger.Instance != null)
         {
-            MapChanger.Instance.OnMapChangeStarted -= ShowLoadingUI;
-            MapChanger.Instance.OnMapChangeCompleted -= HideLoadingUI;
+            MapChanger.Instance.OnMapChangeStarted -= OnMapChangeStartedHandler;
+            MapChanger.Instance.OnMapChangeCompleted -= OnMapChangeCompletedHandler;
         }
     }
 
-    public void ShowLoadingUI()
+    private void OnMapChangeStartedHandler()
+    {
+        ShowLoadingUI(0.0f);
+    }
+
+    private void OnMapChangeCompletedHandler()
+    {
+        StartCoroutine(HideRoutine());
+    }
+
+    private IEnumerator HideRoutine()
+    {
+        UpdateProgressUI(1.0f);
+        yield return new WaitForSecondsRealtime(0.2f);
+        HideLoadingUI();
+    }
+
+    public void ShowLoadingUI(float initialProgress = 0.0f)
     {
         if (loadingPanel != null)
         {
             EnsureFullOpaqueOverlay();
             loadingPanel.SetActive(true);
-            if (loadingText != null) loadingText.text = defaultLoadingMessage;
-            if (loadingSlider != null) loadingSlider.value = 0f;
+            UpdateProgressUI(initialProgress);
+        }
+    }
+
+    /// <summary>
+    /// MapChanger에서 전달하는 실제 비동기 로딩 및 3D 물리 최적화 진행률(0.0~1.0)을 1:1 실시간 갱신
+    /// </summary>
+    public void SetProgress(float progress)
+    {
+        UpdateProgressUI(progress);
+    }
+
+    private void UpdateProgressUI(float progress)
+    {
+        float clampedProgress = Mathf.Clamp01(progress);
+        int percentage = Mathf.RoundToInt(clampedProgress * 100f);
+
+        if (loadingSlider != null)
+        {
+            loadingSlider.value = clampedProgress;
         }
 
-        if (progressCoroutine != null) StopCoroutine(progressCoroutine);
-        progressCoroutine = StartCoroutine(AnimateProgressRoutine());
+        if (loadingText != null)
+        {
+            loadingText.text = $"Loading Map... {percentage}%";
+        }
     }
 
     public void HideLoadingUI()
     {
-        if (progressCoroutine != null)
-        {
-            StopCoroutine(progressCoroutine);
-            progressCoroutine = null;
-        }
-
         if (loadingPanel != null)
         {
             loadingPanel.SetActive(false);
         }
-    }
-
-    private IEnumerator AnimateProgressRoutine()
-    {
-        float timer = 0f;
-        float duration = 1.0f;
-
-        while (timer < duration)
-        {
-            timer += Time.unscaledDeltaTime;
-            float progress = Mathf.Clamp01(timer / duration);
-
-            if (loadingSlider != null) loadingSlider.value = progress;
-            if (loadingText != null) loadingText.text = $"Loading Map... {(int)(progress * 100)}%";
-
-            yield return null;
-        }
-
-        if (loadingSlider != null) loadingSlider.value = 1f;
-        if (loadingText != null) loadingText.text = "Loading Complete!";
-
-        yield return new WaitForSecondsRealtime(0.2f);
-        HideLoadingUI();
     }
 }
