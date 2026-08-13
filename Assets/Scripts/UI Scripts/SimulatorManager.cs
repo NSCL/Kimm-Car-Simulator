@@ -60,8 +60,12 @@ public class SimulatorManager : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
+        if (TelemetryUIController.Instance == null)
+        {
+            gameObject.AddComponent<TelemetryUIController>();
+        }
         ApplyMode(currentMode);
     }
 
@@ -72,39 +76,20 @@ public class SimulatorManager : MonoBehaviour
 
     public void ToggleMode()
     {
-        if (currentMode == SimulatorMode.Simulation)
-            currentMode = SimulatorMode.Edit;
-        else
-            currentMode = SimulatorMode.Simulation;
-
+        currentMode = (currentMode == SimulatorMode.Simulation) ? SimulatorMode.Edit : SimulatorMode.Simulation;
         ApplyMode(currentMode);
     }
 
     private void ApplyMode(SimulatorMode mode)
     {
-        bool isEdit = (mode == SimulatorMode.Edit);
+        bool isSim = (mode == SimulatorMode.Simulation);
 
-        Time.timeScale = isEdit ? 0f : 1.0f;
+        Time.timeScale = isSim ? 1f : 0f;
 
-        if (vehicleCamera != null) vehicleCamera.SetActive(!isEdit);
-        if (editCamera != null) editCamera.SetActive(isEdit);
+        if (vehicleCamera != null) vehicleCamera.SetActive(isSim);
+        if (editCamera != null) editCamera.SetActive(!isSim);
 
-        if (vehicleController != null)
-        {
-            var inputManager = vehicleController.GetComponent<VehicleInputManager>();
-            if (inputManager != null)
-            {
-                inputManager.SetInputActive(!isEdit);
-            }
-        }
-
-        if (editModeUIGroup != null)
-        {
-            editModeUIGroup.SetActive(isEdit);
-        }
-
-        Cursor.lockState = isEdit ? CursorLockMode.None : CursorLockMode.None;
-        Cursor.visible = true;
+        if (editModeUIGroup != null) editModeUIGroup.SetActive(!isSim);
 
         OnModeChanged?.Invoke(mode);
     }

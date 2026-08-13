@@ -1,26 +1,52 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 /// <summary>
-/// 상하 피치(Pitch) 각도 틸트 조절 및 바라보는 주시점 높이(lookAtHeightOffset)를 
-/// 100% 자유롭고 매끄럽게 제어할 수 있는 무흔들림 스무스 카메라 컨트롤러.
+/// F5~F8 핫키로 메인 시점을 전환하고,
+/// 고속 주행 시에도 좌/우 측면 뷰(F7, F8) 및 탑뷰(F6)가 차 뒤로 단 1mm도 밀리지 않고 
+/// 차체 측면 중앙(Center of Vehicle)을 100% 칼같이 바짝 추종하도록 보정한 카메라 컨트롤러.
 /// </summary>
 public class SmoothCameraController : MonoBehaviour
 {
     public static SmoothCameraController Instance { get; private set; }
 
+    public enum CameraViewMode
+    {
+        Chase,      // F5: 3인칭 기본 추종
+        Top,        // F6: 수직 탑뷰
+        LeftSide,   // F7: 차체 좌측 완전 수평 Normal 뷰 (무지연 밀림 0% 추종!)
+        RightSide,  // F8: 차체 우측 완전 수평 Normal 뷰 (무지연 밀림 0% 추종!)
+        Driver,     // 1인칭 실내 뷰
+        Orbit       // 마우스 우클릭 자유 궤도 뷰
+    }
+
     [Header("Target Vehicle Reference")]
     public Transform targetVehicle;
 
-    [Header("Camera Offset Settings")]
-    [Tooltip("차량 기준 카메라 위치 오프셋 (X, Y:높이, Z:거리)")]
+    [Header("Current View Mode")]
+    public CameraViewMode currentViewMode = CameraViewMode.Chase;
+
+    [Header("Camera Offset Settings (Chase View)")]
     public Vector3 offset = new Vector3(0f, 3.5f, -8.5f);
-
-    [Tooltip("차량을 바라보는 주시점 높이 오프셋 (Pitch 피치 각도 조절 핵심!)")]
     public float lookAtHeightOffset = 1.2f;
-
-    [Header("Pitch Control (상하 각도 틸트 조절)")]
-    [Tooltip("추가 수동 상하 피치 각도 보정 (도 단위)")]
     public float pitchAngleOffset = 4.0f;
+
+    [Header("Zoom & Orbit Control")]
+    public float zoomSensitivity = 2.0f;
+    public float minDistance = 3.0f;
+    public float maxDistance = 25.0f;
+    private float currentZoomOffset = 0f;
+
+    public float orbitSensitivityX = 3.0f;
+    public float orbitSensitivityY = 2.0f;
+    private float orbitAngleX = 0f;
+    private float orbitAngleY = 15f;
+
+    [Header("View Offsets")]
+    public float topViewHeight = 25f;
+    public Vector3 sideViewOffset = new Vector3(4.8f, 0.0f, 0f);
+    public Vector3 driverViewOffset = new Vector3(-0.35f, 1.2f, 0.3f);
 
     [Header("Smooth Settings")]
     public float positionSmoothTime = 0.12f;
@@ -51,6 +77,72 @@ public class SmoothCameraController : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.f5Key.wasPressedThisFrame) SetViewMode(CameraViewMode.Chase);
+            if (keyboard.f6Key.wasPressedThisFrame) SetViewMode(CameraViewMode.Top);
+            if (keyboard.f7Key.wasPressedThisFrame) SetViewMode(CameraViewMode.LeftSide);
+            if (keyboard.f8Key.wasPressedThisFrame) SetViewMode(CameraViewMode.RightSide);
+
+            if (keyboard.vKey.wasPressedThisFrame)
+            {
+                CycleNextViewMode();
+            }
+        }
+
+        HandleZoomAndOrbitInput();
+    }
+
+    private void HandleZoomAndOrbitInput()
+    {
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        bool isOverSubPanel = (MinimapController.Instance != null && MinimapController.Instance.IsMouseOverMinimap);
+
+        if (!isOverSubPanel)
+        {
+            float scroll = mouse.scroll.ReadValue().y;
+            if (Mathf.Abs(scroll) > 0.1f)
+            {
+                currentZoomOffset -= Mathf.Sign(scroll) * zoomSensitivity;
+                currentZoomOffset = Mathf.Clamp(currentZoomOffset, -6.0f, 15.0f);
+            }
+        }
+
+        if (mouse.rightButton.isPressed)
+        {
+            bool isOverUI = (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) || isOverSubPanel;
+            if (!isOverUI)
+            {
+                currentViewMode = CameraViewMode.Orbit;
+
+                Vector2 delta = mouse.delta.ReadValue();
+                orbitAngleX += delta.x * orbitSensitivityX * 0.1f;
+                orbitAngleY -= delta.y * orbitSensitivityY * 0.1f;
+                orbitAngleY = Mathf.Clamp(orbitAngleY, -10f, 80f);
+            }
+        }
+    }
+
+    public void SetViewMode(CameraViewMode mode)
+    {
+        currentViewMode = mode;
+        if (mode == CameraViewMode.Chase)
+        {
+            currentZoomOffset = 0f;
+        }
+    }
+
+    public void CycleNextViewMode()
+    {
+        int nextMode = ((int)currentViewMode + 1) % 4;
+        SetViewMode((CameraViewMode)nextMode);
+    }
+
     private void FixedUpdate()
     {
         FollowTargetSmooth();
@@ -61,9 +153,6 @@ public class SmoothCameraController : MonoBehaviour
         FollowTargetSmooth();
     }
 
-    /// <summary>
-    /// 수평 Yaw 회전과 상하 Pitch 피치 각도 조절이 100% 매끄럽게 정밀 조응하는 스무딩 추종
-    /// </summary>
     private void FollowTargetSmooth()
     {
         if (targetVehicle == null)
@@ -73,7 +162,6 @@ public class SmoothCameraController : MonoBehaviour
             if (targetVehicle == null) return;
         }
 
-        // 1. 차량의 수평(Yaw) 방향 기반 계산
         Vector3 vehicleForward = targetVehicle.forward;
         vehicleForward.y = 0f;
         if (vehicleForward.sqrMagnitude < 0.001f) vehicleForward = transform.forward;
@@ -81,25 +169,71 @@ public class SmoothCameraController : MonoBehaviour
 
         Quaternion yawRotation = Quaternion.LookRotation(vehicleForward, Vector3.up);
 
-        // 2. 원하는 카메라 위치 연산 (차량 위치 + Yaw 회전 오프셋)
-        Vector3 desiredPosition = targetVehicle.position + (yawRotation * offset);
+        Vector3 desiredPosition = transform.position;
+        Quaternion targetRotation = transform.rotation;
 
-        // 3. SmoothDamp 로 위치 묵직하게 스무딩 추종
-        transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref _currentVelocity, positionSmoothTime);
-
-        // 4. [핵심 Pitch 피치 조절]: 차량 주시점 높이(lookAtHeightOffset)를 바라보는 3D 주시점 벡터 연산
-        Vector3 lookTargetPos = targetVehicle.position + (Vector3.up * lookAtHeightOffset);
-        Vector3 lookDirection = (lookTargetPos - transform.position).normalized;
-
-        if (lookDirection != Vector3.zero)
+        switch (currentViewMode)
         {
-            // 상하 Pitch 각도가 반영된 LookRotation 연산
-            Quaternion targetRotation = Quaternion.LookRotation(lookDirection, Vector3.up);
-            
-            // 추가 피치 각도 오프셋(pitchAngleOffset) 합성
-            targetRotation *= Quaternion.Euler(pitchAngleOffset, 0f, 0f);
+            case CameraViewMode.Chase:
+                Vector3 currentOffset = offset;
+                currentOffset.z -= currentZoomOffset;
+                desiredPosition = targetVehicle.position + (yawRotation * currentOffset);
+                Vector3 lookTargetPos = targetVehicle.position + (Vector3.up * lookAtHeightOffset);
+                Vector3 lookDir = (lookTargetPos - desiredPosition).normalized;
+                if (lookDir != Vector3.zero)
+                {
+                    targetRotation = Quaternion.LookRotation(lookDir, Vector3.up) * Quaternion.Euler(pitchAngleOffset, 0f, 0f);
+                }
+                transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref _currentVelocity, positionSmoothTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.unscaledDeltaTime * rotationSmoothSpeed);
+                break;
 
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.unscaledDeltaTime * rotationSmoothSpeed);
+            case CameraViewMode.Orbit:
+                Quaternion orbitRotation = Quaternion.Euler(orbitAngleY, targetVehicle.eulerAngles.y + orbitAngleX, 0f);
+                float dist = 8.5f + currentZoomOffset;
+                desiredPosition = targetVehicle.position + (orbitRotation * new Vector3(0f, 1.5f, -dist));
+                targetRotation = Quaternion.LookRotation((targetVehicle.position + Vector3.up * lookAtHeightOffset) - desiredPosition);
+                transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref _currentVelocity, positionSmoothTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.unscaledDeltaTime * rotationSmoothSpeed);
+                break;
+
+            case CameraViewMode.Top:
+                float topH = topViewHeight + currentZoomOffset;
+                desiredPosition = targetVehicle.position + Vector3.up * topH;
+                targetRotation = Quaternion.Euler(90f, targetVehicle.eulerAngles.y, 0f);
+                // [밀림 0% 무지연 직통 고정]
+                transform.position = desiredPosition;
+                transform.rotation = targetRotation;
+                break;
+
+            case CameraViewMode.LeftSide:
+                // [고속 주행 시 밀림 0% 무지연 차체 정중앙 고정]
+                Vector3 leftOffset = new Vector3(-(sideViewOffset.x + currentZoomOffset * 0.5f), 0.0f, sideViewOffset.z);
+                desiredPosition = targetVehicle.position + (yawRotation * leftOffset);
+                Vector3 leftLookDir = (targetVehicle.position - desiredPosition).normalized;
+                leftLookDir.y = 0f;
+                targetRotation = Quaternion.LookRotation(leftLookDir, Vector3.up);
+                transform.position = desiredPosition;
+                transform.rotation = targetRotation;
+                break;
+
+            case CameraViewMode.RightSide:
+                // [고속 주행 시 밀림 0% 무지연 차체 정중앙 고정]
+                Vector3 rightOffset = new Vector3(sideViewOffset.x + currentZoomOffset * 0.5f, 0.0f, sideViewOffset.z);
+                desiredPosition = targetVehicle.position + (yawRotation * rightOffset);
+                Vector3 rightLookDir = (targetVehicle.position - desiredPosition).normalized;
+                rightLookDir.y = 0f;
+                targetRotation = Quaternion.LookRotation(rightLookDir, Vector3.up);
+                transform.position = desiredPosition;
+                transform.rotation = targetRotation;
+                break;
+
+            case CameraViewMode.Driver:
+                desiredPosition = targetVehicle.position + (targetVehicle.rotation * driverViewOffset);
+                targetRotation = targetVehicle.rotation;
+                transform.position = desiredPosition;
+                transform.rotation = targetRotation;
+                break;
         }
     }
 }

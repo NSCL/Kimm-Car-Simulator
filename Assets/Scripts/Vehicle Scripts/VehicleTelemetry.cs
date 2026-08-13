@@ -18,6 +18,10 @@ public class VehicleTelemetry : MonoBehaviour
     private void Start()
     {
         InitializeTelemetry();
+        if (TelemetryUIController.Instance == null)
+        {
+            gameObject.AddComponent<TelemetryUIController>();
+        }
     }
 
     // 차트 매니저가 부를 수도 있으니 public으로 열어둡니다.

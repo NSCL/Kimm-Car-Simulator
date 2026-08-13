@@ -2090,9 +2090,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SmoothCameraController
   targetVehicle: {fileID: 0}
-  offset: {x: 0, y: 3, z: -8}
+  currentViewMode: 0
+  offset: {x: 0, y: 3, z: -8.5}
   lookAtHeightOffset: 1.5
   pitchAngleOffset: 4
+  zoomSensitivity: 2
+  minDistance: 3
+  maxDistance: 25
+  orbitSensitivityX: 3
+  orbitSensitivityY: 2
+  topViewHeight: 25
+  sideViewOffset: {x: 4.8, y: 0, z: 0}
+  driverViewOffset: {x: -0.35, y: 1.2, z: 0.3}
   positionSmoothTime: 0.12
   rotationSmoothSpeed: 10
 --- !u!1 &291993778
@@ -11018,7 +11027,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RuntimeObjectPlacer
   objectPrefab: {fileID: 6845038119460800996, guid: c73b6241174cb234fb4053f2f31e6e27, type: 3}
-  rotationSpeed: 10
+  rotationStepAngle: 5
 --- !u!4 &1521443256
 Transform:
   m_ObjectHideFlags: 0
@@ -15596,15 +15605,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MinimapController
   targetVehicle: {fileID: 0}
-  minimapCamera: {fileID: 0}
-  cameraHeight: 50
-  minimapZoom: 5
-  minZoom: 5
-  maxZoom: 30
-  scrollSensitivity: 2
-  rotateWithVehicle: 1
-  minimapRawImage: {fileID: 0}
-  playerIconUI: {fileID: 0}
+  subCamera: {fileID: 0}
+  viewModeLabelText: {fileID: 0}
+  currentSubMode: 0
+  topHeight: 18
+  sideDistance: 4.8
 --- !u!114 &2121712807
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,250 +1,219 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using TMPro;
 
 /// <summary>
-/// 텔레메트리 미니맵 UI RawImage 위에서 마우스 휠 이벤트를 수신받아 MinimapController로 중계해주는 프록시 컴포넌트
+/// 텔레메트리 우측 계기판 사진 UI를 100% 정밀 활용하는 서브 카메라 모니터 컨트롤러.
+/// 초고도 미니맵 뷰를 제거하고 (TopView ➔ LeftSideView ➔ RightSideView) 3가지 정갈한 서브 뷰만 지원합니다.
 /// </summary>
-public class MinimapScrollProxy : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IScrollHandler
+public class MinimapController : MonoBehaviour
 {
-    public MinimapController controller;
+    public static MinimapController Instance { get; private set; }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public enum SubViewMode
     {
-        if (controller != null) controller.SetMouseHover(true);
+        TopView,
+        LeftSideView,
+        RightSideView
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (controller != null) controller.SetMouseHover(false);
-    }
-
-    public void OnScroll(PointerEventData eventData)
-    {
-        if (controller != null)
-        {
-            controller.HandleScrollDelta(eventData.scrollDelta.y);
-        }
-    }
-}
-
-/// <summary>
-/// 텔레메트리 패널 우측 빈 공간에 실시간 탑뷰 내비게이션(Minimap)을 띄워주는 미니맵 컨트롤러 스크립트.
-/// 유니티 UI IScrollHandler 연동 마우스 휠 줌(5~30) 및 수직 탑뷰 카메라 추적을 포함합니다.
-/// </summary>
-public class MinimapController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IScrollHandler
-{
-    public static MinimapController Instance;
-
-    [Header("1. Tracking Target")]
-    [Tooltip("미니맵이 추적할 차량 Transform (비어있으면 자동 검색)")]
+    [Header("Target References")]
     public Transform targetVehicle;
+    public Camera subCamera;
 
-    [Header("2. Minimap Camera Settings")]
-    [Tooltip("탑뷰 촬영 전용 카메라 (Orthographic)")]
-    public Camera minimapCamera;
+    [Header("UI Text (Option)")]
+    public TextMeshProUGUI viewModeLabelText;
 
-    [Tooltip("차량 상공 카메라 높이 (m)")]
-    public float cameraHeight = 50f;
+    [Header("State")]
+    public SubViewMode currentSubMode = SubViewMode.TopView;
+    public bool IsMouseOverMinimap { get; private set; }
 
-    [Tooltip("미니맵 시야 폭 (Orthographic Size: 5 ~ 30 범위)")]
-    public float minimapZoom = 15f;
+    [Header("Sub Camera Distance Control")]
+    [Tooltip("서브 탑뷰 높이 (기본값: 18m)")]
+    public float topHeight = 18f;
+    public float sideDistance = 4.8f;
 
-    [Tooltip("최소 줌 (최대 확대 - 차 크게 보기)")]
-    public float minZoom = 5f;
-
-    [Tooltip("최대 줌 (최대 축소 - 넓은 지형 보기)")]
-    public float maxZoom = 30f;
-
-    [Tooltip("마우스 휠 줌 민감도")]
-    public float scrollSensitivity = 2f;
-
-    [Tooltip("Heading-Up (차량 정면 방향 회전) 모드 사용 여부 (false면 North-Up 북쪽 고정)")]
-    public bool rotateWithVehicle = true;
-
-    [Header("3. UI Reference")]
-    [Tooltip("텔레메트리 패널 우측에 배치된 미니맵 RawImage 화면")]
-    public RawImage minimapRawImage;
-
-    [Tooltip("미니맵 중앙 차량 위상 표시용 아이콘 (옵션)")]
-    public RectTransform playerIconUI;
-
-    private RenderTexture _runtimeRenderTexture;
-    private bool _isMouseOverMinimap = false;
-
-    public bool IsMouseOverMinimap => _isMouseOverMinimap;
+    private RectTransform _rectTransform;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        _rectTransform = GetComponent<RectTransform>();
     }
 
     private void Start()
     {
-        EnsureSetup();
-    }
-
-    public void SetMouseHover(bool isHover)
-    {
-        _isMouseOverMinimap = isHover;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        _isMouseOverMinimap = true;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        _isMouseOverMinimap = false;
-    }
-
-    public void OnScroll(PointerEventData eventData)
-    {
-        HandleScrollDelta(eventData.scrollDelta.y);
-    }
-
-    public void HandleScrollDelta(float scrollY)
-    {
-        if (Mathf.Abs(scrollY) > 0.01f)
-        {
-            float direction = scrollY > 0f ? 1f : -1f;
-            minimapZoom = Mathf.Clamp(minimapZoom - (direction * scrollSensitivity), minZoom, maxZoom);
-            if (minimapCamera != null)
-            {
-                minimapCamera.orthographicSize = minimapZoom;
-            }
-        }
-    }
-
-    private void EnsureSetup()
-    {
-        // 1. 차량 자동 검색
         if (targetVehicle == null)
         {
-            VehicleController vc = Object.FindAnyObjectByType<VehicleController>();
-            if (vc != null)
-            {
-                targetVehicle = vc.transform;
-            }
-            else
-            {
-                GameObject carObj = GameObject.FindWithTag("Player");
-                if (carObj != null) targetVehicle = carObj.transform;
-            }
+            VehicleController vc = FindFirstObjectByType<VehicleController>();
+            if (vc != null) targetVehicle = vc.transform;
         }
 
-        // 2. 미니맵 카메라 자동 검색
-        if (minimapCamera == null)
-        {
-            minimapCamera = GetComponent<Camera>();
-        }
+        CreateSubCameraIfNull();
+        AutoAttachButtonToRenderTextureUI();
+        UpdateViewModeLabel();
+    }
 
-        // 3. RawImage UI 자동 검색 및 이벤트 프록시 자동 부착
-        if (minimapRawImage == null)
+    private void CreateSubCameraIfNull()
+    {
+        if (subCamera == null)
         {
-            RawImage[] rawImages = Object.FindObjectsByType<RawImage>(FindObjectsSortMode.None);
-            foreach (RawImage ri in rawImages)
+            GameObject camObj = new GameObject("SubViewportCamera");
+            subCamera = camObj.AddComponent<Camera>();
+            subCamera.clearFlags = CameraClearFlags.Skybox;
+            subCamera.fieldOfView = 60f;
+
+            RenderTexture rt = Resources.Load<RenderTexture>("MinimapRenderTexture");
+            if (rt != null)
             {
-                if (ri.name.Contains("Minimap") || ri.name.Contains("Map") || ri.name.Contains("Nav"))
+                subCamera.targetTexture = rt;
+            }
+        }
+    }
+
+    private void AutoAttachButtonToRenderTextureUI()
+    {
+        RawImage[] rawImages = FindObjectsByType<RawImage>(FindObjectsSortMode.None);
+        foreach (RawImage rawImg in rawImages)
+        {
+            if (rawImg.texture != null && rawImg.texture.name.Contains("Minimap"))
+            {
+                rawImg.raycastTarget = true;
+                
+                Button btn = rawImg.GetComponent<Button>();
+                if (btn == null)
                 {
-                    minimapRawImage = ri;
-                    break;
+                    btn = rawImg.gameObject.AddComponent<Button>();
                 }
-            }
-            if (minimapRawImage == null && rawImages.Length > 0)
-            {
-                minimapRawImage = rawImages[0];
+
+                btn.onClick.RemoveAllListeners();
+                btn.onClick.AddListener(() => {
+                    SwitchToNextSubView();
+                });
+
+                _rectTransform = rawImg.GetComponent<RectTransform>();
+                return;
             }
         }
 
-        // UI RawImage에 IScrollHandler 프록시 컴포넌트 및 RaycastTarget 100% 자동 부착
-        if (minimapRawImage != null)
+        EnsureRaycastTargetAndButton(gameObject);
+    }
+
+    private void EnsureRaycastTargetAndButton(GameObject targetObj)
+    {
+        Graphic g = targetObj.GetComponent<Graphic>();
+        if (g != null) g.raycastTarget = true;
+
+        Button btn = targetObj.GetComponent<Button>();
+        if (btn == null) btn = targetObj.AddComponent<Button>();
+
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(() => {
+            SwitchToNextSubView();
+        });
+    }
+
+    private void Update()
+    {
+        CheckMouseHoverAndSubZoom();
+    }
+
+    private void CheckMouseHoverAndSubZoom()
+    {
+        if (_rectTransform == null) return;
+
+        Vector2 mousePos = Vector2.zero;
+        if (Mouse.current != null)
         {
-            minimapRawImage.raycastTarget = true;
-            MinimapScrollProxy proxy = minimapRawImage.GetComponent<MinimapScrollProxy>();
-            if (proxy == null)
-            {
-                proxy = minimapRawImage.gameObject.AddComponent<MinimapScrollProxy>();
-            }
-            proxy.controller = this;
+            mousePos = Mouse.current.position.ReadValue();
         }
 
-        // 4. RenderTexture 512x512 자동 생성 및 바인딩
-        if (minimapCamera != null)
+        IsMouseOverMinimap = RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, mousePos);
+
+        if (IsMouseOverMinimap && Mouse.current != null)
         {
-            minimapCamera.orthographic = true;
-            minimapCamera.orthographicSize = minimapZoom;
-
-            if (minimapCamera.targetTexture == null && _runtimeRenderTexture == null)
+            float scroll = Mouse.current.scroll.ReadValue().y;
+            if (Mathf.Abs(scroll) > 0.1f)
             {
-                _runtimeRenderTexture = new RenderTexture(512, 512, 16, RenderTextureFormat.ARGB32);
-                _runtimeRenderTexture.Create();
-                minimapCamera.targetTexture = _runtimeRenderTexture;
+                float zoomDelta = Mathf.Sign(scroll) * 1.5f;
+                topHeight = Mathf.Clamp(topHeight - zoomDelta, 5f, 60f);
+                sideDistance = Mathf.Clamp(sideDistance - zoomDelta * 0.2f, 2.0f, 15.0f);
             }
+        }
+    }
 
-            if (minimapRawImage != null && minimapRawImage.texture == null)
+    public void SwitchToNextSubView()
+    {
+        int next = ((int)currentSubMode + 1) % 3;
+        currentSubMode = (SubViewMode)next;
+        UpdateViewModeLabel();
+    }
+
+    private void UpdateViewModeLabel()
+    {
+        if (viewModeLabelText != null)
+        {
+            switch (currentSubMode)
             {
-                minimapRawImage.texture = minimapCamera.targetTexture;
+                case SubViewMode.TopView: viewModeLabelText.text = "📷 SUB: TOP VIEW"; break;
+                case SubViewMode.LeftSideView: viewModeLabelText.text = "📷 SUB: LEFT VIEW"; break;
+                case SubViewMode.RightSideView: viewModeLabelText.text = "📷 SUB: RIGHT VIEW"; break;
             }
         }
     }
 
     private void LateUpdate()
     {
-        EnsureSetup();
-
-        if (targetVehicle == null || minimapCamera == null) return;
-
-        // 1. 카메라 위치: 차량 수직 상공 고정 추적
-        Vector3 carPos = targetVehicle.position;
-        minimapCamera.transform.position = new Vector3(carPos.x, carPos.y + cameraHeight, carPos.z);
-
-        // 2. 카메라 회전: 수직 직각 아래(Pitch = 90도)를 내다보도록 고정
-        float carYaw = targetVehicle.eulerAngles.y;
-
-        if (rotateWithVehicle)
+        if (targetVehicle == null)
         {
-            minimapCamera.transform.rotation = Quaternion.Euler(90f, carYaw, 0f);
-
-            if (playerIconUI != null)
-            {
-                playerIconUI.localRotation = Quaternion.identity;
-            }
-        }
-        else
-        {
-            minimapCamera.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-
-            if (playerIconUI != null)
-            {
-                playerIconUI.localRotation = Quaternion.Euler(0f, 0f, -carYaw);
-            }
+            VehicleController vc = FindFirstObjectByType<VehicleController>();
+            if (vc != null) targetVehicle = vc.transform;
+            if (targetVehicle == null) return;
         }
 
-        minimapCamera.orthographicSize = minimapZoom;
-    }
+        if (subCamera == null) return;
 
-    public void SetZoom(float zoomSize)
-    {
-        minimapZoom = Mathf.Clamp(zoomSize, minZoom, maxZoom);
-        if (minimapCamera != null)
+        Vector3 vForward = targetVehicle.forward;
+        vForward.y = 0f;
+        if (vForward.sqrMagnitude < 0.001f) vForward = Vector3.forward;
+        vForward.Normalize();
+        Quaternion yawRot = Quaternion.LookRotation(vForward, Vector3.up);
+
+        switch (currentSubMode)
         {
-            minimapCamera.orthographicSize = minimapZoom;
-        }
-    }
+            case SubViewMode.TopView:
+                subCamera.transform.position = targetVehicle.position + Vector3.up * topHeight;
+                subCamera.transform.rotation = Quaternion.Euler(90f, targetVehicle.eulerAngles.y, 0f);
+                subCamera.orthographic = false;
+                break;
 
-    public void ToggleRotationMode(bool useHeadingUp)
-    {
-        rotateWithVehicle = useHeadingUp;
-    }
+            case SubViewMode.LeftSideView:
+                Vector3 leftOff = new Vector3(-sideDistance, 0.0f, 0f);
+                subCamera.transform.position = targetVehicle.position + (yawRot * leftOff);
+                Vector3 leftLookDir = (targetVehicle.position - subCamera.transform.position).normalized;
+                leftLookDir.y = 0f;
+                subCamera.transform.rotation = Quaternion.LookRotation(leftLookDir, Vector3.up);
+                subCamera.orthographic = false;
+                break;
 
-    private void OnDestroy()
-    {
-        if (_runtimeRenderTexture != null)
-        {
-            _runtimeRenderTexture.Release();
-            Destroy(_runtimeRenderTexture);
+            case SubViewMode.RightSideView:
+                Vector3 rightOff = new Vector3(sideDistance, 0.0f, 0f);
+                subCamera.transform.position = targetVehicle.position + (yawRot * rightOff);
+                Vector3 rightLookDir = (targetVehicle.position - subCamera.transform.position).normalized;
+                rightLookDir.y = 0f;
+                subCamera.transform.rotation = Quaternion.LookRotation(rightLookDir, Vector3.up);
+                subCamera.orthographic = false;
+                break;
         }
     }
 }
