@@ -49,8 +49,6 @@ public class VehicleTelemetry : MonoBehaviour
                 RegisterData($"FMU: {varName}", () => (float)fmuManager.GetValue(varName));
             }
         }
-
-        Debug.Log($"[Telemetry] 총 {availableDataNames.Count}개의 데이터를 수집했습니다.");
     }
 
     // 딕셔너리와 리스트에 동시에 꽂아넣는 헬퍼 함수

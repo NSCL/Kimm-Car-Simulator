@@ -1,0 +1,59 @@
+{
+  "Metadata": {
+    "VehicleName": "KIMM City Compact Hatchback",
+    "Description": "45개 표준 규격을 100% 준수하며 도심 회전반경이 짧고 경쾌한 도심형 해치백 설정",
+    "Version": "1.0"
+  },
+  "Parameters": {
+    "Veh_AeroArea": 2.20,
+    "Veh_AeroCd": 0.310,
+    "Veh_AeroCl": 0.150,
+    "Veh_AeroRho": 1.205,
+
+    "Veh_BodyInertia[1,1]": 450.0,
+    "Veh_BodyInertia[1,2]": 2100.0,
+    "Veh_BodyInertia[1,3]": 2300.0,
+
+    "Veh_BodyMass": 1150.0,
+    "Veh_BodyRefZ0": 0.580,
+    "Veh_BodytoWheelCenter": 0.240,
+    "Veh_FrontAxleX": 1.25,
+    "Veh_RearAxleX": -1.25,
+    "Veh_SteerRatio": 14.0,
+
+    "Veh_SuspF_BumpC": 2800.0,
+    "Veh_SuspF_BumpK": 190000.0,
+    "Veh_SuspF_BumpLimit": -0.075,
+    "Veh_SuspF_BumpWidth": 0.003,
+    "Veh_SuspF_C": 1600.0,
+    "Veh_SuspF_EqPos": 0.100,
+    "Veh_SuspF_K": 31000.0,
+    "Veh_SuspF_ReboundC": 2800.0,
+    "Veh_SuspF_ReboundK": 190000.0,
+    "Veh_SuspF_ReboundLimit": 0.050,
+    "Veh_SuspF_ReboundWidth": 0.003,
+    "Veh_SuspF_UnsprungInertia[1,1]": 0.8,
+    "Veh_SuspF_UnsprungInertia[1,2]": 0.8,
+    "Veh_SuspF_UnsprungInertia[1,3]": 0.8,
+    "Veh_SuspF_UnsprungMass": 38.0,
+
+    "Veh_SuspR_BumpC": 3600.0,
+    "Veh_SuspR_BumpK": 270000.0,
+    "Veh_SuspR_BumpLimit": -0.085,
+    "Veh_SuspR_BumpWidth": 0.003,
+    "Veh_SuspR_C": 2000.0,
+    "Veh_SuspR_EqPos": 0.090,
+    "Veh_SuspR_K": 36000.0,
+    "Veh_SuspR_ReboundC": 3600.0,
+    "Veh_SuspR_ReboundK": 270000.0,
+    "Veh_SuspR_ReboundLimit": 0.040,
+    "Veh_SuspR_ReboundWidth": 0.003,
+    "Veh_SuspR_UnsprungInertia[1,1]": 0.8,
+    "Veh_SuspR_UnsprungInertia[1,2]": 0.8,
+    "Veh_SuspR_UnsprungInertia[1,3]": 0.8,
+    "Veh_SuspR_UnsprungMass": 36.0,
+
+    "Veh_TrackF": 1.54,
+    "Veh_TrackR": 1.54
+  }
+}

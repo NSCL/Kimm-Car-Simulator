@@ -1,0 +1,15 @@
+{
+  "Metadata": {
+    "VehicleName": "Invalid Format Sample (For Warning Popup Test)",
+    "Description": "윈도우 경고 팝업 확인용 양식 오류 파일 (필수 파라미터 누락됨)",
+    "Version": "1.0"
+  },
+  "Parameters": {
+    "Veh_AeroArea": 3.8,
+    "Veh_AeroCd": 0.45,
+
+    "Veh_SteerRatio": 10.0,
+    "Veh_TrackF": 2.6,
+    "Veh_TrackR": 2.6
+  }
+}

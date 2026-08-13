@@ -129,7 +129,6 @@ public class VehicleController : MonoBehaviour
                 if (!tf.IsChildOf(chassisVisualTransform))
                 {
                     tf.SetParent(chassisVisualTransform, true);
-                    Debug.Log($"[VehicleController] 스포일러('{tf.name}')를 차체 껍데기 자식으로 자동 귀속 완료!");
                 }
             }
         }
@@ -155,8 +154,6 @@ public class VehicleController : MonoBehaviour
         );
 
         chassisVisualTransform.localScale = autoCalculatedScale;
-
-        Debug.Log($"[VehicleController] Config 100% 직통 3D 차체 스케일 변환 완료! ScaleX={autoCalculatedScale.x:F3}, ScaleZ={autoCalculatedScale.z:F3} (윤거={currentTrackW:F2}m, 축거={currentWheelbase:F2}m)");
     }
 
     private void FixedUpdate()
@@ -266,7 +263,6 @@ public class VehicleController : MonoBehaviour
         }
         transform.position = _spawnPos;
         transform.rotation = _spawnRot;
-        Debug.Log($"Spawned at {_spawnPos}");
     }
 
     private IEnumerator CollisionRespawnRoutine()
@@ -296,7 +292,6 @@ public class VehicleController : MonoBehaviour
         {
             UIManager.Instance.StartCollisionEffect();
         }
-        Debug.Log($"{other.gameObject.name}와 충돌");
         StartCoroutine(CollisionRespawnRoutine());
     }
 }

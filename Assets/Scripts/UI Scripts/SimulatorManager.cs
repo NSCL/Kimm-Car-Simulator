@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Unity New Input System Package의 .inputactions 에셋(SimulatorControls)을 100% 정석대로 활용하고,
 /// 에디트 모드(Edit Mode) 전환 시 시뮬레이션 물리 시간을 100% 일시정지(Time.timeScale = 0)시키는 매니저.
+/// (빌드 최적화: 디버그 로그 제거)
 /// </summary>
 public class SimulatorManager : MonoBehaviour
 {
@@ -26,9 +27,9 @@ public class SimulatorManager : MonoBehaviour
     }
 
     [Header("References")]
-    public GameObject vehicleCamera; // 운전자 3인칭 카메라
-    public GameObject editCamera;    // 맵 편집 탑뷰 프리카메라
-    public VehicleController vehicleController; // 차량 제어 스크립트
+    public GameObject vehicleCamera;
+    public GameObject editCamera;
+    public VehicleController vehicleController;
     public GameObject editModeUIGroup;
 
     public event Action<SimulatorMode> OnModeChanged;
@@ -83,7 +84,6 @@ public class SimulatorManager : MonoBehaviour
     {
         bool isEdit = (mode == SimulatorMode.Edit);
 
-        // [핵심 해결 100%]: 에디트 모드 진입 시 물리 시간 100% 일시정지(Time.timeScale = 0), 주행 모드 복귀 시 정상 재개(Time.timeScale = 1.0)
         Time.timeScale = isEdit ? 0f : 1.0f;
 
         if (vehicleCamera != null) vehicleCamera.SetActive(!isEdit);
@@ -107,7 +107,5 @@ public class SimulatorManager : MonoBehaviour
         Cursor.visible = true;
 
         OnModeChanged?.Invoke(mode);
-
-        Debug.Log($"[SimulatorManager] 모드 변환 완료: {mode} (Time.timeScale: {Time.timeScale})");
     }
 }

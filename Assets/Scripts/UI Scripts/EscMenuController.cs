@@ -150,19 +150,13 @@ public class EscMenuController : MonoBehaviour
             {
                 vehicle.ResetVehicle(Vector3.zero, Quaternion.identity);
             }
-            Debug.Log("[EscMenuController] 차량 위치 및 FMU 리셋 완료!");
         }
 
-        // 리셋 후 메뉴 닫기
         OnClickResume();
     }
 
-    /// <summary>
-    /// [❌ Quit / 프로그램 종료] 버튼 클릭 시 (.exe 전용)
-    /// </summary>
     public void OnClickQuitGame()
     {
-        Debug.Log("[EscMenuController] 시뮬레이터 프로그램 종료.");
         Application.Quit();
 
 #if UNITY_EDITOR

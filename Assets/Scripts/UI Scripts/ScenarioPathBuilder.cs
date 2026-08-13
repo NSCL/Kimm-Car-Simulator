@@ -173,7 +173,6 @@ public class ScenarioPathBuilder : MonoBehaviour
             };
 
             currentPath.Add(newPoint);
-            Debug.Log($"웨이포인트 추가됨. 현재 총 {currentPath.Count}개의 포인트가 존재합니다.");
             UpdatePathLine();
         }
     }
@@ -182,7 +181,6 @@ public class ScenarioPathBuilder : MonoBehaviour
     {
         isBuildingPath = false;
         if (currentGhost != null) Destroy(currentGhost);
-        Debug.Log("경로 생성 완료! 생성된 포인트 개수: " + currentPath.Count);
         if (pathEditorPanel != null) pathEditorPanel.SetActive(false);
         if (pathLine != null && currentPath.Count > 1)
         {
@@ -248,7 +246,6 @@ public class ScenarioPathBuilder : MonoBehaviour
     public void OnStateDropdownChanged(int index)
     {
         currentStateFromUI = (ActorState)index;
-        Debug.Log(currentStateFromUI);
     }
 
     private void UpdatePathLine()
@@ -271,7 +268,5 @@ public class ScenarioPathBuilder : MonoBehaviour
         {
             Destroy(actor.gameObject);
         }
-
-        Debug.Log($"총 {allActors.Length}명의 보행자를 제거하였습니다.");
     }
 }

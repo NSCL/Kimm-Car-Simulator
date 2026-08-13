@@ -122,7 +122,6 @@ public class FMUManager : MonoBehaviour
 
         // FMU 초기화 모드 종료 (계산 준비 완료)
         fmu.ExitInitializationMode();
-        UnityEngine.Debug.Log($"[FMUManager] {selectedFMUName} Set up finished.");
     }
 
     /// <summary>

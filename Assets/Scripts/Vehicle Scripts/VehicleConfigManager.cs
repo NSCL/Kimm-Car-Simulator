@@ -7,7 +7,8 @@ using UnityEngine;
 
 /// <summary>
 /// 외부 JSON Config 파일 로드 시 45개 필수 파라미터 양식을 정밀 대조(Validation)하여,
-/// 누락되거나 양식이 잘못된 파라미터 적용을 100% 거부하고 사용자에게 경고 팝업을 표시하는 매니저.
+/// 누락되거나 양식이 잘못된 경우 윈도우 표준 경고 메시지 팝업(Windows Native MessageBox)을 100% 띄우고 
+/// 변경을 거부하는 매니저.
 /// </summary>
 public class VehicleConfigManager : MonoBehaviour
 {
@@ -17,10 +18,8 @@ public class VehicleConfigManager : MonoBehaviour
     public string currentConfigPath;
     public string currentVehicleName = "Default Sedan";
 
-    // 파싱된 45개 파라미터 저장소 (Key: 변수명, Value: 실수값)
     public Dictionary<string, double> loadedParameters = new Dictionary<string, double>();
 
-    // 모델링 설계자가 정의한 45개 필수 기준 파라미터 검증표 (Validation Schema)
     public static readonly HashSet<string> RequiredParameterKeys = new HashSet<string>()
     {
         "Veh_AeroArea", "Veh_AeroCd", "Veh_AeroCl", "Veh_AeroRho",
@@ -77,16 +76,13 @@ public class VehicleConfigManager : MonoBehaviour
         return LoadConfigFromFile(defaultPath);
     }
 
-    /// <summary>
-    /// 지정된 파일 경로의 JSON Config 로드 및 45개 필수 키 정밀 검증 집행
-    /// </summary>
     public bool LoadConfigFromFile(string filePath)
     {
         if (!File.Exists(filePath))
         {
-            string err = $"Config 파일을 찾을 수 없습니다: {filePath}";
-            Debug.LogWarning($"[VehicleConfigManager] {err}");
-            ShowValidationErrorPopup("파일 없음", new List<string> { err });
+            string err = $"Config 파일을 찾을 수 없습니다:\n{filePath}";
+            ShowWindowsNativeWarningBox("Vehicle Config 로드 실패", err);
+            OnConfigValidationError?.Invoke("Vehicle Config 로드 실패", new List<string> { err });
             return false;
         }
 
@@ -97,52 +93,66 @@ public class VehicleConfigManager : MonoBehaviour
             Dictionary<string, double> parsedTemp = new Dictionary<string, double>();
             ParseConfigJsonToDict(jsonText, parsedTemp);
 
-            // [정밀 검증 100%]: 45개 필수 파라미터 대조 검사
             List<string> missingKeys;
             List<string> invalidValues;
             bool isValid = ValidateParameters(parsedTemp, out missingKeys, out invalidValues);
 
             if (!isValid)
             {
-                List<string> errorDetails = new List<string>();
-                foreach (var mk in missingKeys) errorDetails.Add($"누락된 필수 항목: {mk}");
-                foreach (var iv in invalidValues) errorDetails.Add($"올바르지 않은 수치: {iv}");
-
                 string fileName = Path.GetFileName(filePath);
-                Debug.LogError($"[VehicleConfigManager] '{fileName}' 파라미터 양식 불일치! 반영 거부 (총 {errorDetails.Count}개 오류)");
+                string message = $"선택하신 파일('{fileName}')은 파라미터 양식이 올바르지 않습니다!\n\n[오류 사유]\n";
+
+                List<string> errorList = new List<string>();
+                int count = 0;
+                foreach (var mk in missingKeys)
+                {
+                    errorList.Add($"누락된 필수 항목: {mk}");
+                    message += $"• 누락된 필수 항목: {mk}\n";
+                    count++;
+                    if (count >= 6) break;
+                }
+
+                if (missingKeys.Count > 6)
+                {
+                    message += $"...외 {missingKeys.Count - 6}개 누락 항목 추가 발견\n";
+                }
+
+                foreach (var iv in invalidValues)
+                {
+                    errorList.Add($"올바르지 않은 수치: {iv}");
+                    message += $"• 올바르지 않은 수치: {iv}\n";
+                }
+
+                message += "\n* 차량 파라미터 변경이 거부되었으며 기존 세팅이 안전하게 유지됩니다.";
+
+                ShowWindowsNativeWarningBox($"[경고] '{fileName}' 파라미터 양식 오류", message);
+                OnConfigValidationError?.Invoke($"[경고] '{fileName}' 파라미터 양식 오류", errorList);
                 
-                ShowValidationErrorPopup($"[경고] '{fileName}' 올바르지 않은 Vehicle Config 양식입니다!", errorDetails);
-                return false; // 파라미터 반영 100% 거부!
+                return false;
             }
 
-            // 검증 합격 시에만 기존 파라미터 교체 적용
             loadedParameters.Clear();
             foreach (var kvp in parsedTemp) loadedParameters[kvp.Key] = kvp.Value;
 
             currentConfigPath = filePath;
-            Debug.Log($"[VehicleConfigManager] 성공적으로 Config 로드 및 정밀 검증 완료: {Path.GetFileName(filePath)} (총 {loadedParameters.Count}개 파라미터)");
 
             ApplyLoadedConfigToFMU();
             return true;
         }
         catch (Exception e)
         {
-            string err = $"JSON 파싱 오류: {e.Message}";
-            Debug.LogError($"[VehicleConfigManager] Config 로드 실패: {err}");
-            ShowValidationErrorPopup("JSON 구문 오류", new List<string> { err });
+            string err = $"JSON 파싱 오류가 발생하였습니다:\n{e.Message}";
+            ShowWindowsNativeWarningBox("JSON 구문 오류", err);
+            OnConfigValidationError?.Invoke("JSON 구문 오류", new List<string> { err });
             return false;
         }
     }
 
-    /// <summary>
-    /// 파싱된 파라미터 딕셔너리가 원본 모델 검증표(RequiredParameterKeys)와 일치하는지 정밀 대조
-    /// </summary>
     private bool ValidateParameters(Dictionary<string, double> parsed, out List<string> missingKeys, out List<string> invalidValues)
     {
         missingKeys = new List<string>();
         invalidValues = new List<string>();
 
-        // 1. 필수 키 누락 검사
         foreach (string reqKey in RequiredParameterKeys)
         {
             if (!parsed.ContainsKey(reqKey))
@@ -151,7 +161,6 @@ public class VehicleConfigManager : MonoBehaviour
             }
         }
 
-        // 2. 수치 유효성 검사 (NaN 또는 무한대 수치 검사)
         foreach (var kvp in parsed)
         {
             if (double.IsNaN(kvp.Value) || double.IsInfinity(kvp.Value))
@@ -160,7 +169,6 @@ public class VehicleConfigManager : MonoBehaviour
             }
         }
 
-        // 차체 질량(Veh_BodyMass) 및 중요 수치 기본값 검사
         if (parsed.TryGetValue("Veh_BodyMass", out double mass) && mass <= 0)
         {
             invalidValues.Add($"Veh_BodyMass({mass}) 수치는 0보다 커야 합니다.");
@@ -169,16 +177,13 @@ public class VehicleConfigManager : MonoBehaviour
         return (missingKeys.Count == 0 && invalidValues.Count == 0);
     }
 
-    private void ShowValidationErrorPopup(string title, List<string> errorDetails)
+    private void ShowWindowsNativeWarningBox(string title, string message)
     {
-        OnConfigValidationError?.Invoke(title, errorDetails);
-        
-        // 팝업 컨트롤러나 경고 UI에 전달
-        WarningPopupUI popup = FindFirstObjectByType<WarningPopupUI>();
-        if (popup != null)
-        {
-            popup.ShowWarning(title, errorDetails);
-        }
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+        MessageBox(IntPtr.Zero, message, title, 0x00000030);
+#else
+        Debug.LogWarning($"[{title}] {message}");
+#endif
     }
 
     public string OpenFileDialogAndSelectConfig()
@@ -197,17 +202,9 @@ public class VehicleConfigManager : MonoBehaviour
     public void ApplyLoadedConfigToFMU()
     {
         FMUManager fmuManager = FindFirstObjectByType<FMUManager>();
-        if (fmuManager == null)
-        {
-            Debug.LogError("[VehicleConfigManager] 씬에서 FMUManager를 찾을 수 없습니다.");
-            return;
-        }
+        if (fmuManager == null) return;
 
-        if (loadedParameters.Count == 0)
-        {
-            Debug.LogWarning("[VehicleConfigManager] 적용할 로드된 파라미터가 없습니다.");
-            return;
-        }
+        if (loadedParameters.Count == 0) return;
 
         foreach (var kvp in loadedParameters)
         {
@@ -219,7 +216,6 @@ public class VehicleConfigManager : MonoBehaviour
         }
 
         fmuManager.ResetFMU();
-        Debug.Log("[VehicleConfigManager] FMUManager 파라미터 주입 및 ResetFMU 완료!");
 
         VehicleController vc = FindFirstObjectByType<VehicleController>();
         if (vc != null)
@@ -239,7 +235,6 @@ public class VehicleConfigManager : MonoBehaviour
                 wheelbase = (float)wb;
             }
 
-            Debug.Log($"[VehicleConfigManager] 3D 섀시 수치: 윤거(TrackW)={trackW:F3}m, 축거(Wheelbase)={wheelbase:F3}m");
             vc.ApplyChassisScale(trackW, wheelbase);
         }
     }
@@ -274,7 +269,10 @@ public class VehicleConfigManager : MonoBehaviour
         }
     }
 
-    #region Windows Win32 OpenFileDialog Native P/Invoke
+    #region Windows Win32 Native P/Invoke (MessageBox & OpenFileDialog)
+    [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    private static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     public struct OpenFileName
     {

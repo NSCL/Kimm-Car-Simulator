@@ -16,7 +16,8 @@ public class MapInfo
 
 /// <summary>
 /// 맵 Scene을 Additive 비동기 로드하고, 시놀로지 NAS 네트워크 드라이브 환경에서도 
-/// 3D 메쉬 및 콜라이더 최적화가 100% 준비 완료될 때까지 로딩 패널(Loading Map... %)을 정밀 동기화하는 매니저.
+/// 3D 메쉬 및 콜라이더 최적화가 100% 준비 완료될 때까지 로딩 패널을 정밀 동기화하는 매니저.
+/// (빌드 최적화: 개발용 임시 로그 제거)
 /// </summary>
 public class MapChanger : MonoBehaviour
 {
@@ -67,7 +68,6 @@ public class MapChanger : MonoBehaviour
 
         if (!mapSceneLoaded && mapList.Count > 0)
         {
-            Debug.Log($"[MapChanger] 초기 맵이 로드되지 않아 기본 맵({mapList[0].mapName})을 자동 로드합니다.");
             ChangeMap(0);
         }
     }
@@ -111,11 +111,7 @@ public class MapChanger : MonoBehaviour
 
     public void ChangeMap(int mapIndex)
     {
-        if (isTransitioning)
-        {
-            Debug.LogWarning("[MapChanger] 이미 맵 전환이 진행 중입니다.");
-            return;
-        }
+        if (isTransitioning) return;
 
         if (mapIndex < 0 || mapIndex >= mapList.Count)
         {
@@ -133,7 +129,6 @@ public class MapChanger : MonoBehaviour
         if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.05f);
 
         MapInfo targetMap = mapList[targetIndex];
-        Debug.Log($"[MapChanger] 맵 전환 시작: {targetMap.mapName} ({targetMap.sceneName})");
 
         // 1. 기존 로드된 Additive 맵 언로드
         for (int i = 0; i < SceneManager.sceneCount; i++)
@@ -143,7 +138,6 @@ public class MapChanger : MonoBehaviour
             {
                 if (loadedScene.isLoaded)
                 {
-                    Debug.Log($"[MapChanger] 기존 맵 언로드 중: {loadedScene.name}");
                     AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(loadedScene);
                     while (unloadOp != null && !unloadOp.isDone)
                     {
@@ -156,7 +150,7 @@ public class MapChanger : MonoBehaviour
         Resources.UnloadUnusedAssets();
         if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.15f);
 
-        // 2. 신규 맵 비동기 Additive 로드 (0.15 ~ 0.85 구간 프로그레스 연동)
+        // 2. 신규 맵 비동기 Additive 로드
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(targetMap.sceneName, LoadSceneMode.Additive);
         if (loadOp == null)
         {
@@ -167,7 +161,6 @@ public class MapChanger : MonoBehaviour
 
         while (!loadOp.isDone)
         {
-            // loadOp.progress는 0.0 ~ 0.9까지 올라감
             float mappedProgress = Mathf.Lerp(0.15f, 0.85f, loadOp.progress / 0.9f);
             if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(mappedProgress);
             yield return null;
@@ -175,7 +168,6 @@ public class MapChanger : MonoBehaviour
 
         if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.85f);
 
-        // 3. 로드된 맵 Active Scene 지정
         Scene newlyLoadedScene = SceneManager.GetSceneByName(targetMap.sceneName);
         if (newlyLoadedScene.IsValid())
         {
@@ -185,15 +177,12 @@ public class MapChanger : MonoBehaviour
         activeMapSceneName = targetMap.sceneName;
         currentMapIndex = targetIndex;
 
-        // [시놀로지 NAS 네트워크 대기 100% 무결점 동기화]: 3D 메쉬 오브젝트들이 메모리 및 계층에 완전히 렌더링 준비될 때까지 대기
         yield return new WaitForEndOfFrame();
         yield return new WaitForSecondsRealtime(0.1f);
         if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.92f);
 
-        // 4. 차량 스폰 배치
         RelocateVehicleExact(newlyLoadedScene, targetMap);
 
-        // 5. 3D 물리 콜라이더 최적화 집행 및 PhysX 트랜스폼 동기화
         if (MapPhysicsOptimizer.Instance != null)
         {
             MapPhysicsOptimizer.Instance.OptimizeCurrentMapImmediate();
@@ -202,7 +191,6 @@ public class MapChanger : MonoBehaviour
         yield return new WaitForEndOfFrame();
         if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(1.0f);
 
-        Debug.Log($"[MapChanger] 맵 전환 및 물리 완료: {targetMap.mapName}");
         isTransitioning = false;
         OnMapChangeCompleted?.Invoke();
 

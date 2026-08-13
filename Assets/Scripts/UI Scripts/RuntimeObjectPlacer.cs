@@ -74,14 +74,12 @@ public class RuntimeObjectPlacer : MonoBehaviour
         if (SimulatorManager.Instance.IsSimulationActive()) return;
         Vector2 mousePos = controls.EditCamera.MousePosition.ReadValue<Vector2>();
         Ray ray = editCam.ScreenPointToRay(mousePos);
-        RaycastHit[] hits = Physics.RaycastAll(ray, 1000f);
-        foreach (RaycastHit hit in hits)
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1000f))
         {
             if (hit.collider.CompareTag("SpawnedObject"))
             {
                 Destroy(hit.collider.gameObject);
-                Debug.Log($"삭제 완료: {hit.collider.name}");
-                return;
             }
         }
     }

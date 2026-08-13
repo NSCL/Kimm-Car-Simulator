@@ -3,8 +3,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// WASD 키보드 조향(D 키) 시 전진 기어(Drive)로 기어가 강제 튕기는 버그를 100% 소탕하고,
-/// Shift(전진), Ctrl(후진), N(중립), P(주차) 정석 기어 핫키 및 휠/게임패드 입력을 합성하는 매니저.
+/// 키보드(Keyboard), 게임패드(Gamepad), 레이싱 휠/조이스틱(Joystick/HID Wheel Controller)의 
+/// 아날로그 조향/가속/브레이크 및 기어 변속 입력을 100% 통합 합성하는 매니저.
+/// (빌드 최적화: 콘솔 로그 정제)
 /// </summary>
 public class VehicleInputManager : MonoBehaviour
 {
@@ -61,7 +62,6 @@ public class VehicleInputManager : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            // [핵심 버그 완치]: 조향키 'D' 키 누름 시 기어가 Drive 로 튕기는 오차 원천 차단! (Shift = Drive)
             if (keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame)
                 ShiftGear(GearState.Drive);
             if (keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame)
@@ -73,14 +73,13 @@ public class VehicleInputManager : MonoBehaviour
             if (keyboard.rKey.wasPressedThisFrame)
                 OnResetTriggered?.Invoke();
 
-            // WASD 및 화살표 조향 (D 키는 순수 조향 전용!)
             if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) targetSteer -= 1.0f;
             if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) targetSteer += 1.0f;
             if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) targetAccel += 1.0f;
             if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed || keyboard.spaceKey.isPressed) targetBrake += 1.0f;
         }
 
-        // 2. 게임패드 및 Power Shift Revolution / USB 레이싱 휠 컨트롤러 스캔 (Gamepad.current / Joystick.current)
+        // 2. 게임패드 및 Power Shift Revolution / USB 레이싱 휠 스캔
         var gamepad = Gamepad.current;
         if (gamepad != null)
         {
@@ -115,7 +114,6 @@ public class VehicleInputManager : MonoBehaviour
     public void ShiftGear(GearState target)
     {
         currentGear = target;
-        Debug.Log($"[VehicleInputManager] 기어 변속 완료: {currentGear} (FMU 전달값: {Gear})");
     }
 
     public void SetInputActive(bool active)
