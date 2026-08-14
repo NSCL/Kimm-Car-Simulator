@@ -3,7 +3,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
 /// <summary>
-/// 에디트 모드에서 장애물/오브젝트 배치 및 차량 3D 고스트 화면 마우스 포인터 100% 찰떡 밀착 추종 스폰 배치를 총괄하는 컨트롤러.
+/// 프리팹 자체의 원본 3D 회전값(initialRotation)을 100% 보존하면서
+/// 차량의 Heading Yaw 회전각 및 휠 5도 정밀 회전을 결합하는 장애물 매니저.
 /// </summary>
 public class RuntimeObjectPlacer : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
     private GameObject vehicleGhost;
     private SimulatorControls controls;
     private Camera editCam;
-    private Quaternion initialRotation;
+    private Quaternion initialRotation = Quaternion.identity;
     private float currentYRotation = 0f;
     private bool isPointerOverUI = false;
 
@@ -77,7 +78,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
         bool minimapHover = (MinimapController.Instance != null && MinimapController.Instance.IsMouseOverMinimap);
         isPointerOverUI = (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) || minimapHover;
         
-        if (SimulatorManager.Instance.IsSimulationActive())
+        if (SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive())
         {
             if (currentGhost != null) currentGhost.SetActive(false);
             if (vehicleGhost != null) vehicleGhost.SetActive(false);
@@ -115,9 +116,6 @@ public class RuntimeObjectPlacer : MonoBehaviour
         return Input.mousePosition;
     }
 
-    /// <summary>
-    /// 복제된 차량 고스트에서 카메라 및 불필요한 자식 오브젝트를 싹 청소하고 3D 차체 바디(Body) 정중앙이 마우스 포인터 팁에 100% 찰떡 밀착되도록 보정
-    /// </summary>
     private void UpdateVehicleGhostTransform()
     {
         if (vehicleGhost == null)
@@ -128,14 +126,12 @@ public class RuntimeObjectPlacer : MonoBehaviour
                 vehicleGhost = Instantiate(vc.gameObject);
                 vehicleGhost.name = "VehicleGhostPreview";
                 
-                // 1. 차량 내부 카메라 자식 오브젝트 싹 제거 (카메라 오프셋 치우침 원천 차단!)
                 Camera[] cameras = vehicleGhost.GetComponentsInChildren<Camera>(true);
                 foreach (var c in cameras) Destroy(c.gameObject);
 
                 AudioListener[] listeners = vehicleGhost.GetComponentsInChildren<AudioListener>(true);
                 foreach (var al in listeners) Destroy(al);
 
-                // 2. 불필요한 스크립트, 물리, 콜라이더 싹 제거
                 MonoBehaviour[] scripts = vehicleGhost.GetComponentsInChildren<MonoBehaviour>(true);
                 foreach (var s in scripts) Destroy(s);
 
@@ -163,12 +159,15 @@ public class RuntimeObjectPlacer : MonoBehaviour
         {
             vehicleGhost.SetActive(true);
             
-            float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
-            if (Mathf.Abs(scrollInput) > 0.05f)
+            if (!isPointerOverUI)
             {
-                float direction = Mathf.Sign(scrollInput);
-                currentYRotation += direction * rotationStepAngle;
-                currentYRotation = (currentYRotation % 360f + 360f) % 360f;
+                float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
+                if (Mathf.Abs(scrollInput) > 0.05f)
+                {
+                    float direction = Mathf.Sign(scrollInput);
+                    currentYRotation += direction * rotationStepAngle;
+                    currentYRotation = (currentYRotation % 360f + 360f) % 360f;
+                }
             }
 
             vehicleGhost.transform.rotation = Quaternion.Euler(0, currentYRotation, 0);
@@ -182,7 +181,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     private void OnRemoveInput(InputAction.CallbackContext context)
     {
-        if (SimulatorManager.Instance.IsSimulationActive()) return;
+        if (SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive()) return;
         Vector2 mousePos = GetExactMouseScreenPosition();
         Ray ray = editCam.ScreenPointToRay(mousePos);
         RaycastHit hit;
@@ -201,6 +200,12 @@ public class RuntimeObjectPlacer : MonoBehaviour
         if (currentGhost != null) Destroy(currentGhost);
         if (vehicleGhost != null) Destroy(vehicleGhost);
         objectPrefab = newPrefab;
+        
+        if (objectPrefab != null)
+        {
+            initialRotation = objectPrefab.transform.rotation;
+        }
+        
         ResetYRotationToVehicleYaw();
     }
 
@@ -220,7 +225,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
         if (objectPrefab == null) return;
 
         currentGhost = Instantiate(objectPrefab);
-        initialRotation = currentGhost.transform.rotation;
+        initialRotation = objectPrefab.transform.rotation;
 
         var colliders = currentGhost.GetComponentsInChildren<Collider>();
         foreach (var c in colliders) c.enabled = false;
@@ -246,12 +251,15 @@ public class RuntimeObjectPlacer : MonoBehaviour
             currentGhost.SetActive(true);
             currentGhost.transform.position = hit.point;
 
-            float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
-            if (Mathf.Abs(scrollInput) > 0.05f)
+            if (!isPointerOverUI)
             {
-                float direction = Mathf.Sign(scrollInput);
-                currentYRotation += direction * rotationStepAngle;
-                currentYRotation = (currentYRotation % 360f + 360f) % 360f;
+                float scrollInput = controls.EditCamera.RotateItem.ReadValue<float>();
+                if (Mathf.Abs(scrollInput) > 0.05f)
+                {
+                    float direction = Mathf.Sign(scrollInput);
+                    currentYRotation += direction * rotationStepAngle;
+                    currentYRotation = (currentYRotation % 360f + 360f) % 360f;
+                }
             }
 
             Quaternion addedRotation = Quaternion.Euler(0, currentYRotation, 0);
@@ -266,7 +274,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
     private void OnPlaceInput(InputAction.CallbackContext context)
     {
         if (isPointerOverUI) return;
-        if (SimulatorManager.Instance.IsSimulationActive()) return;
+        if (SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive()) return;
 
         if (SpawnPointManager.Instance != null && SpawnPointManager.Instance.isPlacingSpawnPoint)
         {

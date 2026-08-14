@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 에디트 모드 전환 시 카메라의 위치 및 차량 Heading Yaw 정렬을 100% 보장하는 매니저.
+/// 시뮬레이터 모드(주행 모드 / 에디트 모드) 전환을 관장하는 매니저.
 /// </summary>
 public class SimulatorManager : MonoBehaviour
 {
@@ -74,12 +74,6 @@ public class SimulatorManager : MonoBehaviour
 
     public void ToggleMode()
     {
-        if (currentMode == SimulatorMode.Edit && SpawnPointManager.Instance != null && !SpawnPointManager.Instance.hasValidSpawnPoint)
-        {
-            Debug.LogWarning("[SimulatorManager] 차량 스폰 포인트를 지정해야 주행 모드로 전환할 수 있습니다!");
-            return;
-        }
-
         currentMode = (currentMode == SimulatorMode.Simulation) ? SimulatorMode.Edit : SimulatorMode.Simulation;
         ApplyMode(currentMode);
     }
@@ -92,12 +86,6 @@ public class SimulatorManager : MonoBehaviour
 
     public void SetSimulationMode()
     {
-        if (SpawnPointManager.Instance != null && SpawnPointManager.Instance.hasValidSpawnPoint == false)
-        {
-            Debug.LogWarning("[SimulatorManager] 차량 스폰 포인트를 지정해야 주행 모드로 전환할 수 있습니다!");
-            return;
-        }
-
         currentMode = SimulatorMode.Simulation;
         ApplyMode(currentMode);
     }
