@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 using TMPro;
 
 /// <summary>
-/// 텔레메트리 우측 계기판 사진 UI를 100% 정밀 활용하는 서브 카메라 모니터 컨트롤러.
-/// 초고도 미니맵 뷰를 제거하고 (TopView ➔ LeftSideView ➔ RightSideView) 3가지 정갈한 서브 뷰만 지원합니다.
+/// 텔레메트리 우측 계기판 사진 UI 서브 카메라 모니터 컨트롤러.
+/// (TopView ➔ ChaseView ➔ LeftSideView ➔ RightSideView) 4가지 정갈한 서브 뷰모드를 지원합니다.
 /// </summary>
 public class MinimapController : MonoBehaviour
 {
@@ -15,6 +15,7 @@ public class MinimapController : MonoBehaviour
     public enum SubViewMode
     {
         TopView,
+        ChaseView,
         LeftSideView,
         RightSideView
     }
@@ -31,9 +32,10 @@ public class MinimapController : MonoBehaviour
     public bool IsMouseOverMinimap { get; private set; }
 
     [Header("Sub Camera Distance Control")]
-    [Tooltip("서브 탑뷰 높이 (기본값: 18m)")]
     public float topHeight = 18f;
     public float sideDistance = 4.8f;
+    public float chaseDistance = 6.0f;
+    public float chaseHeight = 2.5f;
 
     private RectTransform _rectTransform;
 
@@ -53,108 +55,62 @@ public class MinimapController : MonoBehaviour
 
     private void Start()
     {
-        if (targetVehicle == null)
+        VehicleController vc = FindFirstObjectByType<VehicleController>();
+        if (vc != null) targetVehicle = vc.transform;
+
+        if (subCamera == null)
         {
-            VehicleController vc = FindFirstObjectByType<VehicleController>();
-            if (vc != null) targetVehicle = vc.transform;
+            subCamera = GameObject.Find("MinimapCamera")?.GetComponent<Camera>();
         }
 
-        CreateSubCameraIfNull();
-        AutoAttachButtonToRenderTextureUI();
         UpdateViewModeLabel();
     }
 
-    private void CreateSubCameraIfNull()
+    public void OnPointerEnter(BaseEventData eventData)
     {
-        if (subCamera == null)
-        {
-            GameObject camObj = new GameObject("SubViewportCamera");
-            subCamera = camObj.AddComponent<Camera>();
-            subCamera.clearFlags = CameraClearFlags.Skybox;
-            subCamera.fieldOfView = 60f;
-
-            RenderTexture rt = Resources.Load<RenderTexture>("MinimapRenderTexture");
-            if (rt != null)
-            {
-                subCamera.targetTexture = rt;
-            }
-        }
+        IsMouseOverMinimap = true;
     }
 
-    private void AutoAttachButtonToRenderTextureUI()
+    public void OnPointerExit(BaseEventData eventData)
     {
-        RawImage[] rawImages = FindObjectsByType<RawImage>(FindObjectsSortMode.None);
-        foreach (RawImage rawImg in rawImages)
-        {
-            if (rawImg.texture != null && rawImg.texture.name.Contains("Minimap"))
-            {
-                rawImg.raycastTarget = true;
-                
-                Button btn = rawImg.GetComponent<Button>();
-                if (btn == null)
-                {
-                    btn = rawImg.gameObject.AddComponent<Button>();
-                }
-
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(() => {
-                    SwitchToNextSubView();
-                });
-
-                _rectTransform = rawImg.GetComponent<RectTransform>();
-                return;
-            }
-        }
-
-        EnsureRaycastTargetAndButton(gameObject);
+        IsMouseOverMinimap = false;
     }
 
-    private void EnsureRaycastTargetAndButton(GameObject targetObj)
+    public void OnPointerClick(BaseEventData eventData)
     {
-        Graphic g = targetObj.GetComponent<Graphic>();
-        if (g != null) g.raycastTarget = true;
-
-        Button btn = targetObj.GetComponent<Button>();
-        if (btn == null) btn = targetObj.AddComponent<Button>();
-
-        btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(() => {
+        PointerEventData pData = eventData as PointerEventData;
+        if (pData != null && pData.button == PointerEventData.InputButton.Left)
+        {
             SwitchToNextSubView();
-        });
+        }
     }
 
     private void Update()
     {
-        CheckMouseHoverAndSubZoom();
-    }
-
-    private void CheckMouseHoverAndSubZoom()
-    {
-        if (_rectTransform == null) return;
-
-        Vector2 mousePos = Vector2.zero;
-        if (Mouse.current != null)
-        {
-            mousePos = Mouse.current.position.ReadValue();
-        }
-
-        IsMouseOverMinimap = RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, mousePos);
-
         if (IsMouseOverMinimap && Mouse.current != null)
         {
-            float scroll = Mouse.current.scroll.ReadValue().y;
-            if (Mathf.Abs(scroll) > 0.1f)
+            float zoomDelta = Mouse.current.scroll.ReadValue().y;
+            if (Mathf.Abs(zoomDelta) > 0.01f)
             {
-                float zoomDelta = Mathf.Sign(scroll) * 1.5f;
-                topHeight = Mathf.Clamp(topHeight - zoomDelta, 5f, 60f);
-                sideDistance = Mathf.Clamp(sideDistance - zoomDelta * 0.2f, 2.0f, 15.0f);
+                if (currentSubMode == SubViewMode.TopView)
+                {
+                    topHeight = Mathf.Clamp(topHeight - zoomDelta * 0.5f, 5.0f, 80.0f);
+                }
+                else if (currentSubMode == SubViewMode.ChaseView)
+                {
+                    chaseDistance = Mathf.Clamp(chaseDistance - zoomDelta * 0.2f, 2.0f, 20.0f);
+                }
+                else
+                {
+                    sideDistance = Mathf.Clamp(sideDistance - zoomDelta * 0.2f, 2.0f, 15.0f);
+                }
             }
         }
     }
 
     public void SwitchToNextSubView()
     {
-        int next = ((int)currentSubMode + 1) % 3;
+        int next = ((int)currentSubMode + 1) % 4;
         currentSubMode = (SubViewMode)next;
         UpdateViewModeLabel();
     }
@@ -166,6 +122,7 @@ public class MinimapController : MonoBehaviour
             switch (currentSubMode)
             {
                 case SubViewMode.TopView: viewModeLabelText.text = "📷 SUB: TOP VIEW"; break;
+                case SubViewMode.ChaseView: viewModeLabelText.text = "📷 SUB: CHASE VIEW"; break;
                 case SubViewMode.LeftSideView: viewModeLabelText.text = "📷 SUB: LEFT VIEW"; break;
                 case SubViewMode.RightSideView: viewModeLabelText.text = "📷 SUB: RIGHT VIEW"; break;
             }
@@ -194,6 +151,14 @@ public class MinimapController : MonoBehaviour
             case SubViewMode.TopView:
                 subCamera.transform.position = targetVehicle.position + Vector3.up * topHeight;
                 subCamera.transform.rotation = Quaternion.Euler(90f, targetVehicle.eulerAngles.y, 0f);
+                subCamera.orthographic = false;
+                break;
+
+            case SubViewMode.ChaseView:
+                Vector3 chaseOff = new Vector3(0f, chaseHeight, -chaseDistance);
+                subCamera.transform.position = targetVehicle.position + (yawRot * chaseOff);
+                Vector3 chaseLookDir = (targetVehicle.position + Vector3.up * 1.0f - subCamera.transform.position).normalized;
+                subCamera.transform.rotation = Quaternion.LookRotation(chaseLookDir, Vector3.up);
                 subCamera.orthographic = false;
                 break;
 
