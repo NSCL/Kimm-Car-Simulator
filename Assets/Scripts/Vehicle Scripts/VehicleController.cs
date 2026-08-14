@@ -261,6 +261,13 @@ public class VehicleController : MonoBehaviour
         {
             fmuManager.ResetFMU();
         }
+
+        ChartModule[] activeCharts = FindObjectsByType<ChartModule>(FindObjectsSortMode.None);
+        foreach (ChartModule chart in activeCharts)
+        {
+            if (chart != null) chart.ResetChartData();
+        }
+
         transform.position = _spawnPos;
         transform.rotation = _spawnRot;
     }

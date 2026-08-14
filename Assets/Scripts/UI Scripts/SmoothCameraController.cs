@@ -102,8 +102,10 @@ public class SmoothCameraController : MonoBehaviour
         if (mouse == null) return;
 
         bool isOverSubPanel = (MinimapController.Instance != null && MinimapController.Instance.IsMouseOverMinimap);
+        bool isPointerOverUI = (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) || isOverSubPanel;
 
-        if (!isOverSubPanel)
+        // 마우스 포인터가 차트, 슬라이딩 HUD, 패널 등 UI 위에 있을 때는 메인 카메라 휠 줌 100% 완전 차단!
+        if (!isPointerOverUI)
         {
             float scroll = mouse.scroll.ReadValue().y;
             if (Mathf.Abs(scroll) > 0.1f)
@@ -113,18 +115,14 @@ public class SmoothCameraController : MonoBehaviour
             }
         }
 
-        if (mouse.rightButton.isPressed)
+        if (mouse.rightButton.isPressed && !isPointerOverUI)
         {
-            bool isOverUI = (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) || isOverSubPanel;
-            if (!isOverUI)
-            {
-                currentViewMode = CameraViewMode.Orbit;
+            currentViewMode = CameraViewMode.Orbit;
 
-                Vector2 delta = mouse.delta.ReadValue();
-                orbitAngleX += delta.x * orbitSensitivityX * 0.1f;
-                orbitAngleY -= delta.y * orbitSensitivityY * 0.1f;
-                orbitAngleY = Mathf.Clamp(orbitAngleY, -10f, 80f);
-            }
+            Vector2 delta = mouse.delta.ReadValue();
+            orbitAngleX += delta.x * orbitSensitivityX * 0.1f;
+            orbitAngleY -= delta.y * orbitSensitivityY * 0.1f;
+            orbitAngleY = Mathf.Clamp(orbitAngleY, -10f, 80f);
         }
     }
 

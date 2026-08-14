@@ -5,9 +5,9 @@ using UnityEngine.InputSystem;
 using TMPro;
 
 /// <summary>
-/// 텔레메트리 우측 계기판 사진 UI를 100% 정밀 활용하는 서브 카메라 모니터 컨트롤러.
-/// 서브 화면 클릭 또는 F5~F8 단축키로 (TopView ➔ MainChaseView ➔ LeftSideView ➔ RightSideView) 
-/// 4가지 시점(F5 메인 3D Chase 뷰 포함)을 100% 무결점으로 순환 정렬합니다.
+/// 텔레메트리 우측 계기판 사진 UI 서브 카메라 독립 컨트롤러.
+/// 메인 카메라 시점 키(F5~F8)와 100% 독립 구동되며, 초기값은 'TopView(탑뷰)'로 시작합니다.
+/// 서브 화면 마우스 클릭 시에만 [TopView ➔ ChaseView ➔ LeftSideView ➔ RightSideView] 4가지 시점이 독립 순환됩니다.
 /// </summary>
 public class MinimapController : MonoBehaviour
 {
@@ -15,10 +15,10 @@ public class MinimapController : MonoBehaviour
 
     public enum SubViewMode
     {
-        TopView,
-        MainChaseView,
-        LeftSideView,
-        RightSideView
+        TopView = 0,       // 기본 초기값 (서브 탑뷰)
+        ChaseView = 1,     // 3D 후방 추적 뷰
+        LeftSideView = 2,  // 좌측 사이드 뷰
+        RightSideView = 3  // 우측 사이드 뷰
     }
 
     [Header("Target References")]
@@ -29,6 +29,7 @@ public class MinimapController : MonoBehaviour
     public TextMeshProUGUI viewModeLabelText;
 
     [Header("State")]
+    [Tooltip("서브 카메라 기본 초기값: TopView (탑뷰)")]
     public SubViewMode currentSubMode = SubViewMode.TopView;
     public bool IsMouseOverMinimap { get; private set; }
 
@@ -61,6 +62,9 @@ public class MinimapController : MonoBehaviour
             VehicleController vc = FindFirstObjectByType<VehicleController>();
             if (vc != null) targetVehicle = vc.transform;
         }
+
+        // 서브 카메라 초기값 탑뷰 강제 지정
+        currentSubMode = SubViewMode.TopView;
 
         CreateSubCameraIfNull();
         AutoAttachButtonToRenderTextureUI();
@@ -133,19 +137,7 @@ public class MinimapController : MonoBehaviour
     private void Update()
     {
         CheckMouseHoverAndSubZoom();
-        CheckShortcutKeys();
-    }
-
-    private void CheckShortcutKeys()
-    {
-        var keyboard = Keyboard.current;
-        if (keyboard != null)
-        {
-            if (keyboard.f5Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.MainChaseView);
-            if (keyboard.f6Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.TopView);
-            if (keyboard.f7Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.LeftSideView);
-            if (keyboard.f8Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.RightSideView);
-        }
+        // (요청 반영) F5~F8 메인 키보드 단축키 감지 100% 삭제 차단! 서브 화면과 메인 시점 100% 완전 독립!
     }
 
     public void SetSubViewMode(SubViewMode mode)
@@ -179,6 +171,9 @@ public class MinimapController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 오직 서브 화면 마우스 클릭 시에만 독립 순환 [TopView ➔ ChaseView ➔ LeftView ➔ RightView]
+    /// </summary>
     public void SwitchToNextSubView()
     {
         int next = ((int)currentSubMode + 1) % 4;
@@ -193,7 +188,7 @@ public class MinimapController : MonoBehaviour
             switch (currentSubMode)
             {
                 case SubViewMode.TopView: viewModeLabelText.text = "📷 SUB: TOP VIEW"; break;
-                case SubViewMode.MainChaseView: viewModeLabelText.text = "📷 SUB: CHASE VIEW"; break;
+                case SubViewMode.ChaseView: viewModeLabelText.text = "📷 SUB: CHASE VIEW"; break;
                 case SubViewMode.LeftSideView: viewModeLabelText.text = "📷 SUB: LEFT VIEW"; break;
                 case SubViewMode.RightSideView: viewModeLabelText.text = "📷 SUB: RIGHT VIEW"; break;
             }
@@ -225,7 +220,7 @@ public class MinimapController : MonoBehaviour
                 subCamera.orthographic = false;
                 break;
 
-            case SubViewMode.MainChaseView:
+            case SubViewMode.ChaseView:
                 Vector3 chaseOff = new Vector3(0f, chaseHeight, -chaseDistance);
                 subCamera.transform.position = targetVehicle.position + (yawRot * chaseOff);
                 Vector3 chaseLookDir = (targetVehicle.position + Vector3.up * 1.2f - subCamera.transform.position).normalized;
