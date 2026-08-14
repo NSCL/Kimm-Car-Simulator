@@ -6,7 +6,8 @@ using TMPro;
 
 /// <summary>
 /// 텔레메트리 우측 계기판 사진 UI를 100% 정밀 활용하는 서브 카메라 모니터 컨트롤러.
-/// 초고도 미니맵 뷰를 제거하고 (TopView ➔ LeftSideView ➔ RightSideView) 3가지 정갈한 서브 뷰만 지원합니다.
+/// 서브 화면 클릭 또는 F5~F8 단축키로 (TopView ➔ MainChaseView ➔ LeftSideView ➔ RightSideView) 
+/// 4가지 시점(F5 메인 3D Chase 뷰 포함)을 100% 무결점으로 순환 정렬합니다.
 /// </summary>
 public class MinimapController : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class MinimapController : MonoBehaviour
     public enum SubViewMode
     {
         TopView,
+        MainChaseView,
         LeftSideView,
         RightSideView
     }
@@ -31,9 +33,10 @@ public class MinimapController : MonoBehaviour
     public bool IsMouseOverMinimap { get; private set; }
 
     [Header("Sub Camera Distance Control")]
-    [Tooltip("서브 탑뷰 높이 (기본값: 18m)")]
     public float topHeight = 18f;
     public float sideDistance = 4.8f;
+    public float chaseDistance = 6.5f;
+    public float chaseHeight = 2.8f;
 
     private RectTransform _rectTransform;
 
@@ -68,8 +71,12 @@ public class MinimapController : MonoBehaviour
     {
         if (subCamera == null)
         {
-            GameObject camObj = new GameObject("SubViewportCamera");
-            subCamera = camObj.AddComponent<Camera>();
+            GameObject camObj = GameObject.Find("SubViewportCamera");
+            if (camObj == null) camObj = new GameObject("SubViewportCamera");
+            
+            subCamera = camObj.GetComponent<Camera>();
+            if (subCamera == null) subCamera = camObj.AddComponent<Camera>();
+
             subCamera.clearFlags = CameraClearFlags.Skybox;
             subCamera.fieldOfView = 60f;
 
@@ -126,6 +133,25 @@ public class MinimapController : MonoBehaviour
     private void Update()
     {
         CheckMouseHoverAndSubZoom();
+        CheckShortcutKeys();
+    }
+
+    private void CheckShortcutKeys()
+    {
+        var keyboard = Keyboard.current;
+        if (keyboard != null)
+        {
+            if (keyboard.f5Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.MainChaseView);
+            if (keyboard.f6Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.TopView);
+            if (keyboard.f7Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.LeftSideView);
+            if (keyboard.f8Key.wasPressedThisFrame) SetSubViewMode(SubViewMode.RightSideView);
+        }
+    }
+
+    public void SetSubViewMode(SubViewMode mode)
+    {
+        currentSubMode = mode;
+        UpdateViewModeLabel();
     }
 
     private void CheckMouseHoverAndSubZoom()
@@ -148,13 +174,14 @@ public class MinimapController : MonoBehaviour
                 float zoomDelta = Mathf.Sign(scroll) * 1.5f;
                 topHeight = Mathf.Clamp(topHeight - zoomDelta, 5f, 60f);
                 sideDistance = Mathf.Clamp(sideDistance - zoomDelta * 0.2f, 2.0f, 15.0f);
+                chaseDistance = Mathf.Clamp(chaseDistance - zoomDelta * 0.2f, 2.0f, 20.0f);
             }
         }
     }
 
     public void SwitchToNextSubView()
     {
-        int next = ((int)currentSubMode + 1) % 3;
+        int next = ((int)currentSubMode + 1) % 4;
         currentSubMode = (SubViewMode)next;
         UpdateViewModeLabel();
     }
@@ -166,6 +193,7 @@ public class MinimapController : MonoBehaviour
             switch (currentSubMode)
             {
                 case SubViewMode.TopView: viewModeLabelText.text = "📷 SUB: TOP VIEW"; break;
+                case SubViewMode.MainChaseView: viewModeLabelText.text = "📷 SUB: CHASE VIEW"; break;
                 case SubViewMode.LeftSideView: viewModeLabelText.text = "📷 SUB: LEFT VIEW"; break;
                 case SubViewMode.RightSideView: viewModeLabelText.text = "📷 SUB: RIGHT VIEW"; break;
             }
@@ -194,6 +222,14 @@ public class MinimapController : MonoBehaviour
             case SubViewMode.TopView:
                 subCamera.transform.position = targetVehicle.position + Vector3.up * topHeight;
                 subCamera.transform.rotation = Quaternion.Euler(90f, targetVehicle.eulerAngles.y, 0f);
+                subCamera.orthographic = false;
+                break;
+
+            case SubViewMode.MainChaseView:
+                Vector3 chaseOff = new Vector3(0f, chaseHeight, -chaseDistance);
+                subCamera.transform.position = targetVehicle.position + (yawRot * chaseOff);
+                Vector3 chaseLookDir = (targetVehicle.position + Vector3.up * 1.2f - subCamera.transform.position).normalized;
+                subCamera.transform.rotation = Quaternion.LookRotation(chaseLookDir, Vector3.up);
                 subCamera.orthographic = false;
                 break;
 
