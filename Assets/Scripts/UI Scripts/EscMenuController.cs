@@ -145,14 +145,21 @@ public class EscMenuController : MonoBehaviour
         }
     }
 
+    private float _lastConfigClickTime = 0f;
+
     public void OnClickSelectVehicleConfig()
     {
+        // 파일 탐색창에서 [열기] 클릭 시 유니티 버튼으로 마우스 클릭이 전달되어 2번째 탐색창이 열리는 현상 100% 원천 차단!
+        if (Time.unscaledTime - _lastConfigClickTime < 0.8f) return;
+        _lastConfigClickTime = Time.unscaledTime;
+
         if (VehicleConfigManager.Instance != null)
         {
             string selectedPath = VehicleConfigManager.Instance.OpenFileDialogAndSelectConfig();
 
             if (!string.IsNullOrEmpty(selectedPath))
             {
+                _lastConfigClickTime = Time.unscaledTime;
                 OnClickResume();
             }
         }

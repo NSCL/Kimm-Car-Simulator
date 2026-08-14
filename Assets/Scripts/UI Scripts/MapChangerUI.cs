@@ -3,7 +3,8 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// MapChanger와 UI TextMeshPro Dropdown을 연결해주는 UI 바인딩 스크립트
+/// MapChanger와 UI TextMeshPro Dropdown을 연결해주는 UI 바인딩 스크립트.
+/// Proving Ground 등 긴 맵 이름도 줄바꿈 없이 폰트 크기가 100% 자동 축소(Auto-Sizing)되어 예쁘게 표시됩니다.
 /// </summary>
 public class MapChangerUI : MonoBehaviour
 {
@@ -18,12 +19,13 @@ public class MapChangerUI : MonoBehaviour
             mapDropdown = GetComponent<TMP_Dropdown>();
         }
 
+        FixDropdownTextAutoSizing();
+
         if (mapDropdown != null)
         {
             PopulateDropdownOptions();
         }
 
-        // MapChanger 이벤트 구독 (C# System.Action event 표준 형식)
         if (MapChanger.Instance != null)
         {
             MapChanger.Instance.OnMapChangeStarted += OnMapChangeStarted;
@@ -37,6 +39,32 @@ public class MapChangerUI : MonoBehaviour
         {
             MapChanger.Instance.OnMapChangeStarted -= OnMapChangeStarted;
             MapChanger.Instance.OnMapChangeCompleted -= OnMapChangeCompleted;
+        }
+    }
+
+    /// <summary>
+    /// 긴 맵 이름도 두 줄로 넘치거나 레이아웃이 깨지지 않도록 폰트 자동 축소(Auto-Sizing) 및 줄바꿈 차단 적용
+    /// </summary>
+    private void FixDropdownTextAutoSizing()
+    {
+        if (mapDropdown == null) return;
+
+        if (mapDropdown.captionText != null)
+        {
+            mapDropdown.captionText.enableAutoSizing = true;
+            mapDropdown.captionText.fontSizeMin = 9f;
+            mapDropdown.captionText.fontSizeMax = 18f;
+            mapDropdown.captionText.enableWordWrapping = false;
+            mapDropdown.captionText.overflowMode = TextOverflowModes.Ellipsis;
+        }
+
+        if (mapDropdown.itemText != null)
+        {
+            mapDropdown.itemText.enableAutoSizing = true;
+            mapDropdown.itemText.fontSizeMin = 9f;
+            mapDropdown.itemText.fontSizeMax = 18f;
+            mapDropdown.itemText.enableWordWrapping = false;
+            mapDropdown.itemText.overflowMode = TextOverflowModes.Ellipsis;
         }
     }
 
@@ -60,9 +88,10 @@ public class MapChangerUI : MonoBehaviour
 
         mapDropdown.AddOptions(options);
 
-        // 현재 맵 인덱스로 선택 상태 맞춤
         mapDropdown.SetValueWithoutNotify(MapChanger.Instance.currentMapIndex);
         mapDropdown.RefreshShownValue();
+
+        FixDropdownTextAutoSizing();
     }
 
     private void OnMapChangeStarted()
@@ -80,6 +109,7 @@ public class MapChangerUI : MonoBehaviour
             mapDropdown.interactable = true;
             mapDropdown.SetValueWithoutNotify(MapChanger.Instance.currentMapIndex);
             mapDropdown.RefreshShownValue();
+            FixDropdownTextAutoSizing();
         }
     }
 }

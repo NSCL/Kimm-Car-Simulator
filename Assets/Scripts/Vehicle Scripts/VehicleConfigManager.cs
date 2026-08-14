@@ -58,11 +58,18 @@ public class VehicleConfigManager : MonoBehaviour
         LoadDefaultConfig();
     }
 
+    private float _lastConfigSelectTime = 0f;
+
     public void SelectConfigViaFileDialog()
     {
+        if (Time.unscaledTime - _lastConfigSelectTime < 1.0f) return;
+        if (Time.unscaledTime - _dialogClosedTime < 1.0f) return;
+        _lastConfigSelectTime = Time.unscaledTime;
+
         string path = OpenFileDialogAndSelectConfig();
         if (!string.IsNullOrEmpty(path))
         {
+            _lastConfigSelectTime = Time.unscaledTime;
             if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
             {
                 EscMenuController.Instance.OnClickResume();
@@ -186,17 +193,34 @@ public class VehicleConfigManager : MonoBehaviour
 #endif
     }
 
+    private bool _isDialogOpen = false;
+    private static float _dialogClosedTime = 0f;
+
     public string OpenFileDialogAndSelectConfig()
     {
-        string selectedPath = OpenWin32FileDialog("JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0", "Select Vehicle Config JSON");
-        if (!string.IsNullOrEmpty(selectedPath))
+        // 파일 탐색창이 닫힌 직후(1초 이내) 유니티 UI 버튼으로 투과되어 전달되는 2번째 마우스 클릭 재실행 1000% 원천 차단!
+        if (Time.unscaledTime - _dialogClosedTime < 1.0f) return null;
+        if (_isDialogOpen) return null;
+
+        _isDialogOpen = true;
+
+        try
         {
-            if (LoadConfigFromFile(selectedPath))
+            string selectedPath = OpenWin32FileDialog("JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0", "Select Vehicle Config JSON");
+            if (!string.IsNullOrEmpty(selectedPath))
             {
-                return selectedPath;
+                if (LoadConfigFromFile(selectedPath))
+                {
+                    return selectedPath;
+                }
             }
+            return null;
         }
-        return null;
+        finally
+        {
+            _isDialogOpen = false;
+            _dialogClosedTime = Time.unscaledTime;
+        }
     }
 
     public void ApplyLoadedConfigToFMU()
@@ -270,6 +294,9 @@ public class VehicleConfigManager : MonoBehaviour
     }
 
     #region Windows Win32 Native P/Invoke (MessageBox & OpenFileDialog)
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetActiveWindow();
+
     [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     private static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
 
@@ -308,6 +335,7 @@ public class VehicleConfigManager : MonoBehaviour
     {
         OpenFileName ofn = new OpenFileName();
         ofn.structSize = Marshal.SizeOf(ofn);
+        ofn.dlgOwner = GetActiveWindow(); // 유니티 메인 창 핸들을 모달(Modal) 부모 창으로 고정!
         ofn.filter = filter;
         ofn.file = new string(new char[256]);
         ofn.maxFile = ofn.file.Length;
