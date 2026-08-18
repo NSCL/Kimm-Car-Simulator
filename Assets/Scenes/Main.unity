@@ -8268,6 +8268,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7522962572353966418, guid: 49860bc6d784bf743ac1b00ebb54a26d, type: 3}
+      propertyPath: _pointsNumPerScan
+      value: 20000
+      objectReference: {fileID: 0}
     - target: {fileID: 7630058950724618500, guid: 49860bc6d784bf743ac1b00ebb54a26d, type: 3}
       propertyPath: _topicName
       value: /kimm/lidar/points
