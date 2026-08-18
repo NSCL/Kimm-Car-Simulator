@@ -4774,10 +4774,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: IMU_ros
       objectReference: {fileID: 0}
-    - target: {fileID: 3526848927119471302, guid: f0f8681e124442040b39314ccacec637, type: 3}
-      propertyPath: _frequency
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 3526848927119471303, guid: f0f8681e124442040b39314ccacec637, type: 3}
       propertyPath: _frequency
       value: 100
@@ -8234,7 +8230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7522962571841786727, guid: 49860bc6d784bf743ac1b00ebb54a26d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.6
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7522962571841786727, guid: 49860bc6d784bf743ac1b00ebb54a26d, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8482,12 +8478,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3192925013080293980, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3192925013080293982, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
-      propertyPath: _coordinateSystem
-      value: 
-      objectReference: {fileID: 2132609426}
     - target: {fileID: 3192925013080293983, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -16809,54 +16801,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2127656611}
   m_CullTransparentMesh: 0
---- !u!1 &2132609425
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2132609427}
-  - component: {fileID: 2132609426}
-  m_Layer: 0
-  m_Name: Coordinate System
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2132609426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2132609425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f2116b7f84275c4d877f9ac14990716, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnitySensorsRuntime::UnitySensors.Sensor.GNSS.GeoCoordinateSystem
-  _coordinate:
-    latitude: 35.71020206575301
-    longitude: 139.81070039691542
-    altitude: 3
---- !u!4 &2132609427
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2132609425}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2142157687
 GameObject:
   m_ObjectHideFlags: 0
@@ -69631,7 +69575,6 @@ MonoBehaviour:
   - {fileID: 1656535597}
   - {fileID: 526303795}
   - {fileID: 1017791565}
-  - {fileID: 1046586865}
 --- !u!1 &5738022008714432145
 GameObject:
   m_ObjectHideFlags: 0
@@ -69779,4 +69722,3 @@ SceneRoots:
   - {fileID: 1654947283}
   - {fileID: 2121712810}
   - {fileID: 180823984}
-  - {fileID: 2132609427}
