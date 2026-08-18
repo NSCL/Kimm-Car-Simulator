@@ -52,8 +52,8 @@ public class MapChangerUI : MonoBehaviour
         if (mapDropdown.captionText != null)
         {
             mapDropdown.captionText.enableAutoSizing = true;
-            mapDropdown.captionText.fontSizeMin = 9f;
-            mapDropdown.captionText.fontSizeMax = 18f;
+            mapDropdown.captionText.fontSizeMin = 8f;
+            mapDropdown.captionText.fontSizeMax = 13f;
             mapDropdown.captionText.enableWordWrapping = false;
             mapDropdown.captionText.overflowMode = TextOverflowModes.Ellipsis;
         }
@@ -61,8 +61,8 @@ public class MapChangerUI : MonoBehaviour
         if (mapDropdown.itemText != null)
         {
             mapDropdown.itemText.enableAutoSizing = true;
-            mapDropdown.itemText.fontSizeMin = 9f;
-            mapDropdown.itemText.fontSizeMax = 18f;
+            mapDropdown.itemText.fontSizeMin = 8f;
+            mapDropdown.itemText.fontSizeMax = 13f;
             mapDropdown.itemText.enableWordWrapping = false;
             mapDropdown.itemText.overflowMode = TextOverflowModes.Ellipsis;
         }
