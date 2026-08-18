@@ -46,7 +46,8 @@ public class SmoothCameraController : MonoBehaviour
     [Header("View Offsets")]
     public float topViewHeight = 25f;
     public Vector3 sideViewOffset = new Vector3(4.8f, 0.0f, 0f);
-    public Vector3 driverViewOffset = new Vector3(-0.35f, 1.2f, 0.3f);
+    [Tooltip("1인칭 실내/블랙박스 뷰 오프셋 (X: 좌우, Y: 높이, Z: 전후)")]
+    public Vector3 driverViewOffset = new Vector3(-0.35f, 1.15f, -0.15f);
 
     [Header("Smooth Settings")]
     public float positionSmoothTime = 0.12f;
@@ -82,7 +83,17 @@ public class SmoothCameraController : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            if (keyboard.f5Key.wasPressedThisFrame) SetViewMode(CameraViewMode.Chase);
+            if (keyboard.f5Key.wasPressedThisFrame)
+            {
+                if (currentViewMode == CameraViewMode.Chase)
+                {
+                    SetViewMode(CameraViewMode.Driver);
+                }
+                else
+                {
+                    SetViewMode(CameraViewMode.Chase);
+                }
+            }
             if (keyboard.f6Key.wasPressedThisFrame) SetViewMode(CameraViewMode.Top);
             if (keyboard.f7Key.wasPressedThisFrame) SetViewMode(CameraViewMode.LeftSide);
             if (keyboard.f8Key.wasPressedThisFrame) SetViewMode(CameraViewMode.RightSide);

@@ -7,7 +7,7 @@ using TMPro;
 /// <summary>
 /// 텔레메트리 우측 계기판 사진 UI 서브 카메라 독립 컨트롤러.
 /// 메인 카메라 시점 키(F5~F8)와 100% 독립 구동되며, 초기값은 'TopView(탑뷰)'로 시작합니다.
-/// 서브 화면 마우스 클릭 시에만 [TopView ➔ ChaseView ➔ LeftSideView ➔ RightSideView] 4가지 시점이 독립 순환됩니다.
+/// 서브 화면 마우스 클릭 시 [TopView ➔ ChaseView ➔ DriverView(1인칭) ➔ LeftSideView ➔ RightSideView] 5가지 시점이 독립 순환됩니다.
 /// </summary>
 public class MinimapController : MonoBehaviour
 {
@@ -17,8 +17,9 @@ public class MinimapController : MonoBehaviour
     {
         TopView = 0,       // 기본 초기값 (서브 탑뷰)
         ChaseView = 1,     // 3D 후방 추적 뷰
-        LeftSideView = 2,  // 좌측 사이드 뷰
-        RightSideView = 3  // 우측 사이드 뷰
+        DriverView = 2,    // 1인칭 운전석 뷰
+        LeftSideView = 3,  // 좌측 사이드 뷰
+        RightSideView = 4  // 우측 사이드 뷰
     }
 
     [Header("Target References")]
@@ -38,6 +39,8 @@ public class MinimapController : MonoBehaviour
     public float sideDistance = 4.8f;
     public float chaseDistance = 6.5f;
     public float chaseHeight = 2.8f;
+    [Tooltip("서브 카메라 1인칭 실내/블랙박스 뷰 오프셋 (X: 좌우, Y: 높이, Z: 전후)")]
+    public Vector3 driverViewOffset = new Vector3(-0.35f, 1.15f, -0.15f);
 
     private RectTransform _rectTransform;
 
@@ -63,7 +66,6 @@ public class MinimapController : MonoBehaviour
             if (vc != null) targetVehicle = vc.transform;
         }
 
-        // 서브 카메라 초기값 탑뷰 강제 지정
         currentSubMode = SubViewMode.TopView;
 
         CreateSubCameraIfNull();
@@ -137,7 +139,6 @@ public class MinimapController : MonoBehaviour
     private void Update()
     {
         CheckMouseHoverAndSubZoom();
-        // (요청 반영) F5~F8 메인 키보드 단축키 감지 100% 삭제 차단! 서브 화면과 메인 시점 100% 완전 독립!
     }
 
     public void SetSubViewMode(SubViewMode mode)
@@ -172,11 +173,11 @@ public class MinimapController : MonoBehaviour
     }
 
     /// <summary>
-    /// 오직 서브 화면 마우스 클릭 시에만 독립 순환 [TopView ➔ ChaseView ➔ LeftView ➔ RightView]
+    /// 오직 서브 화면 마우스 클릭 시에만 5가지 독립 시점 순환 [TopView ➔ ChaseView ➔ DriverView(1인칭) ➔ LeftView ➔ RightView]
     /// </summary>
     public void SwitchToNextSubView()
     {
-        int next = ((int)currentSubMode + 1) % 4;
+        int next = ((int)currentSubMode + 1) % 5;
         currentSubMode = (SubViewMode)next;
         UpdateViewModeLabel();
     }
@@ -189,6 +190,7 @@ public class MinimapController : MonoBehaviour
             {
                 case SubViewMode.TopView: viewModeLabelText.text = "📷 SUB: TOP VIEW"; break;
                 case SubViewMode.ChaseView: viewModeLabelText.text = "📷 SUB: CHASE VIEW"; break;
+                case SubViewMode.DriverView: viewModeLabelText.text = "📷 SUB: DRIVER VIEW"; break;
                 case SubViewMode.LeftSideView: viewModeLabelText.text = "📷 SUB: LEFT VIEW"; break;
                 case SubViewMode.RightSideView: viewModeLabelText.text = "📷 SUB: RIGHT VIEW"; break;
             }
@@ -225,6 +227,12 @@ public class MinimapController : MonoBehaviour
                 subCamera.transform.position = targetVehicle.position + (yawRot * chaseOff);
                 Vector3 chaseLookDir = (targetVehicle.position + Vector3.up * 1.2f - subCamera.transform.position).normalized;
                 subCamera.transform.rotation = Quaternion.LookRotation(chaseLookDir, Vector3.up);
+                subCamera.orthographic = false;
+                break;
+
+            case SubViewMode.DriverView:
+                subCamera.transform.position = targetVehicle.position + (targetVehicle.rotation * driverViewOffset);
+                subCamera.transform.rotation = targetVehicle.rotation;
                 subCamera.orthographic = false;
                 break;
 
