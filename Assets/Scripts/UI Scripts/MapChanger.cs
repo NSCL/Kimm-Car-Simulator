@@ -239,7 +239,7 @@ public class MapChanger : MonoBehaviour
         }
 
         Rigidbody rb = vehicleTransform.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (rb != null && !rb.isKinematic)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
