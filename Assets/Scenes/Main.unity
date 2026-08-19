@@ -8291,6 +8291,14 @@ PrefabInstance:
       value: /kimm/gnss/fix
       objectReference: {fileID: 0}
     - target: {fileID: 3192925012673096858, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
+      propertyPath: _serializer._source
+      value: 
+      objectReference: {fileID: 1046586867}
+    - target: {fileID: 3192925012673096858, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
+      propertyPath: _serializer._header._source
+      value: 
+      objectReference: {fileID: 1046586867}
+    - target: {fileID: 3192925012673096858, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
       propertyPath: _serializer._header._frame_id
       value: gnss_frame
       objectReference: {fileID: 0}
@@ -8305,7 +8313,7 @@ PrefabInstance:
     - target: {fileID: 3192925013080293982, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
       propertyPath: _coordinateSystem
       value: 
-      objectReference: {fileID: 2132609426}
+      objectReference: {fileID: 0}
     - target: {fileID: 3192925013080293983, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -8346,10 +8354,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3192925013080293982, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3192925013080293980, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1046586867}
     - targetCorrespondingSourceObject: {fileID: 3192925013080293980, guid: 6c364f20083a9cf4c8e7a2c139d4c571, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1046586865}
@@ -8374,6 +8386,24 @@ MonoBehaviour:
   _frequency: 10
   _frame_id: gnss_frame
   _children: []
+--- !u!114 &1046586867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 753990895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d01cdacf9d2317242861035962821428, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitySensors.Sensor.GNSS.KimmGNSSSensor
+  _frequency: 10
+  _coordinateSystem: {fileID: 2132609428}
+  _coordinate:
+    latitude: 0
+    longitude: 0
+    altitude: 0
 --- !u!1 &1056587993
 GameObject:
   m_ObjectHideFlags: 0
@@ -11465,6 +11495,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VehicleConfigManager
   currentConfigPath: 
   currentVehicleName: Default Sedan
+  gnssLatitude: 0
+  gnssLongitude: 0
+  gnssAltitude: 0
 --- !u!4 &1431176350
 Transform:
   m_ObjectHideFlags: 0
@@ -16829,7 +16862,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2132609427}
-  - component: {fileID: 2132609426}
+  - component: {fileID: 2132609428}
   m_Layer: 0
   m_Name: Coordinate System
   m_TagString: Untagged
@@ -16837,22 +16870,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2132609426
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2132609425}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f2116b7f84275c4d877f9ac14990716, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnitySensorsRuntime::UnitySensors.Sensor.GNSS.GeoCoordinateSystem
-  _coordinate:
-    latitude: 35.71020206575301
-    longitude: 139.81070039691542
-    altitude: 3
 --- !u!4 &2132609427
 Transform:
   m_ObjectHideFlags: 0
@@ -16868,6 +16885,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2132609428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2132609425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1009161463b4294288722963190cbef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitySensors.Sensor.GNSS.KimmGeoCoordinateSystem
+  _coordinate:
+    latitude: 35.71020206575301
+    longitude: 139.81070039691542
+    altitude: 3
+  anchorLatitude: 0
+  anchorLongitude: 0
+  anchorAltitude: 0
 --- !u!1 &2142157687
 GameObject:
   m_ObjectHideFlags: 0

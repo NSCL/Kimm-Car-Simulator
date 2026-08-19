@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnitySensors.Sensor.GNSS;
 
 /// <summary>
 /// 외부 JSON Config 파일 로드 시 45개 필수 파라미터 양식을 정밀 대조(Validation)하여,
@@ -17,6 +18,11 @@ public class VehicleConfigManager : MonoBehaviour
     [Header("Current Loaded Config")]
     public string currentConfigPath;
     public string currentVehicleName = "Default Sedan";
+
+    [Header("Optional GNSS Coordinates")]
+    public double gnssLatitude = 0.0;
+    public double gnssLongitude = 0.0;
+    public double gnssAltitude = 0.0;
 
     public Dictionary<string, double> loadedParameters = new Dictionary<string, double>();
 
@@ -141,6 +147,25 @@ public class VehicleConfigManager : MonoBehaviour
 
             loadedParameters.Clear();
             foreach (var kvp in parsedTemp) loadedParameters[kvp.Key] = kvp.Value;
+
+            // 선택적 (Optional) GNSS 위도/경도/고도 파싱 (없을 시 기본값 0, 0, 0)
+            if (parsedTemp.TryGetValue("gnssLatitude", out double lat)) gnssLatitude = lat;
+            else if (parsedTemp.TryGetValue("GNSS_Latitude", out double lat2)) gnssLatitude = lat2;
+            else gnssLatitude = 0.0;
+
+            if (parsedTemp.TryGetValue("gnssLongitude", out double lon)) gnssLongitude = lon;
+            else if (parsedTemp.TryGetValue("GNSS_Longitude", out double lon2)) gnssLongitude = lon2;
+            else gnssLongitude = 0.0;
+
+            if (parsedTemp.TryGetValue("gnssAltitude", out double alt)) gnssAltitude = alt;
+            else if (parsedTemp.TryGetValue("GNSS_Altitude", out double alt2)) gnssAltitude = alt2;
+            else gnssAltitude = 0.0;
+
+            KimmGeoCoordinateSystem geoSystem = FindFirstObjectByType<KimmGeoCoordinateSystem>();
+            if (geoSystem != null)
+            {
+                geoSystem.SetAnchorCoordinates(gnssLatitude, gnssLongitude, gnssAltitude);
+            }
 
             currentConfigPath = filePath;
 
