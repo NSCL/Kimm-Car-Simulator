@@ -270,6 +270,9 @@ public class VehicleController : MonoBehaviour
 
         transform.position = _spawnPos;
         transform.rotation = _spawnRot;
+
+        UnitySensors.Sensor.IMU.KimmIMUSensor kimmIMU = GetComponentInChildren<UnitySensors.Sensor.IMU.KimmIMUSensor>();
+        if (kimmIMU != null) kimmIMU.CaptureSpawnHeading();
     }
 
     private IEnumerator CollisionRespawnRoutine()
