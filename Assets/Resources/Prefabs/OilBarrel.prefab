@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8661770871214657610}
   - component: {fileID: 6865190538174271575}
   - component: {fileID: 1296784331868735759}
-  m_Layer: 3
+  - component: {fileID: 1784414538084355914}
+  m_Layer: 0
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,6 +91,28 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1784414538084355914
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1796066279678557015}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 8108563764783910780, guid: 9f15e06b50ec57844a90c3907d027f21, type: 3}
 --- !u!1 &3888598910067001040
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,7 +124,7 @@ GameObject:
   - component: {fileID: 5066558849631287715}
   - component: {fileID: 2033621834397057113}
   - component: {fileID: 6981282671289642311}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Bottle02_low
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +214,7 @@ GameObject:
   - component: {fileID: 7117634607311330256}
   - component: {fileID: 6814734643190534596}
   - component: {fileID: 1778732556385342475}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Barrel_Top
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -279,8 +302,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3803191852818752145}
-  - component: {fileID: 5546967019815325063}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: OilBarrel
   m_TagString: SpawnedObject
   m_Icon: {fileID: 0}
@@ -305,26 +327,3 @@ Transform:
   - {fileID: 5066558849631287715}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &5546967019815325063
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8128428595912710416}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
