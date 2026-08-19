@@ -1,34 +1,41 @@
 using UnityEngine;
 using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.Kimm;
+using Unity.Robotics.ROSTCPConnector.ROSGeometry;
+using RosMessageTypes.Nav;
+using RosMessageTypes.Geometry;
 
 /// <summary>
-/// 유니티 차량의 실시간 4대 제어 상태(accel, steering, brake, gear)를 
-/// KIMM 커스텀 메시지(CarControlCmdMsg)로 ROS2 자율주행 제어 노드에 100% 실시간 피드백 퍼블리싱해 주는 상태 퍼블리서.
+/// 유니티 FMU 차량의 실시간 3D 정밀 위치(Position X,Y,Z),
+/// 3D 쿼터니언 오리엔테이션(body_q[1,1] ~ body_q[4,1]), 
+/// 및 실시간 종/횡 속도(body_vx, body_vy) 수치를 ROS2 자율주행 공식 표준 규격
+/// ('nav_msgs/msg/Odometry')으로 50Hz 실시간 퍼블리싱해 주는 차량 상태 퍼블리서.
+/// (Goal Pose 와 100% 1:1 완벽 통일된 Absolute World 좌표계 적용)
 /// </summary>
 [DisallowMultipleComponent]
 public class VehicleStatusPublisher : MonoBehaviour
 {
     [Header("ROS2 Publisher Settings")]
     public string statusTopicName = "/kimm/vehicle_status";
+    public string frameId = "map";
+    public string childFrameId = "base_link";
     public float publishFrequency = 50f; // 50Hz
 
     private ROSConnection _rosConnection;
-    private VehicleInputManager _inputManager;
+    private FMUManager _fmuManager;
     private float _timer = 0f;
 
     private void Start()
     {
-        _inputManager = FindFirstObjectByType<VehicleInputManager>();
+        _fmuManager = FindFirstObjectByType<FMUManager>();
         _rosConnection = ROSConnection.GetOrCreateInstance();
-        _rosConnection.RegisterPublisher<CarControlCmdMsg>(statusTopicName);
+        _rosConnection.RegisterPublisher<OdometryMsg>(statusTopicName);
 
-        Debug.Log($"🚗 [VehicleStatusPublisher] Registered Custom Status Topic '{statusTopicName}' successfully!");
+        Debug.Log($"🚗 [VehicleStatusPublisher] World Standard Odometry Publisher Registered on Topic '{statusTopicName}' successfully!");
     }
 
     private void Update()
     {
-        if (_rosConnection == null || _inputManager == null) return;
+        if (_rosConnection == null) return;
 
         _timer += Time.deltaTime;
         float interval = 1.0f / publishFrequency;
@@ -36,20 +43,81 @@ public class VehicleStatusPublisher : MonoBehaviour
         if (_timer >= interval)
         {
             _timer = 0f;
-            PublishVehicleStatus();
+            PublishVehicleStatusOdometry();
         }
     }
 
-    private void PublishVehicleStatus()
+    private void PublishVehicleStatusOdometry()
     {
-        CarControlCmdMsg statusMsg = new CarControlCmdMsg();
+        OdometryMsg odomMsg = new OdometryMsg();
 
-        // 🌟 실시간 차량 4대 상태 수치 퍼블리싱 (accel, steering, brake, gear)
-        statusMsg.accel = _inputManager.Accel;
-        statusMsg.steering = _inputManager.Steering;
-        statusMsg.brake = _inputManager.Brake;
-        statusMsg.gear = (sbyte)_inputManager.Gear;
+        // 1. Header 설정
+        odomMsg.header.frame_id = frameId;
+        odomMsg.child_frame_id = childFrameId;
+        odomMsg.header.stamp = new RosMessageTypes.BuiltinInterfaces.TimeMsg();
 
-        _rosConnection.Publish(statusTopicName, statusMsg);
+        // 2. 유니티 3D 씬 내 실제 절대 위치(World Position) & Quaternion Orientation
+        Vector3 rawPos = transform.position;
+        Quaternion rawRot = transform.rotation;
+
+        if (_fmuManager != null)
+        {
+            try
+            {
+                // 쿼터니언 회전 (body_q[1,1] ~ body_q[4,1])
+                double q1 = _fmuManager.GetValue("body_q[1,1]");
+                double q2 = _fmuManager.GetValue("body_q[2,1]");
+                double q3 = _fmuManager.GetValue("body_q[3,1]");
+                double q4 = _fmuManager.GetValue("body_q[4,1]");
+
+                if (double.IsNaN(q4))
+                {
+                    q1 = _fmuManager.GetValue("Veh_BodyRot_X");
+                    q2 = _fmuManager.GetValue("Veh_BodyRot_Y");
+                    q3 = _fmuManager.GetValue("Veh_BodyRot_Z");
+                    q4 = _fmuManager.GetValue("Veh_BodyRot_W");
+                }
+
+                if (!double.IsNaN(q1) && !double.IsNaN(q2) && !double.IsNaN(q3) && !double.IsNaN(q4) && q4 != 0.0)
+                {
+                    rawRot = new Quaternion((float)q1, (float)q2, (float)q3, (float)q4);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        // 유니티 ➔ ROS (FLU) 정통 3D 좌표 변환 적용! (Goal Pose와 100% 1:1 완벽 동일 원점)
+        odomMsg.pose.pose.position = rawPos.To<FLU>();
+        odomMsg.pose.pose.orientation = rawRot.To<FLU>();
+
+        // 3. FMU exact 변수 키 (body_vx, body_vy) 직통 읽기
+        float vx = 0f;
+        float vy = 0f;
+
+        if (_fmuManager != null)
+        {
+            try
+            {
+                double fmuVx = _fmuManager.GetValue("body_vx");
+                double fmuVy = _fmuManager.GetValue("body_vy");
+
+                if (double.IsNaN(fmuVx)) fmuVx = _fmuManager.GetValue("Veh_BodyVel_X");
+                if (double.IsNaN(fmuVy)) fmuVy = _fmuManager.GetValue("Veh_BodyVel_Y");
+
+                if (!double.IsNaN(fmuVx)) vx = (float)fmuVx;
+                if (!double.IsNaN(fmuVy)) vy = (float)fmuVy;
+            }
+            catch
+            {
+            }
+        }
+
+        odomMsg.twist.twist.linear.x = vx; // 종속도 (Forward Velocity m/s)
+        odomMsg.twist.twist.linear.y = vy; // 횡속도 (Lateral Velocity m/s)
+        odomMsg.twist.twist.linear.z = 0.0;
+
+        _rosConnection.Publish(statusTopicName, odomMsg);
     }
 }

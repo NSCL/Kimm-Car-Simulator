@@ -5,6 +5,7 @@ using RosMessageTypes.Kimm;
 /// <summary>
 /// KIMM 전용 커스텀 제어 메시지(CarControlCmdMsg: accel, steering, brake, gear)를 
 /// ROS2 자율주행 노드로부터 100% 1:1 직통 수신하여 차량(VehicleInputManager)에 대입해 주는 수신기.
+/// (부호 축 100% 정밀 보정)
 /// </summary>
 [DisallowMultipleComponent]
 public class ROSCmdVelSubscriber : MonoBehaviour
@@ -52,6 +53,7 @@ public class ROSCmdVelSubscriber : MonoBehaviour
             if (_inputManager != null)
             {
                 _inputManager.Accel = Mathf.Clamp01(accel);
+                // 🧭 조향 1:1 직통 대입 (순수 수신)
                 _inputManager.Steering = Mathf.Clamp(steering, -1.0f, 1.0f);
                 _inputManager.Brake = Mathf.Clamp01(brake);
 

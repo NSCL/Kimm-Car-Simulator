@@ -274,7 +274,11 @@ public class RuntimeObjectPlacer : MonoBehaviour
     private void OnPlaceInput(InputAction.CallbackContext context)
     {
         if (isPointerOverUI) return;
-        if (SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive()) return;
+
+        AutonomousControlModeManager modeMgr = AutonomousControlModeManager.Instance;
+        bool isAuto = (modeMgr != null && modeMgr.IsAutoMode);
+
+        if (!isAuto && SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive()) return;
 
         if (SpawnPointManager.Instance != null && SpawnPointManager.Instance.isPlacingSpawnPoint)
         {

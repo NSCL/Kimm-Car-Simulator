@@ -22,6 +22,11 @@ public class AutonomousControlModeManager : MonoBehaviour
     public Image telemetryPanelBackground;    // 텔레메트리 패널 배경 이미지
     public TextMeshProUGUI modeStatusText;     // 모드 표시 텍스트 (선택사항)
 
+    [Header("Spawn / Goal Button UI Elements")]
+    public Image spawnButtonImage;            // Edit Mode 핀 버튼 이미지
+    public Sprite manualSpawnSprite;           // Manual Mode 핀 아이콘 (spawn_2)
+    public Sprite autoGoalSprite;              // Auto Mode 핀 아이콘 (spawn_icon - 'G' 깃발)
+
     [Header("Theme Colors")]
     public Color manualBgColor = new Color(0.08f, 0.08f, 0.1f, 0.9f);            // 차분한 딥 블랙 배경
     public Color autoBgColor = new Color(0.02f, 0.12f, 0.25f, 0.95f);           // 스릴 있는 사이버 딥 블루 배경
@@ -89,6 +94,19 @@ public class AutonomousControlModeManager : MonoBehaviour
         {
             modeStatusText.text = isAutoMode ? "AUTO" : "MANUAL";
             modeStatusText.color = isAutoMode ? autoBgColor : manualBgColor;
+        }
+
+        // 3. Edit Mode 핀 버튼 아이콘 전환 (Manual: spawn_2, Auto: spawn_icon 'G' 깃발)
+        if (spawnButtonImage != null)
+        {
+            if (isAutoMode && autoGoalSprite != null)
+            {
+                spawnButtonImage.sprite = autoGoalSprite;
+            }
+            else if (!isAutoMode && manualSpawnSprite != null)
+            {
+                spawnButtonImage.sprite = manualSpawnSprite;
+            }
         }
     }
 }
