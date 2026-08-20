@@ -62,8 +62,15 @@ public class VehicleInputManager : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            // 🏎️ 기어 제어: E 키 = 전진 D (1) 고정, Q 키 = 후진 R (-1) <-> 중립 N (0) 순환!
-            if (keyboard.eKey.wasPressedThisFrame) ShiftGear(GearState.Drive);
+            // 🏎️ 키보드 기어 단축키 (Shift = 전진 D, Ctrl = 후진 R, N = 중립 N, P = 주차 P, E/Q 동시 지원)
+            if (keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame || keyboard.eKey.wasPressedThisFrame)
+                ShiftGear(GearState.Drive);
+            if (keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame)
+                ShiftGear(GearState.Reverse);
+            if (keyboard.nKey.wasPressedThisFrame)
+                ShiftGear(GearState.Neutral);
+            if (keyboard.pKey.wasPressedThisFrame)
+                ShiftGear(GearState.Park);
             if (keyboard.qKey.wasPressedThisFrame)
             {
                 if (currentGear == GearState.Reverse) ShiftGear(GearState.Neutral);

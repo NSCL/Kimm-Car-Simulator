@@ -33,7 +33,7 @@ public class KimmGoalPosePublisher : MonoBehaviour
     }
 
     [Header("ROS2 Topic Settings")]
-    public string goalPoseTopic = "/goal_pose";
+    public string goalPoseTopic = "/kimm/goal_pose";
 
     [Header("Goal Marker Settings")]
     public GameObject goalMarkerPrefab; // 'G' 깃발 3D 마커 프리팹 (없으면 3D 핀 자동 생성)
@@ -48,6 +48,7 @@ public class KimmGoalPosePublisher : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+        goalPoseTopic = "/kimm/goal_pose"; // 씬 인스펙터 수치 무시 100% 강제 고정!
     }
 
     private void Start()
@@ -142,6 +143,15 @@ public class KimmGoalPosePublisher : MonoBehaviour
 
         _currentGoalMarkerInstance.transform.position = pos;
         _currentGoalMarkerInstance.transform.rotation = rot;
+        _currentGoalMarkerInstance.layer = LayerMask.NameToLayer("Ignore Raycast");
+
+        // 🛑 라이다 센서 레이저에 목적지 깃발 핀 자체가 감지되지 않도록 Collider 100% 제거!
+        Collider[] cols = _currentGoalMarkerInstance.GetComponentsInChildren<Collider>(true);
+        foreach (Collider c in cols)
+        {
+            Destroy(c);
+        }
+
         _currentGoalMarkerInstance.SetActive(true);
     }
 
