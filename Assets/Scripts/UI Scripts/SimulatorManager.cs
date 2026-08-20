@@ -110,6 +110,15 @@ public class SimulatorManager : MonoBehaviour
 
         if (editModeUIGroup != null) editModeUIGroup.SetActive(!isSim);
 
+        if (!isSim)
+        {
+            RuntimeObjectPlacer placer = FindFirstObjectByType<RuntimeObjectPlacer>();
+            if (placer != null)
+            {
+                placer.SelectSpawnPointMode();
+            }
+        }
+
         OnModeChanged?.Invoke(mode);
     }
 }

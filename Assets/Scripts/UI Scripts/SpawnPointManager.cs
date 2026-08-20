@@ -107,6 +107,11 @@ public class SpawnPointManager : MonoBehaviour
 
             isPlacingSpawnPoint = false;
             if (noticeBannerPanel != null) noticeBannerPanel.SetActive(false);
+
+            if (SimulatorManager.Instance != null)
+            {
+                SimulatorManager.Instance.SetSimulationMode();
+            }
             return; // <-- 🛑 차량 ResetVehicle() 절대 도달 불가!
         }
 
@@ -151,6 +156,11 @@ public class SpawnPointManager : MonoBehaviour
         if (noticeBannerPanel != null)
         {
             noticeBannerPanel.SetActive(false);
+        }
+
+        if (SimulatorManager.Instance != null)
+        {
+            SimulatorManager.Instance.SetSimulationMode();
         }
     }
 }

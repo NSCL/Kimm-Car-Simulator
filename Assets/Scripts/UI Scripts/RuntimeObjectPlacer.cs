@@ -183,13 +183,24 @@ public class RuntimeObjectPlacer : MonoBehaviour
     {
         if (SimulatorManager.Instance != null && SimulatorManager.Instance.IsSimulationActive()) return;
         Vector2 mousePos = GetExactMouseScreenPosition();
+        if (editCam == null && SimulatorManager.Instance != null && SimulatorManager.Instance.editCamera != null)
+            editCam = SimulatorManager.Instance.editCamera.GetComponent<Camera>();
+
+        if (editCam == null) return;
+
         Ray ray = editCam.ScreenPointToRay(mousePos);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 1000f))
         {
-            if (hit.collider.CompareTag("SpawnedObject"))
+            Transform t = hit.transform;
+            while (t != null)
             {
-                Destroy(hit.collider.gameObject);
+                if (t.CompareTag("SpawnedObject") || t.name.EndsWith("(Clone)"))
+                {
+                    Destroy(t.gameObject);
+                    return;
+                }
+                t = t.parent;
             }
         }
     }
@@ -297,7 +308,14 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
         if (currentGhost != null && currentGhost.activeSelf && objectPrefab != null)
         {
-            Instantiate(objectPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
+            GameObject placedObj = Instantiate(objectPrefab, currentGhost.transform.position, currentGhost.transform.rotation);
+            try
+            {
+                placedObj.tag = "SpawnedObject";
+            }
+            catch
+            {
+            }
         }
     }
 }
