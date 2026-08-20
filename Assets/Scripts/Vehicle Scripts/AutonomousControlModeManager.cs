@@ -96,7 +96,7 @@ public class AutonomousControlModeManager : MonoBehaviour
             modeStatusText.color = isAutoMode ? autoBgColor : manualBgColor;
         }
 
-        // 3. Edit Mode 핀 버튼 아이콘 전환 (Manual: spawn_2, Auto: spawn_icon 'G' 깃발)
+        // 3. Edit Mode 핀 버튼 아이콘 전환 (Manual: manualSpawnSprite, Auto: autoGoalSprite)
         if (spawnButtonImage != null)
         {
             if (isAutoMode && autoGoalSprite != null)

@@ -32,6 +32,12 @@ public class FreeFlyCamera : MonoBehaviour
 
     public void AlignToVehiclePosition()
     {
+        if (cam == null) cam = GetComponent<Camera>();
+        if (cam != null)
+        {
+            cam.farClipPlane = 10000f; // 거대 맵 회색 잘림 현상 100% 방지!
+        }
+
         VehicleController vc = FindFirstObjectByType<VehicleController>();
         if (vc != null)
         {
@@ -46,7 +52,7 @@ public class FreeFlyCamera : MonoBehaviour
                 if (mr != null) bodyPos = mr.bounds.center;
             }
 
-            transform.position = new Vector3(bodyPos.x, bodyPos.y + 35f, bodyPos.z);
+            transform.position = new Vector3(bodyPos.x, bodyPos.y + 50f, bodyPos.z);
             fixedYaw = vc.transform.eulerAngles.y;
             transform.rotation = Quaternion.Euler(90f, fixedYaw, 0f);
         }

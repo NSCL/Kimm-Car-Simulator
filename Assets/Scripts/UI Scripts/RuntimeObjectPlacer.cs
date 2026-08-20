@@ -57,8 +57,14 @@ public class RuntimeObjectPlacer : MonoBehaviour
         {
             if (SimulatorManager.Instance != null && SimulatorManager.Instance.editModeUIGroup != null)
             {
-                var imgs = SimulatorManager.Instance.editModeUIGroup.GetComponentsInChildren<UnityEngine.UI.Image>(true);
-                allEditButtons = imgs;
+                var btns = SimulatorManager.Instance.editModeUIGroup.GetComponentsInChildren<UnityEngine.UI.Button>(true);
+                System.Collections.Generic.List<UnityEngine.UI.Image> imgList = new System.Collections.Generic.List<UnityEngine.UI.Image>();
+                foreach (var b in btns)
+                {
+                    UnityEngine.UI.Image img = b.GetComponent<UnityEngine.UI.Image>();
+                    if (img != null) imgList.Add(img);
+                }
+                allEditButtons = imgList.ToArray();
             }
         }
 
@@ -67,7 +73,7 @@ public class RuntimeObjectPlacer : MonoBehaviour
             foreach (var img in allEditButtons)
             {
                 if (img == null) continue;
-                img.color = Color.white; // 원래대로 100% 선명하게 원복!
+                img.color = Color.white; // 패널 배경은 건드리지 않음!
                 if (activeBtn != null && (img == activeBtn || img.gameObject == activeBtn.gameObject))
                 {
                     img.transform.localScale = Vector3.one * 1.05f;

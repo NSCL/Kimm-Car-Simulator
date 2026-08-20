@@ -125,6 +125,13 @@ public class MapChanger : MonoBehaviour
     private IEnumerator SwitchMapRoutine(int targetIndex)
     {
         isTransitioning = true;
+
+        // 🌟 맵 전환 시작 즉시 Auto Mode 해제 -> Manual Mode 로 100% 안전 자동 복구!
+        if (AutonomousControlModeManager.Instance != null)
+        {
+            AutonomousControlModeManager.Instance.SetAutoMode(false);
+        }
+
         OnMapChangeStarted?.Invoke();
         if (LoadingPanelUI.Instance != null) LoadingPanelUI.Instance.SetProgress(0.05f);
 
