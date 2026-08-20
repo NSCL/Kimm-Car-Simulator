@@ -30,8 +30,6 @@ public class ROSCmdVelSubscriber : MonoBehaviour
 
         _rosConnection = ROSConnection.GetOrCreateInstance();
         _rosConnection.Subscribe<CarControlCmdMsg>(cmdTopicName, OnCarCmdReceived);
-
-        Debug.Log($"🤖 [ROSCmdVelSubscriber] Custom Message Subscriber Ready on Topic '{cmdTopicName}'!");
     }
 
     /// <summary>

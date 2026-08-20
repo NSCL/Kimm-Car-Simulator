@@ -66,7 +66,6 @@ namespace UnitySensors.Sensor.IMU
             _velocity_last = Vector3.zero;
             _rotation_last = transform.rotation;
             _isSpawnCaptured = true;
-            Debug.Log($"🚀 [KimmIMUSensor] Power-On / Spawn Heading Captured: {_initialSpawnRotation.eulerAngles.y:F2}° -> IMU Zero Heading Calibrated!");
         }
 
         private Quaternion GetZeroBasedRotation()

@@ -29,8 +29,6 @@ public class VehicleStatusPublisher : MonoBehaviour
         _fmuManager = FindFirstObjectByType<FMUManager>();
         _rosConnection = ROSConnection.GetOrCreateInstance();
         _rosConnection.RegisterPublisher<OdometryMsg>(statusTopicName);
-
-        Debug.Log($"🚗 [VehicleStatusPublisher] World Standard Odometry Publisher Registered on Topic '{statusTopicName}' successfully!");
     }
 
     private void Update()

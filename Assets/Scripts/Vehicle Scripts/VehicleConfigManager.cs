@@ -148,18 +148,17 @@ public class VehicleConfigManager : MonoBehaviour
             loadedParameters.Clear();
             foreach (var kvp in parsedTemp) loadedParameters[kvp.Key] = kvp.Value;
 
-            // 선택적 (Optional) GNSS 위도/경도/고도 파싱 (없을 시 기본값 0, 0, 0)
-            if (parsedTemp.TryGetValue("gnssLatitude", out double lat)) gnssLatitude = lat;
-            else if (parsedTemp.TryGetValue("GNSS_Latitude", out double lat2)) gnssLatitude = lat2;
-            else gnssLatitude = 0.0;
-
-            if (parsedTemp.TryGetValue("gnssLongitude", out double lon)) gnssLongitude = lon;
-            else if (parsedTemp.TryGetValue("GNSS_Longitude", out double lon2)) gnssLongitude = lon2;
-            else gnssLongitude = 0.0;
-
-            if (parsedTemp.TryGetValue("gnssAltitude", out double alt)) gnssAltitude = alt;
-            else if (parsedTemp.TryGetValue("GNSS_Altitude", out double alt2)) gnssAltitude = alt2;
-            else gnssAltitude = 0.0;
+            // 선택적 (Optional) GNSS 위도/경도/고도 파싱 (대소문자 무시 100% 정밀 연동)
+            double lat = 0.0, lon = 0.0, alt = 0.0;
+            foreach (var kv in parsedTemp)
+            {
+                if (string.Equals(kv.Key, "gnssLatitude", StringComparison.OrdinalIgnoreCase) || string.Equals(kv.Key, "gnss_latitude", StringComparison.OrdinalIgnoreCase)) lat = kv.Value;
+                if (string.Equals(kv.Key, "gnssLongitude", StringComparison.OrdinalIgnoreCase) || string.Equals(kv.Key, "gnss_longitude", StringComparison.OrdinalIgnoreCase)) lon = kv.Value;
+                if (string.Equals(kv.Key, "gnssAltitude", StringComparison.OrdinalIgnoreCase) || string.Equals(kv.Key, "gnss_altitude", StringComparison.OrdinalIgnoreCase)) alt = kv.Value;
+            }
+            gnssLatitude = lat;
+            gnssLongitude = lon;
+            gnssAltitude = alt;
 
             KimmGeoCoordinateSystem geoSystem = FindFirstObjectByType<KimmGeoCoordinateSystem>();
             if (geoSystem != null)
@@ -306,7 +305,7 @@ public class VehicleConfigManager : MonoBehaviour
                         string key = parts[0].Trim(' ', '\t', '"', '\r', ',', '{', '}');
                         string valStr = parts[1].Trim(' ', '\t', '"', '\r', ',');
 
-                        if (!string.IsNullOrEmpty(key) && key.StartsWith("Veh_"))
+                        if (!string.IsNullOrEmpty(key) && (key.StartsWith("Veh_", StringComparison.OrdinalIgnoreCase) || key.StartsWith("gnss", StringComparison.OrdinalIgnoreCase)))
                         {
                             if (double.TryParse(valStr, NumberStyles.Any, CultureInfo.InvariantCulture, out double val))
                             {

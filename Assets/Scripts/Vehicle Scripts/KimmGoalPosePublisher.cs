@@ -61,7 +61,6 @@ public class KimmGoalPosePublisher : MonoBehaviour
         {
             _rosConnection = ROSConnection.GetOrCreateInstance();
             _rosConnection.RegisterPublisher<PoseStampedMsg>(goalPoseTopic);
-            Debug.Log($"🚩 [KimmGoalPosePublisher] World Standard Goal Pose Publisher Ready on '{goalPoseTopic}'!");
         }
     }
 
@@ -81,8 +80,6 @@ public class KimmGoalPosePublisher : MonoBehaviour
         // 2. ROS2 자율주행 공식 표준 /goal_pose 토픽 전송 (1초 동안 안전 방어 5회 재전송)
         StopAllCoroutines();
         StartCoroutine(RoutinePublishGoalPoseSafety(worldPos, worldRot));
-
-        Debug.Log($"🎯 [GoalPose] Set Goal at Position: {worldPos}, Rotation: {worldRot.eulerAngles.y:F1}°");
     }
 
     private void UpdateGoalMarkerInstance(Vector3 pos, Quaternion rot)

@@ -5,6 +5,10 @@
     "Version": "1.0"
   },
   "Parameters": {
+    "gnssLatitude": 35.8714,
+    "gnssLongitude": 128.6014,
+    "gnssAltitude": 45.0,
+
     "Veh_AeroArea": 2.594,
     "Veh_AeroCd": 0.2888,
     "Veh_AeroCl": 0.149,

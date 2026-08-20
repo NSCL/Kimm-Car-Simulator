@@ -71,7 +71,6 @@ public class AutonomousControlModeManager : MonoBehaviour
         ApplyModeVisualsAndControl();
 
         string modeName = isAutoMode ? "🤖 [AUTO MODE]" : "🎮 [MANUAL MODE]";
-        Debug.Log($"🚀 [ControlModeManager] Switched to {modeName} | Keyboard Input Active: {!isAutoMode}");
     }
 
     private void ApplyModeVisualsAndControl()

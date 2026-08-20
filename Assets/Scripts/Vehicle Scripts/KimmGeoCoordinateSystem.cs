@@ -12,10 +12,10 @@ namespace UnitySensors.Sensor.GNSS
     /// </summary>
     public class KimmGeoCoordinateSystem : GeoCoordinateSystem
     {
-        [Header("GNSS Anchor Settings (VehicleConfig Optional)")]
-        public double anchorLatitude = 0.0;    // 시작 위도 (Deg)
-        public double anchorLongitude = 0.0;   // 시작 경도 (Deg)
-        public double anchorAltitude = 0.0;    // 시작 고도 (m)
+        [Header("GNSS Anchor Settings (VehicleConfig Dynamic Loading)")]
+        public double anchorLatitude = 0.0;
+        public double anchorLongitude = 0.0;
+        public double anchorAltitude = 0.0;
 
         private Transform _anchorTransform;
 
@@ -34,7 +34,6 @@ namespace UnitySensors.Sensor.GNSS
             anchorLatitude = lat;
             anchorLongitude = lon;
             anchorAltitude = alt;
-            Debug.Log($"🌐 [KimmGeoCoordinateSystem] GNSS Anchor Updated: Lat {anchorLatitude:F6}°, Lon {anchorLongitude:F6}°, Alt {anchorAltitude:F1}m");
         }
 
         /// <summary>
