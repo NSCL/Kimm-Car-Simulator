@@ -46,11 +46,30 @@ public class AutonomousControlModeManager : MonoBehaviour
 
     private void Update()
     {
-        // 🌟 'M' 키 스캔 (New Input System 100% 안전 스캔)
+        // 🌟 'M' 키 및 휠/게임패드 'A' 버튼 스캔 (New Input System 100% 직통 스위칭!)
         var keyboard = Keyboard.current;
         if (keyboard != null && keyboard.mKey.wasPressedThisFrame)
         {
             ToggleAutoMode();
+        }
+
+        var gamepad = Gamepad.current;
+        if (gamepad != null)
+        {
+            // 🔵 A 버튼 -> Manual <-> Auto 모드 1:1 토글 스위칭
+            if (gamepad.buttonSouth.wasPressedThisFrame)
+            {
+                ToggleAutoMode();
+            }
+
+            // 🟡 Y 버튼 -> 서브맵 다음 맵으로 1:1 순환 로딩!
+            if (gamepad.buttonNorth.wasPressedThisFrame)
+            {
+                if (MapChanger.Instance != null)
+                {
+                    MapChanger.Instance.LoadNextMap();
+                }
+            }
         }
     }
 

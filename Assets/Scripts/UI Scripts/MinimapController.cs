@@ -139,6 +139,13 @@ public class MinimapController : MonoBehaviour
     private void Update()
     {
         CheckMouseHoverAndSubZoom();
+
+        // 🟢 X 버튼 -> Telemetry HUD 미니 뷰포트 서브 카메라 시점 1:1 순환 변경!
+        var gamepad = Gamepad.current;
+        if (gamepad != null && gamepad.buttonWest.wasPressedThisFrame)
+        {
+            SwitchToNextSubView();
+        }
     }
 
     public void SetSubViewMode(SubViewMode mode)

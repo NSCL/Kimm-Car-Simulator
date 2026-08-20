@@ -104,6 +104,26 @@ public class SmoothCameraController : MonoBehaviour
             }
         }
 
+        // 🎮 PowerShift Revolution 휠 핸들 좌측 D-Pad 십자키 (상/하/좌/우) 시점 1:1 직통 매핑!
+        var gamepad = Gamepad.current;
+        if (gamepad != null)
+        {
+            // ⬆️ 십자키 위 (D-Pad Up) -> F5 (3인칭 Chase <-> 1인칭 Driver 토글)
+            if (gamepad.dpad.up.wasPressedThisFrame)
+            {
+                if (currentViewMode == CameraViewMode.Chase) SetViewMode(CameraViewMode.Driver);
+                else SetViewMode(CameraViewMode.Chase);
+            }
+            // ⬇️ 십자키 아래 (D-Pad Down) -> Top View (수직 탑뷰)
+            if (gamepad.dpad.down.wasPressedThisFrame) SetViewMode(CameraViewMode.Top);
+
+            // ⬅️ 십자키 왼쪽 (D-Pad Left) -> Left View (좌측 사이드 뷰)
+            if (gamepad.dpad.left.wasPressedThisFrame) SetViewMode(CameraViewMode.LeftSide);
+
+            // ➡️ 십자키 오른쪽 (D-Pad Right) -> Right View (우측 사이드 뷰)
+            if (gamepad.dpad.right.wasPressedThisFrame) SetViewMode(CameraViewMode.RightSide);
+        }
+
         HandleZoomAndOrbitInput();
     }
 

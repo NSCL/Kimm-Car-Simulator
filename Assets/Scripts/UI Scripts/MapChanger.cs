@@ -101,6 +101,13 @@ public class MapChanger : MonoBehaviour
         }
     }
 
+    public void LoadNextMap()
+    {
+        if (mapList == null || mapList.Count == 0 || isTransitioning) return;
+        int nextIndex = (currentMapIndex + 1) % mapList.Count;
+        ChangeMap(nextIndex);
+    }
+
     public void ChangeToSelectedDropdownMap(TMP_Dropdown dropdown)
     {
         if (dropdown != null)

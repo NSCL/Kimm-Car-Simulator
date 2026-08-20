@@ -20,7 +20,7 @@ public class RuntimeFMUVariable
 public class FMUManager : MonoBehaviour
 {
     [HideInInspector]
-    public string selectedFMUName;
+    public string selectedFMUName = "KIMMCar";
 
     // 인스펙터 및 런타임에 관리되는 FMU 변수/파라미터 리스트
     public List<RuntimeFMUVariable> variables = new List<RuntimeFMUVariable>();
@@ -31,15 +31,25 @@ public class FMUManager : MonoBehaviour
 
     // C++ DLL FMU 인스턴스 객체
     private FMU fmu;
+    public bool IsFMUActive() => fmu != null;
 
     private double currentTime = 0.0;
 
     private void Awake()
     {
-        // 씬 시작 시 변수 리스트를 딕셔너리에 매핑하여 빠른 조회 보장
-        foreach (var v in variables)
+        if (string.IsNullOrEmpty(selectedFMUName)) selectedFMUName = "KIMMCar";
+        if (varDict == null) varDict = new Dictionary<string, RuntimeFMUVariable>();
+        varDict.Clear();
+
+        if (variables != null)
         {
-            varDict[v.name] = v;
+            foreach (var v in variables)
+            {
+                if (v != null && !string.IsNullOrEmpty(v.name))
+                {
+                    varDict[v.name] = v;
+                }
+            }
         }
     }
 
@@ -87,41 +97,40 @@ public class FMUManager : MonoBehaviour
     {
         if (fmu != null)
         {
-            fmu.Dispose();
+            try { fmu.Dispose(); } catch {}
             fmu = null;
         }
 
         currentTime = 0.0;
-        fmu = new FMU(selectedFMUName, this.name);
-        fmu.Reset();
-        fmu.SetupExperiment(Time.fixedTimeAsDouble);
-
-        // FMU 초기화 모드 진입
-        fmu.EnterInitializationMode();
-
-        // [핵심 로직] VehicleConfigManager의 최근 로드 파라미터가 있다면 우선 갱신
-        if (VehicleConfigManager.Instance != null && VehicleConfigManager.Instance.loadedParameters.Count > 0)
+        try
         {
-            foreach (var kvp in VehicleConfigManager.Instance.loadedParameters)
+            if (string.IsNullOrEmpty(selectedFMUName)) selectedFMUName = "KIMMCar";
+            fmu = new FMU(selectedFMUName, this.name);
+            if (fmu != null)
             {
-                var v = variables.Find(varItem => varItem.name == kvp.Key);
-                if (v != null) v.value = kvp.Value;
+                fmu.Reset();
+                fmu.SetupExperiment(Time.fixedTimeAsDouble);
+                fmu.EnterInitializationMode();
+
+                if (variables != null)
+                {
+                    foreach (var v in variables)
+                    {
+                        if (v != null && v.causality == "parameter")
+                        {
+                            fmu.SetReal(v.name, v.value);
+                        }
+                    }
+                }
+
+                fmu.ExitInitializationMode();
             }
         }
-
-        // [주의]: EnterInitializationMode와 ExitInitializationMode 사이에서는
-        // 오직 causality가 "parameter"인 구조 파라미터만 주입해야 합니다.
-        // input 변수(FL_gz, Throttle 등)를 초기화 모드에서 0으로 덮어쓰면 지면 고도 오차로 진동이 발생합니다.
-        foreach (var v in variables)
+        catch (System.Exception e)
         {
-            if (v.causality == "parameter")
-            {
-                fmu.SetReal(v.name, v.value);
-            }
+            UnityEngine.Debug.LogWarning($"⚠️ [FMUManager] ResetFMU Fallback: {e.Message}");
+            fmu = null;
         }
-
-        // FMU 초기화 모드 종료 (계산 준비 완료)
-        fmu.ExitInitializationMode();
     }
 
     /// <summary>

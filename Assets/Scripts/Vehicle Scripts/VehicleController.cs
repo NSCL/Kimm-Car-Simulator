@@ -191,12 +191,14 @@ public class VehicleController : MonoBehaviour
 
         fmuManager.DoStep();
 
-        ApplyChassisWithSpawn();
+        ApplyFMUState();
         ApplyWheels();
     }
 
-    private void ApplyChassisWithSpawn()
+    private void ApplyFMUState()
     {
+        if (fmuManager == null || !fmuManager.IsFMUActive()) return;
+
         float cx = (float)fmuManager.GetValue(out_ChassisPos_X);
         float cy = (float)fmuManager.GetValue(out_ChassisPos_Y);
         float cz = (float)fmuManager.GetValue(out_ChassisPos_Z);
@@ -215,6 +217,7 @@ public class VehicleController : MonoBehaviour
 
     private void ApplyWheels()
     {
+        if (fmuManager == null || !fmuManager.IsFMUActive()) return;
         float toeL = (float)fmuManager.GetValue(out_Toe_Left);
         float toeR = (float)fmuManager.GetValue(out_Toe_Right);
 

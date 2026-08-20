@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System;
@@ -128,7 +128,7 @@ namespace FMI2 {
 	public class FMU : IDisposable
 	{
         
-#if UNITY_STANDALONE_OSX
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_LINUX
         const int RTLD_NOW = 2;
 #endif
 
@@ -161,14 +161,29 @@ namespace FMI2 {
 
         public FMU(string fmuName, string instanceName, bool loggingOn=false)
         {
+            if (string.IsNullOrEmpty(fmuName)) fmuName = "KIMMCar";
             var modelDescription = Resources.Load<ModelDescription>(fmuName);
+            if (modelDescription == null)
+            {
+                modelDescription = Resources.Load<ModelDescription>("KIMMCar");
+            }
+            if (modelDescription == null)
+            {
+                throw new Exception($"[FMU Error] ModelDescription asset '{fmuName}' not found in Resources!");
+            }
 
             valueReferences = new Dictionary<string, uint>();
 
             // collect the value references
-            foreach (var variable in modelDescription.modelVariables)
+            if (modelDescription.modelVariables != null)
             {
-                valueReferences[variable.name] = variable.valueReference;
+                foreach (var variable in modelDescription.modelVariables)
+                {
+                    if (variable != null && !string.IsNullOrEmpty(variable.name))
+                    {
+                        valueReferences[variable.name] = variable.valueReference;
+                    }
+                }
             }
 
             var unzipdir = Application.streamingAssetsPath + "/" + modelDescription.modelName;
@@ -183,6 +198,9 @@ namespace FMI2 {
 #if UNITY_STANDALONE_WIN
             dllPath += "win" + IntPtr.Size * 8 + "/" + modelIdentifier + ".dll";
             dll = LoadLibrary(dllPath);
+#elif UNITY_STANDALONE_LINUX
+            dllPath += "linux" + IntPtr.Size * 8 + "/" + modelIdentifier + ".so";
+            dll = dlopen(dllPath, RTLD_NOW);
 #else
             dllPath += "darwin64/" + modelIdentifier + ".dylib";
             dll = dlopen(dllPath, RTLD_NOW);
@@ -412,6 +430,15 @@ namespace FMI2 {
         [DllImport("kernel32", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool FreeLibrary(IntPtr hModule);
+#elif UNITY_STANDALONE_LINUX
+        [DllImport("libdl.so.2", SetLastError = true)]
+		protected static extern IntPtr dlopen(string filename, int flags);
+
+		[DllImport("libdl.so.2", SetLastError = true)]
+		protected static extern int dlclose(IntPtr handle);
+
+		[DllImport("libdl.so.2", SetLastError = true)]
+		private static extern IntPtr dlsym(IntPtr handle, String symbol);
 #else
         [DllImport("libdl")]
 		protected static extern IntPtr dlopen(string filename, int flags);

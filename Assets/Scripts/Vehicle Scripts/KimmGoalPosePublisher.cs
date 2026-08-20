@@ -64,6 +64,34 @@ public class KimmGoalPosePublisher : MonoBehaviour
         }
     }
 
+    private VehicleController _vehicle;
+    private bool _hasGoalBeenReached = false;
+
+    private void Update()
+    {
+        if (_currentGoalMarkerInstance != null && _currentGoalMarkerInstance.activeInHierarchy && !_hasGoalBeenReached)
+        {
+            if (_vehicle == null) _vehicle = FindFirstObjectByType<VehicleController>();
+            if (_vehicle != null)
+            {
+                float dist = Vector3.Distance(_vehicle.transform.position, currentGoalPosition);
+                if (dist < 2.5f)
+                {
+                    ClearGoalMarker();
+                    _hasGoalBeenReached = true;
+                }
+            }
+        }
+    }
+
+    public void ClearGoalMarker()
+    {
+        if (_currentGoalMarkerInstance != null)
+        {
+            _currentGoalMarkerInstance.SetActive(false);
+        }
+    }
+
     /// <summary>
     /// Auto Mode 시 3D 도로 클릭 위치로 Goal 목적지 핀 배치 및 ROS2 /goal_pose 안전 전송
     /// </summary>
@@ -71,6 +99,7 @@ public class KimmGoalPosePublisher : MonoBehaviour
     {
         EnsureROSInitialized();
 
+        _hasGoalBeenReached = false;
         currentGoalPosition = worldPos;
         currentGoalRotation = worldRot;
 
@@ -98,7 +127,14 @@ public class KimmGoalPosePublisher : MonoBehaviour
                 _currentGoalMarkerInstance.transform.localScale = new Vector3(0.5f, 1.5f, 0.5f);
                 
                 Renderer r = _currentGoalMarkerInstance.GetComponent<Renderer>();
-                if (r != null) r.material.color = new Color(0.0f, 0.85f, 1.0f); // 네온 시안
+                if (r != null)
+                {
+                    Shader urpShader = Shader.Find("Universal Render Pipeline/Lit");
+                    if (urpShader == null) urpShader = Shader.Find("Sprites/Default");
+                    if (urpShader == null) urpShader = Shader.Find("Unlit/Color");
+                    if (urpShader != null) r.material.shader = urpShader;
+                    r.material.color = new Color(0.0f, 0.85f, 1.0f); // 선명한 네온 시안 블루!
+                }
                 
                 Destroy(_currentGoalMarkerInstance.GetComponent<Collider>());
             }

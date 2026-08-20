@@ -62,14 +62,13 @@ public class VehicleInputManager : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard != null)
         {
-            if (keyboard.leftShiftKey.wasPressedThisFrame || keyboard.rightShiftKey.wasPressedThisFrame)
-                ShiftGear(GearState.Drive);
-            if (keyboard.leftCtrlKey.wasPressedThisFrame || keyboard.rightCtrlKey.wasPressedThisFrame)
-                ShiftGear(GearState.Reverse);
-            if (keyboard.nKey.wasPressedThisFrame)
-                ShiftGear(GearState.Neutral);
-            if (keyboard.pKey.wasPressedThisFrame)
-                ShiftGear(GearState.Park);
+            // 🏎️ 기어 제어: E 키 = 전진 D (1) 고정, Q 키 = 후진 R (-1) <-> 중립 N (0) 순환!
+            if (keyboard.eKey.wasPressedThisFrame) ShiftGear(GearState.Drive);
+            if (keyboard.qKey.wasPressedThisFrame)
+            {
+                if (currentGear == GearState.Reverse) ShiftGear(GearState.Neutral);
+                else ShiftGear(GearState.Reverse);
+            }
             if (keyboard.rKey.wasPressedThisFrame)
                 OnResetTriggered?.Invoke();
 
@@ -92,10 +91,24 @@ public class VehicleInputManager : MonoBehaviour
             float padBrake = gamepad.leftTrigger.ReadValue();
             if (padBrake > 0.05f) targetBrake = padBrake;
 
-            if (gamepad.rightShoulder.wasPressedThisFrame) ShiftGear(GearState.Drive);
-            if (gamepad.leftShoulder.wasPressedThisFrame) ShiftGear(GearState.Reverse);
-            if (gamepad.buttonSouth.wasPressedThisFrame) ShiftGear(GearState.Drive);
-            if (gamepad.buttonNorth.wasPressedThisFrame) ShiftGear(GearState.Reverse);
+            // 🏎️ 기어 올리기 (패들 시프트 우측/R1) -> 무조건 Drive (1) 고정!
+            if (gamepad.rightShoulder.wasPressedThisFrame)
+            {
+                ShiftGear(GearState.Drive);
+            }
+
+            // 🏎️ 기어 내리기 (패들 시프트 좌측/L1) -> Reverse (-1) <-> Neutral (0) 순환 스위칭!
+            if (gamepad.leftShoulder.wasPressedThisFrame)
+            {
+                if (currentGear == GearState.Reverse) ShiftGear(GearState.Neutral);
+                else ShiftGear(GearState.Reverse);
+            }
+
+            // 🔴 B 버튼 -> 차량 초기화 위치 리셋 (R 키 기능 100% 직통 동일!)
+            if (gamepad.buttonEast.wasPressedThisFrame)
+            {
+                OnResetTriggered?.Invoke();
+            }
         }
 
         var joystick = Joystick.current;
