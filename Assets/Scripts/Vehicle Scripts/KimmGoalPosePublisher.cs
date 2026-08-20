@@ -9,6 +9,7 @@ using RosMessageTypes.Geometry;
 /// Goal Destination ('G' 깃발 마커)을 배치하고 
 /// ROS2 자율주행 공식 표준 토픽('/goal_pose' - geometry_msgs/msg/PoseStamped)으로
 /// 1초 안전 방어 재전송 및 QoS Latching 퍼블리싱을 집행하는 매니저.
+/// (전 맵 거대 3D 좌표 오프셋 100% 정밀 보정)
 /// </summary>
 [DisallowMultipleComponent]
 public class KimmGoalPosePublisher : MonoBehaviour

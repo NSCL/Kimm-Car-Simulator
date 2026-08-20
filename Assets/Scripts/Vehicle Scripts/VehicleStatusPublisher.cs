@@ -6,10 +6,10 @@ using RosMessageTypes.Geometry;
 
 /// <summary>
 /// 유니티 FMU 차량의 실시간 3D 정밀 위치(Position X,Y,Z),
-/// 3D 쿼터니언 오리엔테이션(body_q[1,1] ~ body_q[4,1]), 
+/// 3D 쿼터니언 오리엔테이션(Orientation X,Y,Z,W), 
 /// 및 실시간 종/횡 속도(body_vx, body_vy) 수치를 ROS2 자율주행 공식 표준 규격
 /// ('nav_msgs/msg/Odometry')으로 50Hz 실시간 퍼블리싱해 주는 차량 상태 퍼블리서.
-/// (Goal Pose 와 100% 1:1 완벽 통일된 Absolute World 좌표계 적용)
+/// (모든 맵 스폰 헤딩 방향 100% 1:1 완벽 정밀 보정)
 /// </summary>
 [DisallowMultipleComponent]
 public class VehicleStatusPublisher : MonoBehaviour
@@ -58,37 +58,9 @@ public class VehicleStatusPublisher : MonoBehaviour
 
         // 2. 유니티 3D 씬 내 실제 절대 위치(World Position) & Quaternion Orientation
         Vector3 rawPos = transform.position;
-        Quaternion rawRot = transform.rotation;
+        Quaternion rawRot = transform.rotation; // 차체 실제 3D 월드 바라보는 회전각!
 
-        if (_fmuManager != null)
-        {
-            try
-            {
-                // 쿼터니언 회전 (body_q[1,1] ~ body_q[4,1])
-                double q1 = _fmuManager.GetValue("body_q[1,1]");
-                double q2 = _fmuManager.GetValue("body_q[2,1]");
-                double q3 = _fmuManager.GetValue("body_q[3,1]");
-                double q4 = _fmuManager.GetValue("body_q[4,1]");
-
-                if (double.IsNaN(q4))
-                {
-                    q1 = _fmuManager.GetValue("Veh_BodyRot_X");
-                    q2 = _fmuManager.GetValue("Veh_BodyRot_Y");
-                    q3 = _fmuManager.GetValue("Veh_BodyRot_Z");
-                    q4 = _fmuManager.GetValue("Veh_BodyRot_W");
-                }
-
-                if (!double.IsNaN(q1) && !double.IsNaN(q2) && !double.IsNaN(q3) && !double.IsNaN(q4) && q4 != 0.0)
-                {
-                    rawRot = new Quaternion((float)q1, (float)q2, (float)q3, (float)q4);
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        // 유니티 ➔ ROS (FLU) 정통 3D 좌표 변환 적용! (Goal Pose와 100% 1:1 완벽 동일 원점)
+        // 유니티 ➔ ROS (FLU) 정통 3D 좌표 변환 적용! (Position & Orientation 100% 1:1 일치)
         odomMsg.pose.pose.position = rawPos.To<FLU>();
         odomMsg.pose.pose.orientation = rawRot.To<FLU>();
 

@@ -53,8 +53,8 @@ public class ROSCmdVelSubscriber : MonoBehaviour
             if (_inputManager != null)
             {
                 _inputManager.Accel = Mathf.Clamp01(accel);
-                // 🧭 조향 1:1 직통 대입 (순수 수신)
-                _inputManager.Steering = Mathf.Clamp(steering, -1.0f, 1.0f);
+                // 🧭 조향 방향 정밀 보정 (+: 좌회전 -> 유니티 핸들 -1.0)
+                _inputManager.Steering = -Mathf.Clamp(steering, -1.0f, 1.0f);
                 _inputManager.Brake = Mathf.Clamp01(brake);
 
                 if (gear > 0)
