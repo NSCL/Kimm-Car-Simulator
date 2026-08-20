@@ -26,6 +26,7 @@ public class VehicleStatusPublisher : MonoBehaviour
 
     private void Start()
     {
+        Application.runInBackground = true;
         _fmuManager = FindFirstObjectByType<FMUManager>();
         _rosConnection = ROSConnection.GetOrCreateInstance();
         _rosConnection.RegisterPublisher<OdometryMsg>(statusTopicName);

@@ -34,6 +34,7 @@ public class SimulatorManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.runInBackground = true; // rviz2, 터미널 등 타 창 클릭 시에도 백그라운드 100% 멈춤없이 연속 실행!
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
