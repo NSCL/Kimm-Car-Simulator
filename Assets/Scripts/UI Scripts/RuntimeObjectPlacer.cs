@@ -48,6 +48,38 @@ public class RuntimeObjectPlacer : MonoBehaviour
         if (controls != null) controls.EditCamera.Remove.performed -= OnRemoveInput;
     }
 
+    [Header("UI Highlight Settings")]
+    public UnityEngine.UI.Image[] allEditButtons;
+
+    public void HighlightButton(UnityEngine.UI.Image activeBtn)
+    {
+        if (allEditButtons == null || allEditButtons.Length == 0)
+        {
+            if (SimulatorManager.Instance != null && SimulatorManager.Instance.editModeUIGroup != null)
+            {
+                var imgs = SimulatorManager.Instance.editModeUIGroup.GetComponentsInChildren<UnityEngine.UI.Image>(true);
+                allEditButtons = imgs;
+            }
+        }
+
+        if (allEditButtons != null)
+        {
+            foreach (var img in allEditButtons)
+            {
+                if (img == null) continue;
+                img.color = Color.white; // 원래대로 100% 선명하게 원복!
+                if (activeBtn != null && (img == activeBtn || img.gameObject == activeBtn.gameObject))
+                {
+                    img.transform.localScale = Vector3.one * 1.05f;
+                }
+                else
+                {
+                    img.transform.localScale = Vector3.one;
+                }
+            }
+        }
+    }
+
     public void ClearGhost()
     {
         if (currentGhost != null)
@@ -71,6 +103,12 @@ public class RuntimeObjectPlacer : MonoBehaviour
             SpawnPointManager.Instance.isPlacingSpawnPoint = true;
         }
         ResetYRotationToVehicleYaw();
+
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+        {
+            UnityEngine.UI.Image img = EventSystem.current.currentSelectedGameObject.GetComponent<UnityEngine.UI.Image>();
+            if (img != null) HighlightButton(img);
+        }
     }
 
     void Update()
@@ -218,6 +256,12 @@ public class RuntimeObjectPlacer : MonoBehaviour
         }
         
         ResetYRotationToVehicleYaw();
+
+        if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject != null)
+        {
+            UnityEngine.UI.Image img = EventSystem.current.currentSelectedGameObject.GetComponent<UnityEngine.UI.Image>();
+            if (img != null) HighlightButton(img);
+        }
     }
 
     private void ResetYRotationToVehicleYaw()
