@@ -231,7 +231,11 @@ public class VehicleConfigManager : MonoBehaviour
 
         try
         {
+#if UNITY_STANDALONE_LINUX
+            string selectedPath = OpenLinuxFileDialog("Select Vehicle Config JSON");
+#else
             string selectedPath = OpenWin32FileDialog("JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0", "Select Vehicle Config JSON");
+#endif
             if (!string.IsNullOrEmpty(selectedPath))
             {
                 if (LoadConfigFromFile(selectedPath))
@@ -376,6 +380,38 @@ public class VehicleConfigManager : MonoBehaviour
         {
             return ofn.file;
         }
+        return null;
+    }
+
+    private static string OpenLinuxFileDialog(string title)
+    {
+        try
+        {
+            string initialDir = Path.Combine(Application.streamingAssetsPath, "VehicleConfigs");
+            if (!Directory.Exists(initialDir)) initialDir = Application.streamingAssetsPath;
+
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo();
+            psi.FileName = "zenity";
+            psi.Arguments = $"--file-selection --title=\"{title}\" --filename=\"{initialDir}/\" --file-filter=\"*.json\"";
+            psi.UseShellExecute = false;
+            psi.RedirectStandardOutput = true;
+            psi.CreateNoWindow = true;
+
+            using (System.Diagnostics.Process process = System.Diagnostics.Process.Start(psi))
+            {
+                string result = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return result.Trim();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"⚠️ [VehicleConfigManager] Zenity Linux File Dialog Fallback: {e.Message}");
+        }
+
         return null;
     }
     #endregion

@@ -1,0 +1,49 @@
+#include "KIMMCar_macros.h"
+#include "pm_std.h"
+#include "sm_SmRealVector.h"
+struct sm_FAe_hLKRs0t1gPCNBVVtIR{size_t mSize;size_t mCap;int*mValues;};
+typedef struct sm_FAe_hLKRs0t1gPCNBVVtIR sm_V7xsSSeDhNGdeHRBws_2Zg;void
+sm_core_SmIntVector_create(sm_V7xsSSeDhNGdeHRBws_2Zg*vector,size_t n,int
+pm_kpzAtHMD4_WnheH0UiioSE);void sm_core_SmIntVector_copy(
+sm_V7xsSSeDhNGdeHRBws_2Zg*copy,const sm_V7xsSSeDhNGdeHRBws_2Zg*orig);void
+sm_core_SmIntVector_destroy(sm_V7xsSSeDhNGdeHRBws_2Zg*vector);int
+sm_core_SmIntVector_isEmpty(const sm_V7xsSSeDhNGdeHRBws_2Zg*vector);size_t
+sm_core_SmIntVector_size(const sm_V7xsSSeDhNGdeHRBws_2Zg*vector);size_t
+sm_core_SmIntVector_capacity(const sm_V7xsSSeDhNGdeHRBws_2Zg*vector);int
+sm_core_SmIntVector_value(const sm_V7xsSSeDhNGdeHRBws_2Zg*vector,size_t index)
+;void sm_core_SmIntVector_setValue(sm_V7xsSSeDhNGdeHRBws_2Zg*vector,size_t
+index,int value);const int*sm_core_SmIntVector_values(const
+sm_V7xsSSeDhNGdeHRBws_2Zg*vector);int*sm_core_SmIntVector_nonConstValues(
+sm_V7xsSSeDhNGdeHRBws_2Zg*vector);void sm_core_SmIntVector_reserve(
+sm_V7xsSSeDhNGdeHRBws_2Zg*vector,size_t n);void sm_core_SmIntVector_clear(
+sm_V7xsSSeDhNGdeHRBws_2Zg*vector);void sm_core_SmIntVector_pushBack(
+sm_V7xsSSeDhNGdeHRBws_2Zg*vector,int pm_kpzAtHMD4_WnheH0UiioSE);void
+sm_core_SmIntVector_popBack(sm_V7xsSSeDhNGdeHRBws_2Zg*vector);struct
+sm_F9E_QU8Zof02hyNcGyFoII{SmRealVector sm__22dqY91MyOm_mNH5FwFof;
+sm_V7xsSSeDhNGdeHRBws_2Zg sm_F9HuI75SOXpdjaPQOxCSSV;};typedef struct
+sm_F9E_QU8Zof02hyNcGyFoII sm__u5otWUlifChdDONlHDMsK;void
+sm_core_RuntimeDerivedValuesBundle_create(sm__u5otWUlifChdDONlHDMsK*
+sm__wmTd2KKOKd7YPG6_QANiL,size_t sm_FFmYCRWDbGCFbeA5GnIZ6W,size_t
+sm_FtDzaWOzNWO_Wyg8YnN4LE);void sm_core_RuntimeDerivedValuesBundle_copy(const
+sm__u5otWUlifChdDONlHDMsK*orig,sm__u5otWUlifChdDONlHDMsK*copy);void
+sm_core_RuntimeDerivedValuesBundle_destroy(sm__u5otWUlifChdDONlHDMsK*
+sm__wmTd2KKOKd7YPG6_QANiL);void sm_core_RuntimeDerivedValuesBundle_create(
+sm__u5otWUlifChdDONlHDMsK*sm__wmTd2KKOKd7YPG6_QANiL,size_t
+sm_FFmYCRWDbGCFbeA5GnIZ6W,size_t sm_FtDzaWOzNWO_Wyg8YnN4LE){
+sm_core_SmRealVector_create(&sm__wmTd2KKOKd7YPG6_QANiL->
+sm__22dqY91MyOm_mNH5FwFof,sm_FFmYCRWDbGCFbeA5GnIZ6W,0.0);
+sm_core_SmIntVector_create(&sm__wmTd2KKOKd7YPG6_QANiL->
+sm_F9HuI75SOXpdjaPQOxCSSV,sm_FtDzaWOzNWO_Wyg8YnN4LE,0);}void
+sm_core_RuntimeDerivedValuesBundle_copy(const sm__u5otWUlifChdDONlHDMsK*orig,
+sm__u5otWUlifChdDONlHDMsK*copy){sm_core_SmRealVector_copy(&copy->
+sm__22dqY91MyOm_mNH5FwFof,&orig->sm__22dqY91MyOm_mNH5FwFof);
+sm_core_SmRealVector_reserve(&copy->sm__22dqY91MyOm_mNH5FwFof,
+sm_core_SmRealVector_capacity(&orig->sm__22dqY91MyOm_mNH5FwFof));
+sm_core_SmIntVector_copy(&copy->sm_F9HuI75SOXpdjaPQOxCSSV,&orig->
+sm_F9HuI75SOXpdjaPQOxCSSV);sm_core_SmIntVector_reserve(&copy->
+sm_F9HuI75SOXpdjaPQOxCSSV,sm_core_SmIntVector_capacity(&orig->
+sm_F9HuI75SOXpdjaPQOxCSSV));}void sm_core_RuntimeDerivedValuesBundle_destroy(
+sm__u5otWUlifChdDONlHDMsK*sm__wmTd2KKOKd7YPG6_QANiL){
+sm_core_SmRealVector_destroy(&sm__wmTd2KKOKd7YPG6_QANiL->
+sm__22dqY91MyOm_mNH5FwFof);sm_core_SmIntVector_destroy(&
+sm__wmTd2KKOKd7YPG6_QANiL->sm_F9HuI75SOXpdjaPQOxCSSV);}
