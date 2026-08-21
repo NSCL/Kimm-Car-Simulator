@@ -9,53 +9,67 @@
     "RosPort": 10000
   },
   "GNSS": {
+    "FrameId": "gnss_frame",
     "TopicName": "/kimm/gnss/fix",
-    "PublishFrequency": 20.0,
+    "PublishFrequency": 10.0,
     "InitialLatitude": 36.37561,
     "InitialLongitude": 127.35921,
     "InitialAltitude": 55.0,
-    "LocalPosition": { "x": -0.5, "y": 0.2, "z": 0.3 },
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
     "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
   },
   "IMU": {
+    "FrameId": "imu_frame",
     "TopicName": "/kimm/imu/data",
     "PublishFrequency": 200.0,
-    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.2 },
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
     "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
   },
   "LiDARs": [
     {
-      "Name": "Main_LiDAR",
-      "TopicName": "/kimm/lidar/points",
-      "PublishFrequency": 30.0,
+      "FrameId": "front_lidar_frame",
+      "TopicName": "/kimm/lidar_front/points",
+      "PublishFrequency": 10.0,
       "PointsNumPerScan": 50000,
-      "MinRange": 0.2,
-      "MaxRange": 150.0,
-      "GaussianNoiseSigma": 0.05,
+      "MinRange": 0.1,
+      "MaxRange": 70.0,
+      "GaussianNoiseSigma": 0.02,
       "MaxIntensity": 255.0,
-      "LocalPosition": { "x": 1.5, "y": 0.0, "z": 1.8 },
-      "LocalRotation": { "roll": 0.0, "pitch": -10.0, "yaw": 0.0 }
+      "LocalPosition": { "x": 0.3, "y": 0.0, "z": 0.6 },
+      "LocalRotation": { "roll": 0.0, "pitch": -15.0, "yaw": 0.0 }
+    },
+    {
+      "FrameId": "rear_lidar_frame",
+      "TopicName": "/kimm/lidar_rear/points",
+      "PublishFrequency": 10.0,
+      "PointsNumPerScan": 50000,
+      "MinRange": 0.1,
+      "MaxRange": 70.0,
+      "GaussianNoiseSigma": 0.02,
+      "MaxIntensity": 255.0,
+      "LocalPosition": { "x": -0.3, "y": 0.0, "z": 0.6 },
+      "LocalRotation": { "roll": 0.0, "pitch": -15.0, "yaw": 180.0 }
     }
   ],
   "Cameras": [
     {
-      "Name": "Front_Camera",
+      "FrameId": "front_camera_frame",
       "TopicName": "/kimm/camera/color/compressed",
       "CameraInfoTopic": "/kimm/camera/camera_info",
-      "PublishFrequency": 60.0,
-      "ResolutionWidth": 1920,
-      "ResolutionHeight": 1080,
+      "PublishFrequency": 30.0,
+      "ResolutionWidth": 640,
+      "ResolutionHeight": 480,
       "FieldOfView": 90.0,
       "LocalPosition": { "x": 1.2, "y": 0.0, "z": 1.5 },
       "LocalRotation": { "roll": 0.0, "pitch": -15.0, "yaw": 0.0 }
     },
     {
-      "Name": "Rear_Camera",
+      "FrameId": "rear_camera_frame",
       "TopicName": "/kimm/camera_rear/color/compressed",
       "CameraInfoTopic": "/kimm/camera_rear/camera_info",
       "PublishFrequency": 30.0,
-      "ResolutionWidth": 1280,
-      "ResolutionHeight": 720,
+      "ResolutionWidth": 640,
+      "ResolutionHeight": 480,
       "FieldOfView": 110.0,
       "LocalPosition": { "x": -1.2, "y": 0.0, "z": 1.4 },
       "LocalRotation": { "roll": 0.0, "pitch": -10.0, "yaw": 180.0 }

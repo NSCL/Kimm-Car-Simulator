@@ -9,6 +9,7 @@
     "RosPort": 10000
   },
   "GNSS": {
+    "FrameId": "gnss_frame",
     "TopicName": "/kimm/gnss/fix",
     "PublishFrequency": 10.0,
     "InitialLatitude": 0.0,
@@ -18,13 +19,14 @@
     "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
   },
   "IMU": {
+    "FrameId": "imu_frame",
     "TopicName": "/kimm/imu/data",
     "PublishFrequency": 100.0,
     "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
     "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
   },
   "LiDAR": {
-    "Name": "Kimm_MID360",
+    "FrameId": "lidar_frame",
     "TopicName": "/kimm/lidar/points",
     "PublishFrequency": 20.0,
     "PointsNumPerScan": 100000,
@@ -36,7 +38,7 @@
     "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
   },
   "Camera": {
-    "Name": "Kimm_RGBCamera",
+    "FrameId": "camera_frame",
     "TopicName": "/kimm/camera/color/compressed",
     "CameraInfoTopic": "/kimm/camera/camera_info",
     "PublishFrequency": 30.0,

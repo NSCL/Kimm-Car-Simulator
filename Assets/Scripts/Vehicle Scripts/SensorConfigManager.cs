@@ -254,11 +254,17 @@ public class SensorConfigManager : MonoBehaviour
                 GameObject gnssObj = Instantiate(gnssPrefab, container);
                 gnssPrefab.SetActive(origActive);
 
-                gnssObj.name = "Kimm_GNSS";
+                string gnssFrame = ParseStringProperty(json, "GNSS", "FrameId");
+                if (string.IsNullOrEmpty(gnssFrame)) gnssFrame = ParseStringProperty(json, "GNSS", "Name");
+                if (string.IsNullOrEmpty(gnssFrame)) gnssFrame = "gnss_frame";
+
+                gnssObj.name = gnssFrame;
                 gnssObj.transform.localPosition = gnssPos;
                 gnssObj.transform.localRotation = Quaternion.Euler(gnssRot.x, gnssRot.y, gnssRot.z);
+
                 SetComponentFrequency(gnssObj, gnssHz);
                 SetComponentTopicName(gnssObj, gnssTopic);
+                SetComponentFrameId(gnssObj, gnssFrame);
                 gnssObj.SetActive(true);
             }
         }
@@ -278,11 +284,16 @@ public class SensorConfigManager : MonoBehaviour
                 GameObject imuObj = Instantiate(imuPrefab, container);
                 imuPrefab.SetActive(origActive);
 
-                imuObj.name = "Kimm_IMU";
+                string imuFrame = ParseStringProperty(json, "IMU", "FrameId");
+                if (string.IsNullOrEmpty(imuFrame)) imuFrame = ParseStringProperty(json, "IMU", "Name");
+                if (string.IsNullOrEmpty(imuFrame)) imuFrame = "imu_frame";
+
+                imuObj.name = imuFrame;
                 imuObj.transform.localPosition = imuPos;
                 imuObj.transform.localRotation = Quaternion.Euler(imuRot.x, imuRot.y, imuRot.z);
                 SetComponentFrequency(imuObj, imuHz);
                 SetComponentTopicName(imuObj, imuTopic);
+                SetComponentFrameId(imuObj, imuFrame);
                 imuObj.SetActive(true);
             }
         }
@@ -294,8 +305,9 @@ public class SensorConfigManager : MonoBehaviour
             int lIdx = 1;
             foreach (string lBlock in lidarBlocks)
             {
-                string lName = ParseStringDirect(lBlock, "Name");
-                if (string.IsNullOrEmpty(lName)) lName = (lidarBlocks.Count > 1) ? $"LiDAR_{lIdx}" : "Kimm_MID360";
+                string lFrame = ParseStringDirect(lBlock, "FrameId");
+                if (string.IsNullOrEmpty(lFrame)) lFrame = ParseStringDirect(lBlock, "Name");
+                if (string.IsNullOrEmpty(lFrame)) lFrame = (lidarBlocks.Count > 1) ? $"lidar_{lIdx}_frame" : "lidar_frame";
 
                 string lTopic = ParseStringDirect(lBlock, "TopicName");
                 if (string.IsNullOrEmpty(lTopic)) lTopic = "/kimm/lidar/points";
@@ -314,12 +326,13 @@ public class SensorConfigManager : MonoBehaviour
                 GameObject lObj = Instantiate(lidarPrefab, container);
                 lidarPrefab.SetActive(origActive);
 
-                lObj.name = lName;
+                lObj.name = lFrame;
                 lObj.transform.localPosition = lPos;
                 lObj.transform.localRotation = Quaternion.Euler(lRot.x, lRot.y, lRot.z);
 
                 SetComponentFrequency(lObj, lHz);
                 SetComponentTopicName(lObj, lTopic);
+                SetComponentFrameId(lObj, lFrame);
                 SetComponentLidarParameters(lObj, lPoints, lMinR, lMaxR, lNoise, lIntensity);
 
                 lObj.SetActive(true);
@@ -334,8 +347,9 @@ public class SensorConfigManager : MonoBehaviour
             int cIdx = 1;
             foreach (string cBlock in camBlocks)
             {
-                string cName = ParseStringDirect(cBlock, "Name");
-                if (string.IsNullOrEmpty(cName)) cName = (camBlocks.Count > 1) ? $"Camera_{cIdx}" : "Kimm_RGBCamera";
+                string cFrame = ParseStringDirect(cBlock, "FrameId");
+                if (string.IsNullOrEmpty(cFrame)) cFrame = ParseStringDirect(cBlock, "Name");
+                if (string.IsNullOrEmpty(cFrame)) cFrame = (camBlocks.Count > 1) ? $"camera_{cIdx}_frame" : "camera_frame";
 
                 string cTopic = ParseStringDirect(cBlock, "TopicName");
                 if (string.IsNullOrEmpty(cTopic)) cTopic = "/kimm/camera/color/compressed";
@@ -360,11 +374,12 @@ public class SensorConfigManager : MonoBehaviour
                 GameObject cObj = Instantiate(camPrefab, container);
                 camPrefab.SetActive(origActive);
 
-                cObj.name = cName;
+                cObj.name = cFrame;
                 cObj.transform.localPosition = cPos;
                 cObj.transform.localRotation = Quaternion.Euler(cRot.x, cRot.y, cRot.z);
 
                 SetComponentFrequency(cObj, cHz);
+                SetComponentFrameId(cObj, cFrame);
                 SetComponentCameraParameters(cObj, cW, cH, fov);
 
                 // 카메라 컴포넌트별 1:1 토픽/주파수 정밀 주입 (타입 충돌 및 Inconsistent declaration 경고 원천 차단)
@@ -571,6 +586,59 @@ public class SensorConfigManager : MonoBehaviour
         if (comp == null || string.IsNullOrEmpty(topic)) return;
         Component[] targets = comp.gameObject.GetComponentsInChildren<Component>(true);
         foreach (Component c in targets) SetSingleComponentTopicName(c, topic);
+    }
+
+    private void SetComponentFrameId(GameObject go, string frameId)
+    {
+        if (go == null || string.IsNullOrEmpty(frameId)) return;
+        Component[] targets = go.GetComponentsInChildren<Component>(true);
+
+        foreach (Component c in targets)
+        {
+            if (c == null) continue;
+            Type t = c.GetType();
+
+            // 1. Direct _frame_id or frameId fields/properties
+            string[] frameNames = { "_frame_id", "frame_id", "m_FrameId", "frameId", "_frameId" };
+            foreach (string fname in frameNames)
+            {
+                var f = FindFieldInHierarchy(t, fname);
+                if (f != null && f.FieldType == typeof(string))
+                {
+                    f.SetValue(c, frameId);
+                }
+                var p = FindPropertyInHierarchy(t, fname);
+                if (p != null && p.CanWrite && p.PropertyType == typeof(string))
+                {
+                    p.SetValue(c, frameId);
+                }
+            }
+
+            // 2. Serializer / Header inside publisher
+            var serializerField = FindFieldInHierarchy(t, "_serializer");
+            if (serializerField != null)
+            {
+                object serializerObj = serializerField.GetValue(c);
+                if (serializerObj != null)
+                {
+                    Type sType = serializerObj.GetType();
+                    var headerField = FindFieldInHierarchy(sType, "_header");
+                    if (headerField != null)
+                    {
+                        object headerObj = headerField.GetValue(serializerObj);
+                        if (headerObj != null)
+                        {
+                            Type hType = headerObj.GetType();
+                            var hFrameField = FindFieldInHierarchy(hType, "_frame_id");
+                            if (hFrameField != null && hFrameField.FieldType == typeof(string))
+                            {
+                                hFrameField.SetValue(headerObj, frameId);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void SetComponentFrequency(GameObject go, float hz)
