@@ -80,9 +80,10 @@ public class SpawnPointManager : MonoBehaviour
                 : "📌 [Manual Mode] Please Left-Click on road ground to set Spawn Point! (Mouse Scroll: Rotate)";
         }
 
-        RuntimeObjectPlacer placer = FindFirstObjectByType<RuntimeObjectPlacer>();
+        RuntimeObjectPlacer placer = FindFirstObjectByType<RuntimeObjectPlacer>(FindObjectsInactive.Include);
         if (placer != null)
         {
+            placer.enabled = true;
             placer.SelectSpawnPointMode();
         }
     }

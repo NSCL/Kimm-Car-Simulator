@@ -120,6 +120,18 @@ public class ScenarioPathBuilder : MonoBehaviour
     public void StartBuildingPath()
     {
         CancelBuildingPath();
+
+        RuntimeObjectPlacer placer = FindFirstObjectByType<RuntimeObjectPlacer>();
+        if (placer != null)
+        {
+            placer.ClearGhost();
+        }
+
+        if (SpawnPointManager.Instance != null)
+        {
+            SpawnPointManager.Instance.isPlacingSpawnPoint = false;
+        }
+
         isBuildingPath = true;
         if (pathEditorPanel != null) pathEditorPanel.SetActive(true);
 
@@ -210,6 +222,13 @@ public class ScenarioPathBuilder : MonoBehaviour
                 }
             }
         }
+        currentPath.Clear();
+
+        RuntimeObjectPlacer placer = FindFirstObjectByType<RuntimeObjectPlacer>(FindObjectsInactive.Include);
+        if (placer != null)
+        {
+            placer.enabled = true;
+        }
     }
 
     public void CancelBuildingPath()
@@ -229,6 +248,19 @@ public class ScenarioPathBuilder : MonoBehaviour
     public void HideWaypointMarkers()
     {
         if (pathLine != null) pathLine.enabled = false;
+        
+        // 씬 내의 모든 보행자 액터의 웨이포인트 마커 비활성화
+        PedestrianActor[] allActors = FindObjectsByType<PedestrianActor>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var actor in allActors)
+        {
+            if (actor == null || actor.myMarkers == null) continue;
+            foreach (var m in actor.myMarkers)
+            {
+                if (m != null) m.SetActive(false);
+            }
+        }
+
+        // 현재 작성 중인 마커들도 비활성화
         foreach (var point in currentPath)
         {
             if (point.visualMarker != null)
@@ -241,6 +273,19 @@ public class ScenarioPathBuilder : MonoBehaviour
     public void ShowWaypointMarkers()
     {
         if (pathLine != null) pathLine.enabled = true;
+
+        // 씬 내의 모든 보행자 액터의 웨이포인트 마커 활성화
+        PedestrianActor[] allActors = FindObjectsByType<PedestrianActor>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var actor in allActors)
+        {
+            if (actor == null || actor.myMarkers == null) continue;
+            foreach (var m in actor.myMarkers)
+            {
+                if (m != null) m.SetActive(true);
+            }
+        }
+
+        // 현재 작성 중인 마커들도 활성화
         foreach (var point in currentPath)
         {
             if (point.visualMarker != null)

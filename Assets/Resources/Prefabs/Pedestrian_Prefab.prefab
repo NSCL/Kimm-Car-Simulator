@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 666839809746067522}
   - component: {fileID: 2901206047937848301}
   - component: {fileID: 5317773415157347160}
-  - component: {fileID: 177382001608609025}
   m_Layer: 0
   m_Name: Pedestrian_Prefab
   m_TagString: SpawnedObject
@@ -108,29 +107,6 @@ MonoBehaviour:
   walkSpeed: 1.5
   runSpeed: 4
   myMarkers: []
---- !u!136 &177382001608609025
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3277328432934076556}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2309054950266469152
 PrefabInstance:
   m_ObjectHideFlags: 0

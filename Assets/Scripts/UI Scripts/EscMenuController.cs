@@ -61,11 +61,14 @@ public class EscMenuController : MonoBehaviour
                 btn.onClick.RemoveAllListeners();
                 btn.onClick.AddListener(OnClickResetVehicle);
             }
-            else if (btnName.Contains("config") || btnText.Contains("config") || btnName.Contains("select"))
+            else if (btnName.Contains("vehicle") || (btnText.Contains("vehicle") && btnText.Contains("config")))
             {
                 selectConfigButton = btn;
-                btn.onClick.RemoveAllListeners();
-                btn.onClick.AddListener(OnClickSelectVehicleConfig);
+                // 인스펙터 세팅 존중 (2중 중복 바인딩 차단)
+            }
+            else if (btnName.Contains("sensor") || (btnText.Contains("sensor") && btnText.Contains("config")))
+            {
+                // 인스펙터 세팅 존중 (2중 중복 바인딩 차단)
             }
             else if (btnName.Contains("resume") || btnText.Contains("resume") || btnName.Contains("continue"))
             {
@@ -156,6 +159,23 @@ public class EscMenuController : MonoBehaviour
         if (VehicleConfigManager.Instance != null)
         {
             string selectedPath = VehicleConfigManager.Instance.OpenFileDialogAndSelectConfig();
+
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                _lastConfigClickTime = Time.unscaledTime;
+                OnClickResume();
+            }
+        }
+    }
+
+    public void OnClickSelectSensorConfig()
+    {
+        if (Time.unscaledTime - _lastConfigClickTime < 0.8f) return;
+        _lastConfigClickTime = Time.unscaledTime;
+
+        if (SensorConfigManager.Instance != null)
+        {
+            string selectedPath = SensorConfigManager.Instance.OpenFileDialogAndSelectSensorConfig();
 
             if (!string.IsNullOrEmpty(selectedPath))
             {

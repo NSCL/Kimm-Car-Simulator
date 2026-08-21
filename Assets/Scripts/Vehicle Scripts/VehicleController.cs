@@ -52,6 +52,7 @@ public class VehicleController : MonoBehaviour
 
     private void Awake()
     {
+        if (FindFirstObjectByType<SensorConfigManager>() == null) gameObject.AddComponent<SensorConfigManager>();
         if (fmuManager == null) fmuManager = FindFirstObjectByType<FMUManager>();
         if (inputManager == null) inputManager = FindFirstObjectByType<FMUManager>()?.GetComponent<VehicleInputManager>();
 

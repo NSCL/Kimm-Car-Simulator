@@ -66,27 +66,47 @@ public class VehicleConfigManager : MonoBehaviour
     }
 
     private float _lastConfigSelectTime = 0f;
+    public static float GlobalLastDialogClosedTime = 0f;
+    public static bool GlobalIsAnyDialogOpen = false;
+    private static bool _isNativeDialogOpen = false;
 
     public void SelectConfigViaFileDialog()
     {
-        if (Time.unscaledTime - _lastConfigSelectTime < 1.0f) return;
-        if (Time.unscaledTime - _dialogClosedTime < 1.0f) return;
-        _lastConfigSelectTime = Time.unscaledTime;
+        if (_isNativeDialogOpen || GlobalIsAnyDialogOpen) return;
+        if (Time.unscaledTime - _lastConfigSelectTime < 2.0f) return;
+        if (Time.unscaledTime - GlobalLastDialogClosedTime < 2.0f) return;
 
-        string path = OpenFileDialogAndSelectConfig();
-        if (!string.IsNullOrEmpty(path))
+        _isNativeDialogOpen = true;
+        _lastConfigSelectTime = Time.unscaledTime;
+        GlobalIsAnyDialogOpen = true;
+
+        try
         {
-            _lastConfigSelectTime = Time.unscaledTime;
-            if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
+            string path = OpenFileDialogAndSelectConfig();
+            if (!string.IsNullOrEmpty(path))
             {
-                EscMenuController.Instance.OnClickResume();
+                _lastConfigSelectTime = Time.unscaledTime;
+                if (EscMenuController.Instance != null && EscMenuController.Instance.isMenuOpen)
+                {
+                    EscMenuController.Instance.OnClickResume();
+                }
             }
+        }
+        finally
+        {
+            _isNativeDialogOpen = false;
+            GlobalIsAnyDialogOpen = false;
+            GlobalLastDialogClosedTime = Time.unscaledTime;
         }
     }
 
     public bool LoadDefaultConfig()
     {
-        string defaultPath = Path.Combine(Application.streamingAssetsPath, "vehicle_config.json");
+        string defaultPath = Path.Combine(Application.streamingAssetsPath, "VehicleConfigs", "default_vehicle_config.json");
+        if (!File.Exists(defaultPath))
+        {
+            defaultPath = Path.Combine(Application.streamingAssetsPath, "VehicleConfigs", "vehicle_config.json");
+        }
         return LoadConfigFromFile(defaultPath);
     }
 

@@ -1,0 +1,63 @@
+{
+  "SensorConfigName": "KIMM Default Sensor Suite",
+  "_CoordinateSystem_Guide": {
+    "Position": "FLU Standard (x: Forward(+)/Backward(-), y: Left(+)/Right(-), z: Up(+)/Down(-))",
+    "Rotation": "Degrees (roll: Right(+), pitch: NoseUp(+)/NoseDown(-), yaw: TurnLeft(+)/TurnRight(-))"
+  },
+  "ROS2Connection": {
+    "RosIP": "127.0.0.1",
+    "RosPort": 10000
+  },
+  "GNSS": {
+    "TopicName": "/kimm/gnss/fix",
+    "PublishFrequency": 10.0,
+    "InitialLatitude": 0.0,
+    "InitialLongitude": 0.0,
+    "InitialAltitude": 0.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "IMU": {
+    "TopicName": "/kimm/imu/data",
+    "PublishFrequency": 100.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "LiDAR": {
+    "Name": "Kimm_MID360",
+    "TopicName": "/kimm/lidar/points",
+    "PublishFrequency": 20.0,
+    "PointsNumPerScan": 100000,
+    "MinRange": 0.1,
+    "MaxRange": 70.0,
+    "GaussianNoiseSigma": 0.02,
+    "MaxIntensity": 255.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.6 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "Camera": {
+    "Name": "Kimm_RGBCamera",
+    "TopicName": "/kimm/camera/color/compressed",
+    "CameraInfoTopic": "/kimm/camera/camera_info",
+    "PublishFrequency": 30.0,
+    "ResolutionWidth": 640,
+    "ResolutionHeight": 480,
+    "FieldOfView": 60.0,
+    "LocalPosition": { "x": 0.3, "y": 0.0, "z": 0.7 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "CameraInfo": {
+    "TopicName": "/kimm/camera/camera_info",
+    "PublishFrequency": 30.0
+  },
+  "VehicleStatus": {
+    "TopicName": "/kimm/vehicle_status",
+    "PublishFrequency": 50.0
+  },
+  "CarControlCmd": {
+    "TopicName": "/kimm/car_cmd"
+  },
+  "GoalPose": {
+    "TopicName": "/kimm/goal_pose"
+  }
+}

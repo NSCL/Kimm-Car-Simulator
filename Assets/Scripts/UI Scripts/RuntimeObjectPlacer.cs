@@ -103,7 +103,15 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     public void SelectSpawnPointMode()
     {
+        enabled = true;
         ClearGhost();
+
+        ScenarioPathBuilder spb = FindFirstObjectByType<ScenarioPathBuilder>(FindObjectsInactive.Include);
+        if (spb != null)
+        {
+            spb.CancelBuildingPath();
+        }
+
         if (SpawnPointManager.Instance != null)
         {
             SpawnPointManager.Instance.isPlacingSpawnPoint = true;
@@ -251,6 +259,12 @@ public class RuntimeObjectPlacer : MonoBehaviour
 
     public void SelectItem(GameObject newPrefab)
     {
+        ScenarioPathBuilder spb = FindFirstObjectByType<ScenarioPathBuilder>();
+        if (spb != null)
+        {
+            spb.CancelBuildingPath();
+        }
+
         if (SpawnPointManager.Instance != null) SpawnPointManager.Instance.isPlacingSpawnPoint = false;
         if (currentGhost != null) Destroy(currentGhost);
         if (vehicleGhost != null) Destroy(vehicleGhost);
