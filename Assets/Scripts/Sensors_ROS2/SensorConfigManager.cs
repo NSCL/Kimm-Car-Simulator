@@ -195,7 +195,10 @@ public class SensorConfigManager : MonoBehaviour
             }
         }
 
-        // 2. 씬에 남아있던 레거시 고정 센서들 비활성화/정리
+        // 2. ROS-TCP-Connector 내부 TFSystem 캐시 초기화 (파괴된 GameObject 참조로 인한 MissingReferenceException 원천 차단)
+        ResetRosTFSystemCache();
+
+        // 3. 씬에 남아있던 레거시 고정 센서들 비활성화/정리
         CleanLegacySceneSensors();
 
         // 3. ROS2 TCP Connection (RosIP, RosPort 10000) 주입
@@ -513,6 +516,49 @@ public class SensorConfigManager : MonoBehaviour
                 catch { }
             }
         }
+    }
+
+    private void ResetRosTFSystemCache()
+    {
+        try
+        {
+            Type tfSysType = Type.GetType("Unity.Robotics.ROSTCPConnector.TFSystem, Unity.Robotics.ROSTCPConnector");
+            if (tfSysType == null)
+            {
+                foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    tfSysType = asm.GetType("Unity.Robotics.ROSTCPConnector.TFSystem");
+                    if (tfSysType != null) break;
+                }
+            }
+
+            if (tfSysType != null)
+            {
+                var getInstMethod = tfSysType.GetMethod("GetOrCreateInstance", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if (getInstMethod != null)
+                {
+                    object tfSys = getInstMethod.Invoke(null, null);
+                    if (tfSys != null)
+                    {
+                        var fields = tfSysType.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                        foreach (var f in fields)
+                        {
+                            if (typeof(System.Collections.IDictionary).IsAssignableFrom(f.FieldType))
+                            {
+                                var dict = f.GetValue(tfSys) as System.Collections.IDictionary;
+                                if (dict != null) dict.Clear();
+                            }
+                            else if (typeof(System.Collections.IList).IsAssignableFrom(f.FieldType))
+                            {
+                                var list = f.GetValue(tfSys) as System.Collections.IList;
+                                if (list != null) list.Clear();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch { }
     }
 
     #region Reflection Helpers

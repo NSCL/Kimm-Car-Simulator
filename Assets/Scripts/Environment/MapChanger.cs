@@ -133,10 +133,14 @@ public class MapChanger : MonoBehaviour
     {
         isTransitioning = true;
 
-        // 🌟 맵 전환 시작 즉시 Auto Mode 해제 -> Manual Mode 로 100% 안전 자동 복구!
+        // 🌟 맵 전환 시작 즉시 Auto Mode 해제 & Goal Pose 마커 100% 완전 자동 초기화!
         if (AutonomousControlModeManager.Instance != null)
         {
             AutonomousControlModeManager.Instance.SetAutoMode(false);
+        }
+        if (KimmGoalPosePublisher.Instance != null)
+        {
+            KimmGoalPosePublisher.Instance.ResetGoalPose();
         }
 
         OnMapChangeStarted?.Invoke();

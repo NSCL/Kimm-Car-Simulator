@@ -17,9 +17,6 @@ public class WheelGroundSensor : MonoBehaviour
     public float hitQy;              // 타이어 횡축 기준 지면 좌우 경사각 Roll (라디안)
     public bool isGrounded;          // 지면 감지 여부
 
-    [Header("Debug")]
-    public bool enableDebugLog = true;
-
     private static int _targetLayerMask = -1;
 
     private void Awake()
@@ -77,14 +74,6 @@ public class WheelGroundSensor : MonoBehaviour
             //    - hitQy (Roll  -> FMU qx): 우측 뱅크(Roll Right) 시 양수(+), 좌측 뱅크 시 음수(-)
             hitQx = Mathf.Atan2(headingNormal.z, headingNormal.y); // Pitch (오르막 = 음수)
             hitQy = Mathf.Atan2(headingNormal.x, headingNormal.y); // Roll (우측 = 양수, 좌측 = 음수)
-
-            // 3. [디버그 로그]: 도(Degree) 단위로 환산하여 콘솔 출력
-            if (enableDebugLog)
-            {
-                float pitchDeg = hitQx * Mathf.Rad2Deg;
-                float rollDeg = hitQy * Mathf.Rad2Deg;
-                Debug.Log($"[{gameObject.name}] Pitch(FMU_qy): {pitchDeg:F2}° (오르막음수) | Roll(FMU_qx): {rollDeg:F2}° (우측양수)");
-            }
         }
         else
         {
@@ -93,11 +82,6 @@ public class WheelGroundSensor : MonoBehaviour
             hitPointY = transform.position.y - wheelRadius;
             hitQx = 0f;
             hitQy = 0f;
-
-            if (enableDebugLog)
-            {
-                Debug.Log($"[{gameObject.name}] [AIR] isGrounded: false");
-            }
         }
     }
 }

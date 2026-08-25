@@ -54,6 +54,8 @@ public class SmoothCameraController : MonoBehaviour
     public float rotationSmoothSpeed = 10.0f;
 
     private Vector3 _currentVelocity = Vector3.zero;
+    private float _currentCameraYaw = 0f;
+    private float _yawVelocity = 0f;
 
     private void Awake()
     {
@@ -75,6 +77,11 @@ public class SmoothCameraController : MonoBehaviour
         {
             VehicleController vc = FindFirstObjectByType<VehicleController>();
             if (vc != null) targetVehicle = vc.transform;
+        }
+
+        if (targetVehicle != null)
+        {
+            _currentCameraYaw = targetVehicle.eulerAngles.y;
         }
     }
 
@@ -172,11 +179,9 @@ public class SmoothCameraController : MonoBehaviour
         SetViewMode((CameraViewMode)nextMode);
     }
 
-    private void FixedUpdate()
-    {
-        FollowTargetSmooth();
-    }
-
+    // [카메라 지터(Jitter) 원천 방지]:
+    // 물리(FixedUpdate, 50Hz) 연산 완료 후 매 렌더링 프레임(60Hz/144Hz) 직전인 LateUpdate 단 하나에서만
+    // 차량 위치를 부드럽게 추종하여 프레임 간격 불일치로 인한 떨림을 100% 제거합니다.
     private void LateUpdate()
     {
         FollowTargetSmooth();
@@ -204,26 +209,40 @@ public class SmoothCameraController : MonoBehaviour
         switch (currentViewMode)
         {
             case CameraViewMode.Chase:
-                Vector3 currentOffset = offset;
-                currentOffset.z -= currentZoomOffset;
-                desiredPosition = targetVehicle.position + (yawRotation * currentOffset);
+                // [AAA 레이싱 게임급 각도 기반 극좌표계 체이스 캠]:
+                // 1. 차량의 Yaw 회전각을 각도 전용 감쇠기(Mathf.SmoothDampAngle)로 부드럽게 추종합니다.
+                // 2. 급조향/원선회 시에도 카메라가 원 안쪽으로 찌그러지지 않고, 항상 차량 뒤쪽 궤도를 완벽한 원호로 감싸며 돕니다.
+                float targetYaw = targetVehicle.eulerAngles.y;
+                _currentCameraYaw = Mathf.SmoothDampAngle(_currentCameraYaw, targetYaw, ref _yawVelocity, positionSmoothTime);
+                Quaternion camYawRot = Quaternion.Euler(0f, _currentCameraYaw, 0f);
+
+                float chaseDistance = Mathf.Abs(offset.z) + currentZoomOffset;
+                desiredPosition = targetVehicle.position + (camYawRot * new Vector3(offset.x, offset.y, -chaseDistance));
+                transform.position = desiredPosition;
+
+                // 3. 차체 중심을 부드럽게 정조준
                 Vector3 lookTargetPos = targetVehicle.position + (Vector3.up * lookAtHeightOffset);
-                Vector3 lookDir = (lookTargetPos - desiredPosition).normalized;
-                if (lookDir != Vector3.zero)
+                Vector3 lookDir = (lookTargetPos - transform.position).normalized;
+                if (lookDir.sqrMagnitude > 0.001f)
                 {
-                    targetRotation = Quaternion.LookRotation(lookDir, Vector3.up) * Quaternion.Euler(pitchAngleOffset, 0f, 0f);
+                    transform.rotation = Quaternion.LookRotation(lookDir, Vector3.up) * Quaternion.Euler(pitchAngleOffset, 0f, 0f);
                 }
-                transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref _currentVelocity, positionSmoothTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.unscaledDeltaTime * rotationSmoothSpeed);
                 break;
 
             case CameraViewMode.Orbit:
+                // [자유 시점(Orbit/마우스 우클릭 & 줌) 떨림 100% 원천 제거]:
+                // - 마우스 드래그 및 휠 줌 시 3D 선형 스프링(SmoothDamp)의 진동을 제거하고 차체 중심 궤도를 정밀 유지합니다.
                 Quaternion orbitRotation = Quaternion.Euler(orbitAngleY, targetVehicle.eulerAngles.y + orbitAngleX, 0f);
                 float dist = 8.5f + currentZoomOffset;
                 desiredPosition = targetVehicle.position + (orbitRotation * new Vector3(0f, 1.5f, -dist));
-                targetRotation = Quaternion.LookRotation((targetVehicle.position + Vector3.up * lookAtHeightOffset) - desiredPosition);
-                transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref _currentVelocity, positionSmoothTime);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.unscaledDeltaTime * rotationSmoothSpeed);
+                transform.position = desiredPosition;
+
+                Vector3 orbitLookTarget = targetVehicle.position + (Vector3.up * lookAtHeightOffset);
+                Vector3 orbitLookDir = (orbitLookTarget - transform.position).normalized;
+                if (orbitLookDir.sqrMagnitude > 0.001f)
+                {
+                    transform.rotation = Quaternion.LookRotation(orbitLookDir, Vector3.up);
+                }
                 break;
 
             case CameraViewMode.Top:

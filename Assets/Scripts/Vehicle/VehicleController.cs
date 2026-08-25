@@ -278,6 +278,11 @@ public class VehicleController : MonoBehaviour
 
         UnitySensors.Sensor.IMU.KimmIMUSensor kimmIMU = GetComponentInChildren<UnitySensors.Sensor.IMU.KimmIMUSensor>();
         if (kimmIMU != null) kimmIMU.CaptureSpawnHeading();
+
+        if (KimmGoalPosePublisher.Instance != null)
+        {
+            KimmGoalPosePublisher.Instance.ResetGoalPose();
+        }
     }
 
     private IEnumerator CollisionRespawnRoutine()

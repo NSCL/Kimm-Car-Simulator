@@ -94,6 +94,26 @@ public class KimmGoalPosePublisher : MonoBehaviour
     }
 
     /// <summary>
+    /// 맵 전환 또는 시뮬레이션 리셋 시 목표 지점(Goal Pose) 및 3D 깃발 마커를 100% 완전 초기화합니다.
+    /// </summary>
+    public void ResetGoalPose()
+    {
+        StopAllCoroutines();
+        _hasGoalBeenReached = true;
+        currentGoalPosition = Vector3.zero;
+        currentGoalRotation = Quaternion.identity;
+
+        if (_currentGoalMarkerInstance != null)
+        {
+            Destroy(_currentGoalMarkerInstance);
+            _currentGoalMarkerInstance = null;
+        }
+
+        GameObject orphan = GameObject.Find("Goal_Destination_Marker");
+        if (orphan != null) Destroy(orphan);
+    }
+
+    /// <summary>
     /// Auto Mode 시 3D 도로 클릭 위치로 Goal 목적지 핀 배치 및 ROS2 /goal_pose 안전 전송
     /// </summary>
     public void SetGoalPose(Vector3 worldPos, Quaternion worldRot)
