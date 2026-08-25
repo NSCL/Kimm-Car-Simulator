@@ -13,8 +13,8 @@ public class WheelGroundSensor : MonoBehaviour
     // [Output] VehicleController 및 FMU로 전달할 지면 연산 출력값
     public float distanceFromGround; // 지면까지의 실제 거리
     public float hitPointY;          // 감지된 지면의 실제 월드 Y 좌표 (FMU gz 입력용)
-    public float hitQx;              // 지면 경사각 Roll 회전 쿼터니언 x 성분
-    public float hitQy;              // 지면 경사각 Pitch 회전 쿼터니언 y 성분
+    public float hitQx;              // 타이어 전진축 기준 지면 전후 경사각 Pitch (라디안)
+    public float hitQy;              // 타이어 횡축 기준 지면 좌우 경사각 Roll (라디안)
     public bool isGrounded;          // 지면 감지 여부
 
     [Header("Debug")]
@@ -67,9 +67,14 @@ public class WheelGroundSensor : MonoBehaviour
             distanceFromGround = hit.distance;
             hitPointY = hit.point.y;
 
-            Quaternion groundRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            hitQx = groundRotation.x;
-            hitQy = groundRotation.y;
+            // 1. [좌표계 변환]: 지면 법선 벡터(hit.normal)를 '타이어(바퀴) 로컬 좌표계'로 회전 변환
+            //    -> 차가 어느 방향(Heading)을 보고 있든, 타이어의 전진/횡방향 시선 기준 노면 방향으로 1:1 정렬
+            Vector3 localNormal = transform.InverseTransformDirection(hit.normal);
+
+            // 2. [오일러 각도 산출]: 타이어 접지면 기준의 순수 Roll / Pitch 각도 (라디안 단위) 정밀 계산
+            //    -> localNormal.y: 타이어 수직축(하늘), localNormal.z: 타이어 전진축(앞), localNormal.x: 타이어 횡축(우측)
+            hitQx = Mathf.Atan2(localNormal.z, localNormal.y);  // 타이어 전후 오르막/내리막 경사각 (Pitch, 라디안)
+            hitQy = Mathf.Atan2(-localNormal.x, localNormal.y); // 타이어 좌우 뱅크/비탈 경사각 (Roll, 라디안)
         }
         else
         {
