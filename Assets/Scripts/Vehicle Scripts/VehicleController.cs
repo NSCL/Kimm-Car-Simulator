@@ -177,16 +177,17 @@ public class VehicleController : MonoBehaviour
                 fmuManager.SetValue(w.var_GroundDist_In, relativeGroundY);
             }
 
-            if (!string.IsNullOrEmpty(w.var_GroundQx_In))
+            // 지면 경사각 주입 (FMU 모델 규격: qy에 오르막 음수 Pitch, qx에 우측 뱅크 양수 Roll 매핑)
+            if (!string.IsNullOrEmpty(w.var_GroundQx_In)) // 인스펙터에 FL_qy(Pitch)로 매핑됨
             {
-                float qx = w.sensor.isGrounded ? -w.sensor.hitQx : 0f;
-                fmuManager.SetValue(w.var_GroundQx_In, qx);
+                float pitchVal = w.sensor.isGrounded ? w.sensor.hitQx : 0f;
+                fmuManager.SetValue(w.var_GroundQx_In, pitchVal);
             }
 
-            if (!string.IsNullOrEmpty(w.var_GroundQy_In))
+            if (!string.IsNullOrEmpty(w.var_GroundQy_In)) // 인스펙터에 FL_qx(Roll)로 매핑됨
             {
-                float qy = w.sensor.isGrounded ? -w.sensor.hitQy : 0f;
-                fmuManager.SetValue(w.var_GroundQy_In, qy);
+                float rollVal = w.sensor.isGrounded ? w.sensor.hitQy : 0f;
+                fmuManager.SetValue(w.var_GroundQy_In, rollVal);
             }
         }
 

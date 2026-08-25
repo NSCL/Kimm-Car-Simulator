@@ -18,7 +18,7 @@ public class WheelGroundSensor : MonoBehaviour
     public bool isGrounded;          // 지면 감지 여부
 
     [Header("Debug")]
-    public bool enableDebugLog = false;
+    public bool enableDebugLog = true;
 
     private static int _targetLayerMask = -1;
 
@@ -67,14 +67,24 @@ public class WheelGroundSensor : MonoBehaviour
             distanceFromGround = hit.distance;
             hitPointY = hit.point.y;
 
-            // 1. [좌표계 변환]: 지면 법선 벡터(hit.normal)를 '타이어(바퀴) 로컬 좌표계'로 회전 변환
-            //    -> 차가 어느 방향(Heading)을 보고 있든, 타이어의 전진/횡방향 시선 기준 노면 방향으로 1:1 정렬
-            Vector3 localNormal = transform.InverseTransformDirection(hit.normal);
+            // 1. [진행 방향(Heading/Yaw) 좌표계 분해]:
+            //    - 바퀴/차체의 수평 진행 방향(Yaw 각도)만을 추출하여 지면 법선 벡터(hit.normal)를 평면 회전시킵니다.
+            float wheelYaw = transform.eulerAngles.y;
+            Vector3 headingNormal = Quaternion.Euler(0f, -wheelYaw, 0f) * hit.normal;
 
-            // 2. [오일러 각도 산출]: 타이어 접지면 기준의 순수 Roll / Pitch 각도 (라디안 단위) 정밀 계산
-            //    -> localNormal.y: 타이어 수직축(하늘), localNormal.z: 타이어 전진축(앞), localNormal.x: 타이어 횡축(우측)
-            hitQx = Mathf.Atan2(localNormal.z, localNormal.y);  // 타이어 전후 오르막/내리막 경사각 (Pitch, 라디안)
-            hitQy = Mathf.Atan2(-localNormal.x, localNormal.y); // 타이어 좌우 뱅크/비탈 경사각 (Roll, 라디안)
+            // 2. [FMU 규격 오일러 각도 산출 (라디안 단위)]:
+            //    - hitQx (Pitch -> FMU qy): 고개 들림(오르막/Nose-Up) 시 음수(-), 내리막 시 양수(+)
+            //    - hitQy (Roll  -> FMU qx): 우측 뱅크(Roll Right) 시 양수(+), 좌측 뱅크 시 음수(-)
+            hitQx = Mathf.Atan2(headingNormal.z, headingNormal.y); // Pitch (오르막 = 음수)
+            hitQy = Mathf.Atan2(headingNormal.x, headingNormal.y); // Roll (우측 = 양수, 좌측 = 음수)
+
+            // 3. [디버그 로그]: 도(Degree) 단위로 환산하여 콘솔 출력
+            if (enableDebugLog)
+            {
+                float pitchDeg = hitQx * Mathf.Rad2Deg;
+                float rollDeg = hitQy * Mathf.Rad2Deg;
+                Debug.Log($"[{gameObject.name}] Pitch(FMU_qy): {pitchDeg:F2}° (오르막음수) | Roll(FMU_qx): {rollDeg:F2}° (우측양수)");
+            }
         }
         else
         {
@@ -83,6 +93,11 @@ public class WheelGroundSensor : MonoBehaviour
             hitPointY = transform.position.y - wheelRadius;
             hitQx = 0f;
             hitQy = 0f;
+
+            if (enableDebugLog)
+            {
+                Debug.Log($"[{gameObject.name}] [AIR] isGrounded: false");
+            }
         }
     }
 }
