@@ -301,8 +301,8 @@ public class SensorConfigManager : MonoBehaviour
             }
         }
 
-        // 8. LiDAR(s) 동적 생성 & 주입 (단일 "LiDAR" 또는 다중 "LiDARs" 배열 모두 지원)
-        List<string> lidarBlocks = ExtractSensorBlocks(json, "LiDARs", "LiDAR");
+        // 8. LiDAR 동적 생성 & 주입 (단수형 "LiDAR" 키 기반: 단일 객체 또는 다중 배열 모두 100% 자동 지원)
+        List<string> lidarBlocks = ExtractSensorBlocks(json, "LiDAR", "LiDARs");
         if (lidarPrefab != null && container != null)
         {
             int lIdx = 1;
@@ -343,8 +343,8 @@ public class SensorConfigManager : MonoBehaviour
             }
         }
 
-        // 9. Camera(s) 동적 생성 & 주입 (단일 "Camera" 또는 다중 "Cameras" 배열 모두 지원)
-        List<string> camBlocks = ExtractSensorBlocks(json, "Cameras", "Camera");
+        // 9. Camera 동적 생성 & 주입 (단수형 "Camera" 키 기반: 단일 객체 또는 다중 배열 모두 100% 자동 지원)
+        List<string> camBlocks = ExtractSensorBlocks(json, "Camera", "Cameras");
         if (camPrefab != null && container != null)
         {
             int cIdx = 1;
@@ -897,17 +897,27 @@ public class SensorConfigManager : MonoBehaviour
     #endregion
 
     #region JSON Array & Object Extraction Helpers
-    private List<string> ExtractSensorBlocks(string json, string pluralKey, string singularKey)
+    private List<string> ExtractSensorBlocks(string json, string primaryKey, string fallbackKey)
     {
         List<string> blocks = new List<string>();
 
-        // 1. Plural Array 형태 (예: "Cameras": [ { ... }, { ... } ])
-        int pIdx = json.IndexOf($"\"{pluralKey}\"");
-        if (pIdx >= 0)
+        // 1. 단수형("LiDAR"/"Camera") 또는 복수형("LiDARs"/"Cameras") 키 탐색
+        int keyIdx = json.IndexOf($"\"{primaryKey}\"");
+        if (keyIdx < 0 && !string.IsNullOrEmpty(fallbackKey)) keyIdx = json.IndexOf($"\"{fallbackKey}\"");
+        if (keyIdx < 0) return blocks;
+
+        int colonIdx = json.IndexOf(":", keyIdx);
+        if (colonIdx < 0) return blocks;
+
+        // 2. 콜론(:) 뒤에 대괄호 '[' (배열) 또는 중괄호 '{' (단일 객체) 자동 감지
+        int openBracket = json.IndexOf("[", colonIdx);
+        int openBrace = json.IndexOf("{", colonIdx);
+
+        // 🅰️ 배열 형태 (예: "LiDAR": [ {1번}, {2번} ]) -> N개 센서 모조리 전수 추출!
+        if (openBracket >= 0 && (openBrace < 0 || openBracket < openBrace))
         {
-            int openBracket = json.IndexOf("[", pIdx);
             int closeBracket = json.IndexOf("]", openBracket);
-            if (openBracket >= 0 && closeBracket > openBracket)
+            if (closeBracket > openBracket)
             {
                 string arrJson = json.Substring(openBracket + 1, closeBracket - openBracket - 1);
                 int depth = 0;
@@ -931,29 +941,20 @@ public class SensorConfigManager : MonoBehaviour
                 }
             }
         }
-
-        // 2. Singular Object 형태 (예: "Camera": { ... })
-        if (blocks.Count == 0)
+        // 🅱️ 단일 객체 형태 (예: "LiDAR": { ... }) -> 1개 센서 추출!
+        else if (openBrace >= 0)
         {
-            int sIdx = json.IndexOf($"\"{singularKey}\"");
-            if (sIdx >= 0)
+            int depth = 0;
+            for (int i = openBrace; i < json.Length; i++)
             {
-                int openBrace = json.IndexOf("{", sIdx);
-                if (openBrace >= 0)
+                if (json[i] == '{') depth++;
+                else if (json[i] == '}')
                 {
-                    int depth = 0;
-                    for (int i = openBrace; i < json.Length; i++)
+                    depth--;
+                    if (depth == 0)
                     {
-                        if (json[i] == '{') depth++;
-                        else if (json[i] == '}')
-                        {
-                            depth--;
-                            if (depth == 0)
-                            {
-                                blocks.Add(json.Substring(openBrace, i - openBrace + 1));
-                                break;
-                            }
-                        }
+                        blocks.Add(json.Substring(openBrace, i - openBrace + 1));
+                        break;
                     }
                 }
             }

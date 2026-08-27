@@ -65,7 +65,7 @@ public class ROSCmdVelSubscriber : MonoBehaviour
                 }
                 else
                 {
-                    _inputManager.ShiftGear(VehicleInputManager.GearState.Neutral);
+                    _inputManager.ShiftGear(VehicleInputManager.GearState.Park);
                 }
             }
         }
