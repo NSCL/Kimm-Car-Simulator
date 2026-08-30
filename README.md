@@ -94,7 +94,7 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 
 
 ### 2. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)
 
-시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환한 후, 아래 파이썬 스크립트를 실행하면 `/goal_pose` 목표 지점을 향해 **Pure Pursuit 조향각 산출, 거리 기반 적응형 감속, 2.0m 이내 정밀 정차**를 수행한다:
+시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환하면 **화면에서 마우스 좌클릭으로 바닥에 목표 핀(Goal Pin 📍)을 직접 배치**할 수 있다. 핀이 배치되면 시뮬레이터가 `/kimm/goal_pose` 토픽을 5회 연속 전송하며, 아래 파이썬 스크립트가 이를 수신하여 **Pure Pursuit 조향각 산출, 거리 기반 적응형 감속, 2.0m 이내 정밀 정차**를 수행한다:
 
 ```python
 #!/usr/bin/env python3
@@ -108,9 +108,9 @@ from kimm_msgs.msg import CarControlCmd
 class KimmPurePursuitController(Node):
     def __init__(self):
         super().__init__('kimm_pure_pursuit_controller')
-        # 시뮬레이터 차량 상태(Odometry) 및 목표 지점(Goal Pose) 구독
+        # 시뮬레이터 차량 상태(Odometry) 및 마우스 핀 목표 지점(Goal Pose) 구독
         self.sub_odom = self.create_subscription(Odometry, '/kimm/vehicle_status', self.odom_cb, 10)
-        self.sub_goal = self.create_subscription(PoseStamped, '/goal_pose', self.goal_cb, 10)
+        self.sub_goal = self.create_subscription(PoseStamped, '/kimm/goal_pose', self.goal_cb, 10)
         # By-Wire 제어 명령 퍼블리셔 생성
         self.pub_cmd = self.create_publisher(CarControlCmd, '/kimm/car_cmd', 10)
         
@@ -140,7 +140,7 @@ class KimmPurePursuitController(Node):
     def goal_cb(self, msg):
         self.goal_x = msg.pose.position.x
         self.goal_y = msg.pose.position.y
-        self.get_logger().info(f"🚩 New Goal Pose Set: X={self.goal_x:.2f}, Y={self.goal_y:.2f}")
+        self.get_logger().info(f"🚩 New Goal Pin Received: X={self.goal_x:.2f}, Y={self.goal_y:.2f}")
 
     def control_loop(self):
         if self.current_x is None or self.goal_x is None:
@@ -204,11 +204,11 @@ if __name__ == '__main__':
     main()
 ```
 
-#### 🎯 목표 지점(Goal Pose) 전송 예시
-새로운 터미널에서 목표 좌표(예: $X=50.0, Y=0.0$)를 전송하면 차량이 해당 위치로 자율주행을 시작한다:
-```bash
-ros2 topic pub --once /goal_pose geometry_msgs/msg/PoseStamped "{header: {frame_id: 'world'}, pose: {position: {x: 50.0, y: 0.0, z: 0.0}}}"
-```
+#### 📍 인터랙티브 마우스 목표 핀(Goal Pin) 지정 방법
+1. 시뮬레이터 주행 중 키보드 **`M` 키**를 눌러 **`AUTO MODE`** 로 전환한다.
+2. 마우스 커서가 활성화되면 가상 트랙 도로 바닥의 원하는 위치를 **마우스 좌클릭**한다.
+3. 3D 지형에 붉은색 **목표 핀(Goal Pin 📍)** 이 꽂히며, 시뮬레이터는 패킷 유실 방지를 위해 ROS 2 **`/kimm/goal_pose` 토픽을 5회 연속 브로드캐스트**한다.
+4. 실행 중인 `pure_pursuit_demo.py`가 이를 수신하여 차량이 즉시 해당 목표 핀을 향해 자율주행을 시작한다.
 
 ---
 
