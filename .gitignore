@@ -7,3 +7,10 @@ obj/
 *.csproj
 *.sln
 .vsconfig
+
+# Build Artifacts (Do not commit standalone builds)
+Build/
+Builds/
+*.apk
+*.unitypackage
+*.zip
