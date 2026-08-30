@@ -23,7 +23,7 @@
   - [2. Linux 환경 실행](#2-linux-환경-실행)
 - [ROS 2 연동 및 예제 코드 (ROS 2 Integration & Example Code)](#-ros-2-연동-및-예제-코드-ros-2-integration--example-code)
   - [1. ROS-TCP-Endpoint 실행 (Ubuntu / WSL2)](#1-ros-tcp-endpoint-실행-ubuntu--wsl2)
-  - [2. 자율주행 제어 Python 예제 코드 (`kimm_teleop_example.py`)](#2-자율주행-제어-python-예제-코드-kimm_teleop_examplepy)
+  - [2. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)](#2-자율주행-경로-추종-제어-python-예제-코드-pure_pursuit_demopy)
 - [조작 및 단축키 안내 (Controls Guide)](#-조작-및-단축키-안내-controls-guide)
 - [런타임 환경설정 (Configuration & Hot-Swap)](#-런타임-환경설정-configuration--hot-swap)
   - [1. 차량 물리 파라미터 기본 설정 (`vehicle_config.json` - 45개 변수)](#1-차량-물리-파라미터-기본-설정-vehicle_configjson---45개-변수)
@@ -92,36 +92,106 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 
 
 ---
 
-### 2. 자율주행 제어 Python 예제 코드 (`kimm_teleop_example.py`)
+### 2. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)
 
-시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환한 후, 아래 파이썬 스크립트를 실행하여 By-Wire 제어 명령(`kimm_msgs/CarControlCmd`)을 발행할 수 있다:
+시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환한 후, 아래 파이썬 스크립트를 실행하면 `/goal_pose` 목표 지점을 향해 **Pure Pursuit 조향각 산출, 거리 기반 적응형 감속, 2.0m 이내 정밀 정차**를 수행한다:
 
 ```python
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+import math
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import PoseStamped
 from kimm_msgs.msg import CarControlCmd
 
-class KimmVehicleController(Node):
+class KimmPurePursuitController(Node):
     def __init__(self):
-        super().__init__('kimm_vehicle_controller')
+        super().__init__('kimm_pure_pursuit_controller')
+        # 시뮬레이터 차량 상태(Odometry) 및 목표 지점(Goal Pose) 구독
+        self.sub_odom = self.create_subscription(Odometry, '/kimm/vehicle_status', self.odom_cb, 10)
+        self.sub_goal = self.create_subscription(PoseStamped, '/goal_pose', self.goal_cb, 10)
         # By-Wire 제어 명령 퍼블리셔 생성
-        self.publisher_ = self.create_publisher(CarControlCmd, '/kimm/car_cmd', 10)
-        self.timer = self.create_timer(0.02, self.timer_callback) # 50 Hz 제어 루프
-        self.get_logger().info('KIMM Car Simulator Autonomous Control Node Started.')
-
-    def timer_callback(self):
-        cmd = CarControlCmd()
-        cmd.accel = 0.3      # 가속 페달 입력 (0.0 ~ 1.0)
-        cmd.brake = 0.0      # 제동 페달 입력 (0.0 ~ 1.0)
-        cmd.steering = 0.05  # 조향각 입력 (-1.0: 좌회전, +1.0: 우회전)
-        cmd.gear = 1         # 기어 상태 (0: P, 1: D, -1: R)
+        self.pub_cmd = self.create_publisher(CarControlCmd, '/kimm/car_cmd', 10)
         
-        self.publisher_.publish(cmd)
+        self.current_x = None
+        self.current_y = None
+        self.current_speed = 0.0
+        self.current_yaw = 0.0
+        self.goal_x = None
+        self.goal_y = None
+        
+        self.timer = self.create_timer(0.05, self.control_loop) # 20 Hz 제어 루프
+        self.get_logger().info("🚀 [KIMM Pure Pursuit Node] Autonomous Controller Ready!")
+
+    def odom_cb(self, msg):
+        self.current_x = msg.pose.pose.position.x
+        self.current_y = msg.pose.pose.position.y
+        
+        vx = msg.twist.twist.linear.x
+        vy = msg.twist.twist.linear.y
+        self.current_speed = math.hypot(vx, vy)
+
+        q = msg.pose.pose.orientation
+        siny_cosp = 2.0 * (q.w * q.z + q.x * q.y)
+        cosy_cosp = 1.0 - 2.0 * (q.y * q.y + q.z * q.z)
+        self.current_yaw = math.atan2(siny_cosp, cosy_cosp)
+
+    def goal_cb(self, msg):
+        self.goal_x = msg.pose.position.x
+        self.goal_y = msg.pose.position.y
+        self.get_logger().info(f"🚩 New Goal Pose Set: X={self.goal_x:.2f}, Y={self.goal_y:.2f}")
+
+    def control_loop(self):
+        if self.current_x is None or self.goal_x is None:
+            return
+
+        dx = self.goal_x - self.current_x
+        dy = self.goal_y - self.current_y
+        dist = math.hypot(dx, dy)
+
+        cmd = CarControlCmd()
+        
+        # 1. 목표 지점 2.0m 이내 정밀 정차
+        if dist < 2.0:
+            cmd.accel = 0.0
+            cmd.brake = 1.0
+            cmd.steering = 0.0
+            cmd.gear = 1
+            self.get_logger().info("🎯 Goal Destination Reached! Vehicle Safely Stopped.")
+            self.goal_x = None
+            self.goal_y = None
+        else:
+            # 2. Pure Pursuit 조향각 산출
+            target_angle = math.atan2(dy, dx)
+            alpha = target_angle - self.current_yaw
+            
+            while alpha > math.pi: alpha -= 2 * math.pi
+            while alpha < -math.pi: alpha += 2 * math.pi
+
+            steering_cmd = math.sin(alpha) * 1.5
+            cmd.steering = max(-1.0, min(1.0, steering_cmd))
+
+            # 3. 거리 기반 적응형 감속 프로파일링 (25m 전부터 감속)
+            if dist < 25.0:
+                target_speed_mps = max(0.6, dist * 0.2)
+                if self.current_speed > target_speed_mps:
+                    cmd.accel = 0.0
+                    cmd.brake = min(1.0, (self.current_speed - target_speed_mps) * 0.5 + 0.15)
+                else:
+                    cmd.accel = 0.08
+                    cmd.brake = 0.0
+            else:
+                cmd.accel = 0.4
+                cmd.brake = 0.0
+
+            cmd.gear = 1
+
+        self.pub_cmd.publish(cmd)
 
 def main(args=None):
     rclpy.init(args=args)
-    node = KimmVehicleController()
+    node = KimmPurePursuitController()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
@@ -132,6 +202,12 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
+```
+
+#### 🎯 목표 지점(Goal Pose) 전송 예시
+새로운 터미널에서 목표 좌표(예: $X=50.0, Y=0.0$)를 전송하면 차량이 해당 위치로 자율주행을 시작한다:
+```bash
+ros2 topic pub --once /goal_pose geometry_msgs/msg/PoseStamped "{header: {frame_id: 'world'}, pose: {position: {x: 50.0, y: 0.0, z: 0.0}}}"
 ```
 
 ---
