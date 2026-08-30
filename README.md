@@ -5,7 +5,6 @@
   <img src="https://img.shields.io/badge/ROS_2-Humble%20%7C%20Foxy-blue?style=for-the-badge&logo=ros" />
   <img src="https://img.shields.io/badge/Dynamics-14--DOF%20FMU%20(1000Hz)-brightgreen?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20Linux-orange?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
 </p>
 
 <p align="center">
@@ -19,16 +18,18 @@
 
 - [개요 (Overview)](#-개요-overview)
 - [주요 기능 (Key Features)](#-주요-기능-key-features)
-- [시스템 아키텍처 (Architecture)](#-시스템-아키텍처-architecture)
-- [시작하기 (Getting Started)](#-시작하기-getting-started)
-  - [방법 A. 사전 빌드 배포본 실행 (Quick Start - Recommended)](#방법-a-사전-빌드-배포본-실행-quick-start---recommended)
-  - [방법 B. 소스코드 빌드 및 개발 환경 구축 (Build from Source)](#방법-b-소스코드-빌드-및-개발-환경-구축-build-from-source)
-- [ROS 2 연동 가이드 (ROS 2 Integration)](#-ros-2-연동-가이드-ros-2-integration)
+- [시작하기 및 배포본 실행 (Getting Started)](#-시작하기-및-배포본-실행-getting-started)
+  - [1. Windows 환경 실행](#1-windows-환경-실행)
+  - [2. Linux 환경 실행](#2-linux-환경-실행)
+- [ROS 2 연동 및 예제 코드 (ROS 2 Integration & Example Code)](#-ros-2-연동-및-예제-코드-ros-2-integration--example-code)
+  - [1. ROS-TCP-Endpoint 실행 (Ubuntu / WSL2)](#1-ros-tcp-endpoint-실행-ubuntu--wsl2)
+  - [2. 자율주행 제어 Python 예제 코드 (`kimm_teleop_example.py`)](#2-자율주행-제어-python-예제-코드-kimm_teleop_examplepy)
 - [조작 및 단축키 안내 (Controls Guide)](#-조작-및-단축키-안내-controls-guide)
 - [런타임 환경설정 (Configuration & Hot-Swap)](#-런타임-환경설정-configuration--hot-swap)
+  - [1. 차량 물리 파라미터 기본 설정 (`vehicle_config.json` - 45개 변수)](#1-차량-물리-파라미터-기본-설정-vehicle_configjson---45개-변수)
+  - [2. 센서 스위트 기본 설정 (`default_sensor_config.json`)](#2-센서-스위트-기본-설정-default_sensor_configjson)
+  - [3. 다중 센서 확장 설정 예시 (`custom_sensor_config.json`)](#3-다중-센서-확장-설정-예시-custom_sensor_configjson)
 - [지원 맵 및 트랙 (Supported Tracks)](#-지원-맵-및-트랙-supported-tracks)
-- [기술 문서 및 연구 성과 (Documentation & Publications)](#-기술-문서-및-연구-성과-documentation--publications)
-- [라이선스 (License)](#-라이선스-license)
 
 ---
 
@@ -53,146 +54,91 @@
 
 ---
 
-## 🏛️ 시스템 아키텍처 (Architecture)
+## 🚀 시작하기 및 배포본 실행 (Getting Started)
 
-```mermaid
-graph TD
-    subgraph Unity_Platform ["🎮 Unity 3D Digital Twin Platform (Windows / Linux)"]
-        subgraph Dyn_Loop ["⚙️ 1000 Hz Physics Co-Simulation Loop"]
-            Raycast["4-Wheel Terrain Raycast Engine<br>(Elevation gz, Slopes Qx, Qy)"]
-            FMU["Simscape Multibody 14-DOF FMU<br>(Chassis 6-DOF, Susp 4-DOF, Wheel 4-DOF)"]
-            CPI["CPI Tire Friction Model<br>(Nonlinear Fx, Fy, Fz, Torque)"]
-            Raycast -->|1ms Profile| CPI
-            CPI -->|Tire Forces| FMU
-            FMU -->|Chassis Pose & Susp Travel| Raycast
-        end
+시뮬레이터는 별도의 소스코드 빌드 과정 없이, 사전에 빌드된 독립 실행 패키지를 다운로드하여 즉시 구동할 수 있다.
 
-        subgraph Sensor_Pipeline ["📡 Multi-Sensor Spawning Engine"]
-            LiDAR["3D LiDAR (16/32/64ch)"]
-            Camera["RGB / Depth Camera"]
-            GNSS["GNSS (WGS84 / Local ENU)"]
-            IMU["100 Hz 6-DOF IMU"]
-        end
+### 1. Windows 환경 실행
+1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 Windows 패키지(`Kimm-Car-Simulator_v2.0.0_Windows_x64.zip`)를 다운로드한다.
+2. 다운로드한 `.zip` 압축파일을 원하는 디렉토리에 해제한다.
+3. 폴더 내의 **`Kimm-Car-Simulator.exe`** 를 더블클릭하여 실행한다.
+4. 키보드(`W/A/S/D`) 또는 USB 레이싱 휠을 사용하여 주행을 시작한다.
 
-        subgraph Interactive_UI ["🛠️ UI & Interaction"]
-            ScenarioEdit["Scenario Edit Mode ('E')<br>(Speed Bump, Drum, Cone, Dummy, Pedestrian)"]
-            ChartPanel["Telemetry Chart Panel ('TAB')<br>(Speed, Roll/Pitch, Susp, Slip)"]
-            EscMenu["ESC Main Menu<br>(Map Select, Config Hot-Swap, Reset)"]
-        end
-    end
-
-    subgraph Network_Bridge ["🌐 Distributed Communication Gateway"]
-        TCP["ROS-TCP-Endpoint / ROS-TCP-Connector<br>(Async High-Speed Socket)"]
-    end
-
-    subgraph ROS2_Autonomous_Stack ["🚀 Autonomous Driving Stack (Ubuntu / ROS 2)"]
-        subgraph Perception ["1. 인지 및 위치 추정 (Perception & Localization)"]
-            LaneDet["CNN Deep Learning Lane Detection"]
-            LiDARClust["3D LiDAR Euclidean Clustering"]
-            EKFOdom["Robot Localization / EKF Odometry"]
-        end
-        subgraph Control ["2. 판단 및 제어 (Planning & Control)"]
-            Planner["Global / Local Path Planner"]
-            PurePursuit["Adaptive Pure Pursuit Path Tracking"]
-            ByWirePub["By-Wire Controller (kimm_msgs/CarControlCmd)"]
-        end
-    end
-
-    Sensor_Pipeline -->|Sensor Topics: PointCloud2, Image, NavSatFix, Imu| TCP
-    TCP -->|Sensor Stream| Perception
-    Perception --> Control
-    ByWirePub -->|Control Topic: kimm_car/control_cmd| TCP
-    TCP -->|By-Wire Inputs: Accel, Brake, Steer, Gear| FMU
-```
-
----
-
-## 🚀 시작하기 (Getting Started)
-
-### 시스템 요구 사양 (System Requirements)
-
-* **운영체제**: Windows 10/11 (64-bit) 또는 Ubuntu 20.04/22.04 LTS
-* **CPU**: Intel Core i5-12세대 이상 / AMD Ryzen 5 5600 이상 권장
-* **GPU**: NVIDIA GeForce RTX 3060 이상 (RTX 4060 Ti / 5060 Ti 권장, VRAM 8GB 이상)
-* **메모리**: 16 GB RAM 이상
-* **소프트웨어**: Unity 2022.3 LTS (소스 빌드 시), ROS 2 Humble 또는 Foxy (자율주행 연동 시)
-
----
-
-### 방법 A. 사전 빌드 배포본 실행 (Quick Start - Recommended)
-
-소스코드 빌드 없이 시뮬레이터를 즉시 실행하려면 사전 빌드 패키지를 사용한다:
-
-1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 배포본(`Kimm-Car-Simulator_v2.0.0_Windows_x64.zip`)을 다운로드한다.
-2. 다운로드한 파일의 압축을 해제한다.
-3. **`Kimm-Car-Simulator.exe`** 를 더블클릭하여 실행한다.
-4. `W/A/S/D` 키보드 또는 레이싱 휠을 사용하여 가상 트랙 주행을 즉시 시작할 수 있다.
-
----
-
-### 방법 B. 소스코드 빌드 및 개발 환경 구축 (Build from Source)
-
-시뮬레이터 프로젝트를 직접 수정하거나 Unity 에디터에서 실행하는 경우:
-
-1. **저장소 클론**:
+### 2. Linux 환경 실행
+1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 Linux 패키지(`Kimm-Car-Simulator_v2.0.0_Linux_x64.tar.gz`)를 다운로드한다.
+2. 터미널을 열고 압축을 해제한 후 실행 권한을 부여한다:
    ```bash
-   git clone https://github.com/dbsrn0125/Kimm-Car-Simulator.git
-   cd Kimm-Car-Simulator
+   tar -zxvf Kimm-Car-Simulator_v2.0.0_Linux_x64.tar.gz
+   cd Kimm-Car-Simulator_Linux
+   chmod +x Kimm-Car-Simulator.x86_64
+   ./Kimm-Car-Simulator.x86_64
    ```
-2. **Unity Hub에서 프로젝트 열기**:
-   * Unity Hub 실행 ➔ `Add` ➔ 클론받은 `Kimm-Car-Simulator` 폴더 선택.
-   * 에디터 버전: **Unity 2022.3.x LTS** 선택 후 실행.
-3. **메인 씬 열기**:
-   * `Project` 창 ➔ `Assets/Scenes/` ➔ **`Proving Ground`** (또는 `K-City`, `Mcity`, `Zalazone`) 더블클릭.
-4. **에디터 실행**:
-   * 상단 중앙의 **`Play (▶)`** 버튼 클릭.
-5. **독립 실행 파일 빌드 (Standalone Build)**:
-   * 상단 메뉴 `File` ➔ `Build Settings...` ➔ 플랫폼: `Windows, Mac, Linux` (Target: Windows, x86_64).
-   * `Build` 버튼 클릭 후 원하는 출력 디렉토리 지정.
 
 ---
 
-## 🌐 ROS 2 연동 가이드 (ROS 2 Integration)
+## 🌐 ROS 2 연동 및 예제 코드 (ROS 2 Integration & Example Code)
 
-Ubuntu 22.04 (또는 WSL 2) 환경의 ROS 2 자율주행 알고리즘과 통신하는 절차이다.
+Ubuntu 22.04 (또는 WSL 2) 환경에서 시뮬레이터와 TCP로 통신하여 자율주행 제어 명령을 전송하는 방법이다.
 
-### 1. Ubuntu 환경 의존성 설치 및 워크스페이스 빌드
+### 1. ROS-TCP-Endpoint 실행 (Ubuntu / WSL2)
 ```bash
-# ROS 2 및 TCP Endpoint 워크스페이스 생성
-mkdir -p ~/kimm_ws/src
-cd ~/kimm_ws/src
-
-# ROS-TCP-Endpoint 및 커스텀 메시지 패키지 클론
-git clone https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
-git clone https://github.com/dbsrn0125/Kimm-Car-Simulator.git
-
-# 워크스페이스 빌드
-cd ~/kimm_ws
+# ROS 2 환경 활성화
 source /opt/ros/humble/setup.bash
-colcon build
-source install/setup.bash
-```
 
-### 2. ROS-TCP-Endpoint 통신 서버 실행
-```bash
-# TCP 서버 가동 (포트 10000)
+# ROS-TCP-Endpoint 실행 (기본 포트: 10000)
 ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 -p ROS_PORT:=10000
 ```
+> 시뮬레이터 화면 상단 HUD의 ROS 2 연결 표시기가 **초록색 (Connected)** 으로 전환되면 통신이 정상 연결된 상태이다.
 
-### 3. 시뮬레이터 연결 및 자율주행 제어
-1. Windows에서 `Kimm-Car-Simulator.exe` 실행.
-2. 화면 상단 HUD의 ROS 2 연결 표시기가 **초록색 (Connected)** 으로 활성화되는지 확인.
-3. 키보드 **`M` 키**를 눌러 제어 모드를 **`AUTO MODE`** 로 전환.
-4. Ubuntu 터미널에서 자율주행 경로 추종 노드 실행:
-   ```bash
-   ros2 run kimm_car_control pure_pursuit_node
-   ```
+---
+
+### 2. 자율주행 제어 Python 예제 코드 (`kimm_teleop_example.py`)
+
+시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환한 후, 아래 파이썬 스크립트를 실행하여 By-Wire 제어 명령(`kimm_msgs/CarControlCmd`)을 발행할 수 있다:
+
+```python
+#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from kimm_msgs.msg import CarControlCmd
+
+class KimmVehicleController(Node):
+    def __init__(self):
+        super().__init__('kimm_vehicle_controller')
+        # By-Wire 제어 명령 퍼블리셔 생성
+        self.publisher_ = self.create_publisher(CarControlCmd, '/kimm/car_cmd', 10)
+        self.timer = self.create_timer(0.02, self.timer_callback) # 50 Hz 제어 루프
+        self.get_logger().info('KIMM Car Simulator Autonomous Control Node Started.')
+
+    def timer_callback(self):
+        cmd = CarControlCmd()
+        cmd.accel = 0.3      # 가속 페달 입력 (0.0 ~ 1.0)
+        cmd.brake = 0.0      # 제동 페달 입력 (0.0 ~ 1.0)
+        cmd.steering = 0.05  # 조향각 입력 (-1.0: 좌회전, +1.0: 우회전)
+        cmd.gear = 1         # 기어 상태 (0: P, 1: D, -1: R)
+        
+        self.publisher_.publish(cmd)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = KimmVehicleController()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
+```
 
 ---
 
 ## 🎮 조작 및 단축키 안내 (Controls Guide)
 
-### 4.1 키보드 조작 (Keyboard Controls)
+### 1. 키보드 조작 (Keyboard Controls)
 
 | 키 (Key) | 기능 (Function) | 상세 설명 |
 | :---: | :--- | :--- |
@@ -208,7 +154,7 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 
 | **`F1`** | **조작 도움말 팝업 토글** | 전체 키 매핑 및 휠 조작 안내창 표시 |
 | **`F5` ~ `F8`** | **시점 전환 (Camera Views)** | `F5`: 1인칭/3인칭, `F6`: 탑뷰, `F7`/`F8`: 좌/우 사이드뷰 |
 
-### 4.2 USB 레이싱 휠 & 게임패드 매핑 (Racing Wheel Mapping)
+### 2. USB 레이싱 휠 & 게임패드 매핑 (Racing Wheel Mapping)
 
 * **스티어링 휠 / 페달**: 아날로그 조향각 및 가속(Gas) / 제동(Brake) 페달 답력 비례 제어 (0 ~ 100%)
 * **패들 시프트**: 우측 패들(D 기어 체결) / 좌측 패들(R 기어 $\leftrightarrow$ P 기어 순환)
@@ -225,36 +171,219 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 
 
 설정 파일은 실행 파일 기준 `Kimm-Car-Simulator_Data/StreamingAssets/` 폴더에 위치하며, 소스코드 수정 없이 JSON 수정만으로 동작이 변경된다.
 
-### 1. 차량 물리 파라미터 (`VehicleConfigs/vehicle_config.json`)
-* 총 45개의 차량 물리 변수를 포함한다 (차체 질량 `Veh_BodyMass`, 3축 관성모멘트 `Veh_BodyInertia`, 전후륜 트랙폭 `Veh_TrackF/R`, 축거 `Veh_Front/RearAxleX`, 서스펜션 스프링/댐퍼 강성 `Veh_SuspF/R_*`, 공력 계수 `Veh_Aero*` 등).
+### 1. 차량 물리 파라미터 기본 설정 (`vehicle_config.json` - 45개 변수)
 
-### 2. 센서 스위트 파라미터 (`SensorConfigs/custom_sensor_config.json`)
-* 단수형 키(`"LiDAR"`, `"Camera"`, `"GNSS"`, `"IMU"`) 배열 구조를 채택하여 런타임에 다중 센서를 동적으로 스폰한다:
 ```json
 {
+  "Metadata": {
+    "VehicleName": "KIMM Standard Sedan (Original Baseline)",
+    "Description": "인스펙터 원본 데이터 기반 45개 정확한 baseline 파라미터 설정 파일",
+    "Version": "1.0"
+  },
+  "Parameters": {
+    "gnssLatitude": 35.8714,
+    "gnssLongitude": 128.6014,
+    "gnssAltitude": 45.0,
+
+    "Veh_AeroArea": 2.594,
+    "Veh_AeroCd": 0.2888,
+    "Veh_AeroCl": 0.149,
+    "Veh_AeroRho": 1.205,
+
+    "Veh_BodyInertia[1,1]": 600.0,
+    "Veh_BodyInertia[1,2]": 3000.0,
+    "Veh_BodyInertia[1,3]": 3200.0,
+
+    "Veh_BodyMass": 1600.0,
+    "Veh_BodyRefZ0": 0.6147,
+    "Veh_BodytoWheelCenter": 0.2647,
+    "Veh_FrontAxleX": 1.5,
+    "Veh_RearAxleX": -1.5,
+    "Veh_SteerRatio": 16.0,
+
+    "Veh_SuspF_BumpC": 3000.0,
+    "Veh_SuspF_BumpK": 200000.0,
+    "Veh_SuspF_BumpLimit": -0.084,
+    "Veh_SuspF_BumpWidth": 0.003,
+    "Veh_SuspF_C": 1750.0,
+    "Veh_SuspF_EqPos": 0.1126,
+    "Veh_SuspF_K": 35000.0,
+    "Veh_SuspF_ReboundC": 3000.0,
+    "Veh_SuspF_ReboundK": 200000.0,
+    "Veh_SuspF_ReboundLimit": 0.056,
+    "Veh_SuspF_ReboundWidth": 0.003,
+    "Veh_SuspF_UnsprungInertia[1,1]": 1.0,
+    "Veh_SuspF_UnsprungInertia[1,2]": 1.0,
+    "Veh_SuspF_UnsprungInertia[1,3]": 1.0,
+    "Veh_SuspF_UnsprungMass": 48.0,
+
+    "Veh_SuspR_BumpC": 4000.0,
+    "Veh_SuspR_BumpK": 300000.0,
+    "Veh_SuspR_BumpLimit": -0.095,
+    "Veh_SuspR_BumpWidth": 0.003,
+    "Veh_SuspR_C": 2200.0,
+    "Veh_SuspR_EqPos": 0.0985,
+    "Veh_SuspR_K": 40000.0,
+    "Veh_SuspR_ReboundC": 4000.0,
+    "Veh_SuspR_ReboundK": 300000.0,
+    "Veh_SuspR_ReboundLimit": 0.04,
+    "Veh_SuspR_ReboundWidth": 0.003,
+    "Veh_SuspR_UnsprungInertia[1,1]": 1.0,
+    "Veh_SuspR_UnsprungInertia[1,2]": 1.0,
+    "Veh_SuspR_UnsprungInertia[1,3]": 1.0,
+    "Veh_SuspR_UnsprungMass": 45.0,
+
+    "Veh_TrackF": 1.6,
+    "Veh_TrackR": 1.6
+  }
+}
+```
+
+---
+
+### 2. 센서 스위트 기본 설정 (`default_sensor_config.json`)
+
+단일 센서 구성 기준 기본 설정 파일:
+
+```json
+{
+  "SensorConfigName": "KIMM Default Sensor Suite",
+  "_CoordinateSystem_Guide": {
+    "Position": "FLU Standard (x: Forward(+)/Backward(-), y: Left(+)/Right(-), z: Up(+)/Down(-))",
+    "Rotation": "Degrees (roll: Right(+), pitch: NoseUp(+)/NoseDown(-), yaw: TurnLeft(+)/TurnRight(-))"
+  },
+  "ROS2Connection": {
+    "RosIP": "127.0.0.1",
+    "RosPort": 10000
+  },
+  "GNSS": {
+    "FrameId": "gnss_frame",
+    "TopicName": "/kimm/gnss/fix",
+    "PublishFrequency": 10.0,
+    "InitialLatitude": 0.0,
+    "InitialLongitude": 0.0,
+    "InitialAltitude": 0.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "IMU": {
+    "FrameId": "imu_frame",
+    "TopicName": "/kimm/imu/data",
+    "PublishFrequency": 100.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "LiDAR": {
+    "FrameId": "lidar_frame",
+    "TopicName": "/kimm/lidar/points",
+    "PublishFrequency": 20.0,
+    "PointsNumPerScan": 100000,
+    "MinRange": 0.1,
+    "MaxRange": 70.0,
+    "GaussianNoiseSigma": 0.02,
+    "MaxIntensity": 255.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.6 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "Camera": {
+    "FrameId": "camera_frame",
+    "TopicName": "/kimm/camera/color/compressed",
+    "CameraInfoTopic": "/kimm/camera/camera_info",
+    "PublishFrequency": 30.0,
+    "ResolutionWidth": 640,
+    "ResolutionHeight": 480,
+    "FieldOfView": 60.0,
+    "LocalPosition": { "x": 0.3, "y": 0.0, "z": 0.7 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "VehicleStatus": {
+    "TopicName": "/kimm/vehicle_status",
+    "PublishFrequency": 50.0
+  },
+  "CarControlCmd": {
+    "TopicName": "/kimm/car_cmd"
+  }
+}
+```
+
+---
+
+### 3. 다중 센서 확장 설정 예시 (`custom_sensor_config.json`)
+
+`"LiDAR"` 또는 `"Camera"` 키 아래에 **배열 `[ { ... }, { ... } ]`** 형태로 작성하면, 전방/후방 라이다 및 다중 카메라가 런타임에 동적으로 각각 인스턴스화된다:
+
+```json
+{
+  "SensorConfigName": "KIMM Dual-Camera & Dual-LiDAR Suite",
+  "ROS2Connection": {
+    "RosIP": "127.0.0.1",
+    "RosPort": 10000
+  },
+  "GNSS": {
+    "FrameId": "gnss_frame",
+    "TopicName": "/kimm/gnss/fix",
+    "PublishFrequency": 10.0,
+    "InitialLatitude": 36.37561,
+    "InitialLongitude": 127.35921,
+    "InitialAltitude": 55.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
+  "IMU": {
+    "FrameId": "imu_frame",
+    "TopicName": "/kimm/imu/data",
+    "PublishFrequency": 200.0,
+    "LocalPosition": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+  },
   "LiDAR": [
     {
-      "name": "front_lidar",
-      "topic": "/kimm_car/lidar/front/points",
-      "frame_id": "front_lidar_link",
-      "channels": 32,
-      "range": 100.0,
-      "frequency": 10.0,
-      "position": [0.0, 1.8, 1.2],
-      "rotation": [0.0, 0.0, 0.0]
+      "FrameId": "front_lidar_frame",
+      "TopicName": "/kimm/lidar_front/points",
+      "PublishFrequency": 10.0,
+      "PointsNumPerScan": 50000,
+      "MinRange": 0.1,
+      "MaxRange": 70.0,
+      "GaussianNoiseSigma": 0.02,
+      "MaxIntensity": 255.0,
+      "LocalPosition": { "x": 0.3, "y": 0.0, "z": 0.6 },
+      "LocalRotation": { "roll": 0.0, "pitch": -15.0, "yaw": 0.0 }
+    },
+    {
+      "FrameId": "rear_lidar_frame",
+      "TopicName": "/kimm/lidar_rear/points",
+      "PublishFrequency": 10.0,
+      "PointsNumPerScan": 50000,
+      "MinRange": 0.1,
+      "MaxRange": 70.0,
+      "GaussianNoiseSigma": 0.02,
+      "MaxIntensity": 255.0,
+      "LocalPosition": { "x": -0.3, "y": 0.0, "z": 0.6 },
+      "LocalRotation": { "roll": 0.0, "pitch": -15.0, "yaw": 180.0 }
     }
   ],
   "Camera": [
     {
-      "name": "front_camera",
-      "topic": "/kimm_car/camera/front/image_compressed",
-      "frame_id": "front_camera_link",
-      "width": 1280,
-      "height": 720,
-      "fov": 70.0,
-      "frequency": 30.0,
-      "position": [0.0, 1.6, 1.5],
-      "rotation": [0.0, 0.0, 0.0]
+      "FrameId": "front_camera_frame",
+      "TopicName": "/kimm/camera_front/color/compressed",
+      "CameraInfoTopic": "/kimm/camera_front/camera_info",
+      "PublishFrequency": 30.0,
+      "ResolutionWidth": 640,
+      "ResolutionHeight": 480,
+      "FieldOfView": 60.0,
+      "LocalPosition": { "x": 0.3, "y": 0.0, "z": 0.7 },
+      "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 0.0 }
+    },
+    {
+      "FrameId": "rear_camera_frame",
+      "TopicName": "/kimm/camera_rear/color/compressed",
+      "CameraInfoTopic": "/kimm/camera_rear/camera_info",
+      "PublishFrequency": 30.0,
+      "ResolutionWidth": 640,
+      "ResolutionHeight": 480,
+      "FieldOfView": 60.0,
+      "LocalPosition": { "x": -0.3, "y": 0.0, "z": 0.7 },
+      "LocalRotation": { "roll": 0.0, "pitch": 0.0, "yaw": 180.0 }
     }
   ]
 }
@@ -270,18 +399,3 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 
 | **K-City (자율주행 실험도시)** | 한국교통안전공단(KATRI) 실도로 기반 교차로, 건물, 터널 트랙 | 차선 인식, 3D LiDAR 장애물 회피, 도심 신호 교차로 주행 |
 | **Mcity (도심 자율주행 트랙)** | 도심형 인터체인지 및 복합 도로 환경 트랙 | 복합 교차로 회전, 다중 보행자/더미차량 돌발 상황 검증 |
 | **ZalaZone (자라존 시험장)** | 유럽형 스마트시티 및 고속 핸들링/선회 시험 트랙 | 고속 자율주행 경로 추종, 복합 슬라럼 및 횡방향 핸들링 검증 |
-
----
-
-## 📜 기술 문서 및 연구 성과 (Documentation & Publications)
-
-* 📖 **[공식 기술 및 사용자 매뉴얼 (User & Technical Manual)](https://github.com/dbsrn0125/Kimm-Car-Simulator/blob/main/docs/KIMM_Car_Simulator_Official_Manual.md)**
-* 🏛️ **[시스템 아키텍처 백서 (System Architecture Whitepaper)](https://github.com/dbsrn0125/Kimm-Car-Simulator/blob/main/docs/26KimmDgtTwin_Architecture.md)**
-* 🎓 **KSAE 2024 학술대회 논문**: *"Simscape Multibody 14자유도 FMU와 Unity 3D 및 ROS 2 기반 실시간 자율주행 차량 디지털 트윈 시뮬레이터 개발"*
-
----
-
-## 👥 연구진 및 라이선스 (Team & License)
-
-* **연구 개발 기관**: 한국기계연구원 (KIMM) 가상공학플랫폼연구본부 디지털트윈연구실
-* **라이선스**: 본 프로젝트는 [MIT License](LICENSE)에 따라 배포됩니다.
