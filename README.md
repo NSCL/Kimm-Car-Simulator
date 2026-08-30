@@ -1,7 +1,7 @@
 # KIMM Car Simulator
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Unity-2022.3%20LTS%20URP-black?style=for-the-badge&logo=unity" />
+  <img src="https://img.shields.io/badge/Unity-6%20(6000.3.10f1)%20URP-black?style=for-the-badge&logo=unity" />
   <img src="https://img.shields.io/badge/ROS_2-Humble%20%7C%20Foxy-blue?style=for-the-badge&logo=ros" />
   <img src="https://img.shields.io/badge/Dynamics-14--DOF%20FMU%20(1000Hz)-brightgreen?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Platform-Windows%20x64%20%7C%20Linux-orange?style=for-the-badge" />
