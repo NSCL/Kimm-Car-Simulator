@@ -59,16 +59,16 @@
 시뮬레이터는 별도의 소스코드 빌드 과정 없이, 사전에 빌드된 독립 실행 패키지를 다운로드하여 즉시 구동할 수 있다.
 
 ### 1. Windows 환경 실행
-1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 Windows 패키지(`Kimm-Car-Simulator_v2.0.0_Windows_x64.zip`)를 다운로드한다.
+1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 Windows 패키지(`Kimm-Car-Simulator_v1.0.0_Windows_x64.zip`)를 다운로드한다.
 2. 다운로드한 `.zip` 압축파일을 원하는 디렉토리에 해제한다.
 3. 폴더 내의 **`Kimm-Car-Simulator.exe`** 를 더블클릭하여 실행한다.
 4. 키보드(`W/A/S/D`) 또는 USB 레이싱 휠을 사용하여 주행을 시작한다.
 
 ### 2. Linux 환경 실행
-1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 Linux 패키지(`Kimm-Car-Simulator_v2.0.0_Linux_x64.tar.gz`)를 다운로드한다.
+1. 저장소 우측의 **[Releases](https://github.com/dbsrn0125/Kimm-Car-Simulator/releases)** 페이지에서 최신 Linux 패키지(`Kimm-Car-Simulator_v1.0.0_Linux_x64.tar.gz`)를 다운로드한다.
 2. 터미널을 열고 압축을 해제한 후 실행 권한을 부여한다:
    ```bash
-   tar -zxvf Kimm-Car-Simulator_v2.0.0_Linux_x64.tar.gz
+   tar -zxvf Kimm-Car-Simulator_v1.0.0_Linux_x64.tar.gz
    cd Kimm-Car-Simulator_Linux
    chmod +x Kimm-Car-Simulator.x86_64
    ./Kimm-Car-Simulator.x86_64
