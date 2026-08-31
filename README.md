@@ -21,9 +21,12 @@
 - [시작하기 및 배포본 실행 (Getting Started)](#-시작하기-및-배포본-실행-getting-started)
   - [1. Windows 환경 실행](#1-windows-환경-실행)
   - [2. Linux 환경 실행](#2-linux-환경-실행)
-- [ROS 2 연동 및 예제 코드 (ROS 2 Integration & Example Code)](#-ros-2-연동-및-예제-코드-ros-2-integration--example-code)
-  - [1. ROS-TCP-Endpoint 실행 (Ubuntu / WSL2)](#1-ros-tcp-endpoint-실행-ubuntu--wsl2)
-  - [2. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)](#2-자율주행-경로-추종-제어-python-예제-코드-pure_pursuit_demopy)
+- [ROS 2 연동 및 통신 명세 (ROS 2 Integration & Topics)](#-ros-2-연동-및-통신-명세-ros-2-integration--topics)
+  - [1. ROS-TCP-Endpoint 및 `kimm_msgs` 패키지 설치](#1-ros-tcp-endpoint-및-kimm_msgs-패키지-설치)
+  - [2. ROS-TCP-Endpoint 서버 실행](#2-ros-tcp-endpoint-서버-실행)
+  - [3. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)](#3-kimm-차량-제어-메시지-명세-kimm_msgscarcontrolcmd)
+  - [4. ROS 2 토픽 인터페이스 전체 명세 (Topics Specification)](#4-ros-2-토픽-인터페이스-전체-명세-topics-specification)
+  - [5. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)](#5-자율주행-경로-추종-제어-python-예제-코드-pure_pursuit_demopy)
 - [조작 및 단축키 안내 (Controls Guide)](#-조작-및-단축키-안내-controls-guide)
 - [런타임 환경설정 (Configuration & Hot-Swap)](#-런타임-환경설정-configuration--hot-swap)
   - [1. 차량 물리 파라미터 기본 설정 (`vehicle_config.json` - 45개 변수)](#1-차량-물리-파라미터-기본-설정-vehicle_configjson---45개-변수)
@@ -76,23 +79,74 @@
 
 ---
 
-## 🌐 ROS 2 연동 및 예제 코드 (ROS 2 Integration & Example Code)
+## 🌐 ROS 2 연동 및 통신 명세 (ROS 2 Integration & Topics)
 
-Ubuntu 22.04 (또는 WSL 2) 환경에서 시뮬레이터와 TCP로 통신하여 자율주행 제어 명령을 전송하는 방법이다.
+Ubuntu 22.04 (Humble / Foxy) 또는 Windows WSL2 환경에서 시뮬레이터와 TCP 소켓으로 고속 연동하여 센서 데이터 수신 및 By-Wire 자율주행 제어를 수행할 수 있다.
 
-### 1. ROS-TCP-Endpoint 실행 (Ubuntu / WSL2)
+### 1. ROS-TCP-Endpoint 및 `kimm_msgs` 패키지 설치
+Unity와 ROS 2 간의 비동기 TCP 통신을 위해 Unity 공식 [ROS-TCP-Endpoint](https://github.com/Unity-Technologies/ROS-TCP-Endpoint)와 KIMM 차량 제어 메시지 패키지(`kimm_msgs`)를 ROS 2 워크스페이스에 클론하고 빌드한다:
+
 ```bash
-# ROS 2 환경 활성화
-source /opt/ros/humble/setup.bash
+# 1. ROS 2 워크스페이스 생성
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
 
-# ROS-TCP-Endpoint 실행 (기본 포트: 10000)
-ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 -p ROS_PORT:=10000
+# 2. Unity 공식 ROS-TCP-Endpoint 저장소 클론
+git clone -b main-ros2 https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
+
+# 3. KIMM Car Simulator 저장소 클론 (kimm_msgs 포함)
+git clone https://github.com/dbsrn0125/Kimm-Car-Simulator.git
+
+# 4. 패키지 의존성 빌드 및 환경 로드
+cd ~/ros2_ws
+colcon build --packages-select ros_tcp_endpoint kimm_msgs
+source install/setup.bash
 ```
-> 시뮬레이터 화면 상단 HUD의 ROS 2 연결 표시기가 **초록색 (Connected)** 으로 전환되면 통신이 정상 연결된 상태이다.
 
 ---
 
-### 2. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)
+### 2. ROS-TCP-Endpoint 서버 실행
+```bash
+# ROS 2 환경 활성화
+source ~/ros2_ws/install/setup.bash
+
+# TCP 엔드포인트 서버 실행 (기본 포트: 10000)
+ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 -p ROS_PORT:=10000
+```
+> 시뮬레이터 실행 후 화면 상단 HUD의 ROS 2 상태 표시기가 **초록색 (Connected)** 으로 점등되면 정상 연동된 상태이다.
+
+---
+
+### 3. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)
+외부 자율주행 알고리즘 노드가 시뮬레이터 차량을 By-Wire 방식으로 전자 제어하기 위해 `/kimm/car_cmd` 토픽으로 발행하는 메시지 정의이다:
+
+```yaml
+# kimm_msgs/msg/CarControlCmd.msg
+float32 accel      # 가속 페달 답력 (0.0 ~ 1.0)
+float32 brake      # 유압 제동 페달 답력 (0.0 ~ 1.0)
+float32 steering   # 전륜 조향각 (-1.0: 최대 좌회전, +1.0: 최대 우회전)
+int32 gear         # 전자식 변속 기어 (0: Park, 1: Drive, -1: Reverse)
+```
+
+---
+
+### 4. ROS 2 토픽 인터페이스 전체 명세 (Topics Specification)
+
+기본 센서 구성(`default_sensor_config.json`) 기준 발행/구독 토픽 목록:
+
+| 토픽명 (Topic Name) | 메시지 타입 (Type) | 주파수 (Hz) | 설명 |
+| :--- | :--- | :--- | :--- |
+| **`/kimm/vehicle_status`** | `nav_msgs/msg/Odometry` | 50.0 | 실시간 차속, 전역 오도메트리 위치$(X, Y, Z)$, 쿼터니언 헤딩 자세 |
+| **`/kimm/lidar/points`** | `sensor_msgs/msg/PointCloud2` | 20.0 | 3D LiDAR 포인트클라우드 (100,000 pts/scan) |
+| **`/kimm/camera/color/compressed`** | `sensor_msgs/msg/CompressedImage` | 30.0 | 전방 HD RGB 카메라 JPEG 실시간 영상 스트림 |
+| **`/kimm/gnss/fix`** | `sensor_msgs/msg/NavSatFix` | 10.0 | WGS84 위도, 경도, 타원체 고도 데이터 |
+| **`/kimm/imu/data`** | `sensor_msgs/msg/Imu` | 100.0 | 6축 관성 센서 각속도 및 3축 가속도 데이터 |
+| **`/kimm/goal_pose`** | `geometry_msgs/msg/PoseStamped` | Event | Auto Mode 화면 핀(Pin 📍) 클릭 시 5회 연속 브로드캐스트 발행 |
+| **`/kimm/car_cmd`** | `kimm_msgs/msg/CarControlCmd` | 100.0 | 외부 자율주행 제어기로부터의 By-Wire 주행 명령 (수신) |
+
+---
+
+### 5. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)
 
 시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환하면 **화면에서 마우스 좌클릭으로 바닥에 목표 핀(Goal Pin 📍)을 직접 배치**할 수 있다. 핀이 배치되면 시뮬레이터가 `/kimm/goal_pose` 토픽을 5회 연속 전송하며, 아래 파이썬 스크립트가 이를 수신하여 **Pure Pursuit 조향각 산출, 거리 기반 적응형 감속, 2.0m 이내 정밀 정차**를 수행한다:
 
