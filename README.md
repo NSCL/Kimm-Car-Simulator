@@ -22,11 +22,12 @@
   - [1. Windows 환경 실행](#1-windows-환경-실행)
   - [2. Linux 환경 실행](#2-linux-환경-실행)
 - [ROS 2 연동 및 통신 명세 (ROS 2 Integration & Topics)](#-ros-2-연동-및-통신-명세-ros-2-integration--topics)
-  - [1. ROS-TCP-Endpoint 및 `kimm_msgs` 패키지 설치](#1-ros-tcp-endpoint-및-kimm_msgs-패키지-설치)
-  - [2. ROS-TCP-Endpoint 서버 실행](#2-ros-tcp-endpoint-서버-실행)
-  - [3. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)](#3-kimm-차량-제어-메시지-명세-kimm_msgscarcontrolcmd)
-  - [4. ROS 2 토픽 인터페이스 전체 명세 (Topics Specification)](#4-ros-2-토픽-인터페이스-전체-명세-topics-specification)
-  - [5. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)](#5-자율주행-경로-추종-제어-python-예제-코드-pure_pursuit_demopy)
+  - [1. ROS-TCP-Endpoint 설치 및 빌드](#1-ros-tcp-endpoint-설치-및-빌드)
+  - [2. KIMM 제어 메시지 패키지 (`kimm_msgs`) 다운로드 및 빌드](#2-kimm-제어-메시지-패키지-kimm_msgs-다운로드-및-빌드)
+  - [3. ROS-TCP-Endpoint 서버 실행](#3-ros-tcp-endpoint-서버-실행)
+  - [4. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)](#4-kimm-차량-제어-메시지-명세-kimm_msgscarcontrolcmd)
+  - [5. ROS 2 토픽 인터페이스 전체 명세 (Topics Specification)](#5-ros-2-토픽-인터페이스-전체-명세-topics-specification)
+  - [6. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)](#6-자율주행-경로-추종-제어-python-예제-코드-pure_pursuit_demopy)
 - [조작 및 단축키 안내 (Controls Guide)](#-조작-및-단축키-안내-controls-guide)
 - [런타임 환경설정 (Configuration & Hot-Swap)](#-런타임-환경설정-configuration--hot-swap)
   - [1. 차량 물리 파라미터 기본 설정 (`vehicle_config.json` - 45개 변수)](#1-차량-물리-파라미터-기본-설정-vehicle_configjson---45개-변수)
@@ -83,29 +84,44 @@
 
 Ubuntu 22.04 (Humble / Foxy) 또는 Windows WSL2 환경에서 시뮬레이터와 TCP 소켓으로 고속 연동하여 센서 데이터 수신 및 By-Wire 자율주행 제어를 수행할 수 있다.
 
-### 1. ROS-TCP-Endpoint 및 `kimm_msgs` 패키지 설치
-Unity와 ROS 2 간의 비동기 TCP 통신을 위해 Unity 공식 [ROS-TCP-Endpoint](https://github.com/Unity-Technologies/ROS-TCP-Endpoint)와 KIMM 차량 제어 메시지 패키지(`kimm_msgs`)를 ROS 2 워크스페이스에 클론하고 빌드한다:
+### 1. ROS-TCP-Endpoint 설치 및 빌드
+Unity와 ROS 2 간의 비동기 TCP 통신을 지원하는 공식 라이브러리인 [Unity-Technologies/ROS-TCP-Endpoint](https://github.com/Unity-Technologies/ROS-TCP-Endpoint)를 워크스페이스에 클론하고 빌드한다:
 
 ```bash
-# 1. ROS 2 워크스페이스 생성
+# 1. ROS 2 워크스페이스 생성 및 이동
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
 
 # 2. Unity 공식 ROS-TCP-Endpoint 저장소 클론
 git clone -b main-ros2 https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
 
-# 3. KIMM Car Simulator 저장소 클론 (kimm_msgs 포함)
-git clone https://github.com/dbsrn0125/Kimm-Car-Simulator.git
-
-# 4. 패키지 의존성 빌드 및 환경 로드
+# 3. 패키지 빌드
 cd ~/ros2_ws
-colcon build --packages-select ros_tcp_endpoint kimm_msgs
+colcon build --packages-select ros_tcp_endpoint
 source install/setup.bash
 ```
 
 ---
 
-### 2. ROS-TCP-Endpoint 서버 실행
+### 2. KIMM 제어 메시지 패키지 (`kimm_msgs`) 다운로드 및 빌드
+차량 By-Wire 제어 명령(`/kimm/car_cmd`)을 발행하기 위한 커스텀 메시지 패키지(`kimm_msgs`)를 다운로드하여 빌드한다:
+
+```bash
+cd ~/ros2_ws/src
+
+# 1. KIMM ROS 2 메시지 패키지 다운로드 및 압축 해제 (1초 컷)
+wget https://github.com/dbsrn0125/Kimm-Car-Simulator/releases/download/v1.0.0/kimm_ros2_packages.zip
+unzip kimm_ros2_packages.zip
+
+# 2. kimm_msgs 메시지 패키지 빌드 및 환경 적용
+cd ~/ros2_ws
+colcon build --packages-select kimm_msgs
+source install/setup.bash
+```
+
+---
+
+### 3. ROS-TCP-Endpoint 서버 실행
 ```bash
 # ROS 2 환경 활성화
 source ~/ros2_ws/install/setup.bash
@@ -117,7 +133,7 @@ ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 
 
 ---
 
-### 3. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)
+### 4. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)
 외부 자율주행 알고리즘 노드가 시뮬레이터 차량을 By-Wire 방식으로 전자 제어하기 위해 `/kimm/car_cmd` 토픽으로 발행하는 메시지 정의이다:
 
 ```yaml
@@ -130,7 +146,7 @@ int32 gear         # 전자식 변속 기어 (0: Park, 1: Drive, -1: Reverse)
 
 ---
 
-### 4. ROS 2 토픽 인터페이스 전체 명세 (Topics Specification)
+### 5. ROS 2 토픽 인터페이스 전체 명세 (Topics Specification)
 
 기본 센서 구성(`default_sensor_config.json`) 기준 발행/구독 토픽 목록:
 
@@ -146,7 +162,7 @@ int32 gear         # 전자식 변속 기어 (0: Park, 1: Drive, -1: Reverse)
 
 ---
 
-### 5. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)
+### 6. 자율주행 경로 추종 제어 Python 예제 코드 (`pure_pursuit_demo.py`)
 
 시뮬레이터 차량을 자율주행 제어 모드(`AUTO MODE`, 단축키 `M`)로 전환하면 **화면에서 마우스 좌클릭으로 바닥에 목표 핀(Goal Pin 📍)을 직접 배치**할 수 있다. 핀이 배치되면 시뮬레이터가 `/kimm/goal_pose` 토픽을 5회 연속 전송하며, 아래 파이썬 스크립트가 이를 수신하여 **Pure Pursuit 조향각 산출, 거리 기반 적응형 감속, 2.0m 이내 정밀 정차**를 수행한다:
 
