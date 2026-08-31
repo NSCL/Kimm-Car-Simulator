@@ -131,10 +131,6 @@ source ~/ros2_ws/install/setup.bash
 
 # TCP 엔드포인트 서버 실행 (기본 포트: 10000)
 ros2 run ros_tcp_endpoint default_server_endpoint --ros-args -p ROS_IP:=0.0.0.0 -p ROS_PORT:=10000
-```
-> 시뮬레이터 실행 후 화면 상단 HUD의 ROS 2 상태 표시기가 **초록색 (Connected)** 으로 점등되면 정상 연동된 상태이다.
-
----
 
 ### 4. KIMM 차량 제어 메시지 명세 (`kimm_msgs/CarControlCmd`)
 외부 자율주행 알고리즘 노드가 시뮬레이터 차량을 By-Wire 방식으로 전자 제어하기 위해 `/kimm/car_cmd` 토픽으로 발행하는 메시지 정의이다:
