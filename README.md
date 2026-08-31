@@ -37,7 +37,8 @@
 
 **KIMM Car Simulator**는 중소·중견 자동차 부품사, 스타트업 및 연구기관의 고가 외산 상용 시뮬레이터 도입 비용 부담을 덜고, 실차 수준의 고충실도 가상 검증 환경을 제공하기 위해 한국기계연구원(KIMM)에서 개발한 **오픈소스 자율주행 차량 디지털 트윈 시뮬레이터**이다.
 
-* **1000 Hz 다물체 동역학**: MATLAB Simscape Multibody 기반 14자유도(14-DOF) 모델과 CPI(Contact Point Interface) 비선형 타이어 마찰 모델을 C++ FMU로 연동하여 1ms Co-Simulation을 수행한다.
+<<<<<<< HEAD
+* **1000 Hz 다물체 동역학**: MATLAB Simscape Multibody 기반 14자유도(14-DOF) 모델과 Magic Formula 비선형 타이어 마찰 모델을 C++ FMU로 연동하여 1ms Co-Simulation을 수행한다.
 * **센서 및 파라미터 핫스왑**: 소스코드 재컴파일 없이 JSON 파일만으로 45개 차량 물리 변수와 복수 LiDAR/Camera/GNSS/IMU 구성을 실시간 교체한다.
 * **표준 ROS 2 인터페이스**: 실제 차량 By-Wire 제어 규격(`kimm_msgs/CarControlCmd`)을 통해 Ubuntu ROS 2 자율주행 풀스택(인지-판단-제어)과 1:1 직통 통신을 지원한다.
 
@@ -47,7 +48,7 @@
 
 | 분류 | 주요 기능 및 기술 스펙 |
 | :--- | :--- |
-| **🚗 차량 동역학** | • **14자유도 다물체 모델**: 차체 6-DOF, 4륜 독립 서스펜션 4-DOF, 휠 회전 4-DOF<br>• **CPI 타이어 모델**: 4바퀴 실시간 노면 고도/경사각 레이캐스트 및 비선형 구동/제동/코너링 포스 계산<br>• **1000 Hz Co-Simulation**: FMI 2.0 표준 C++ 바이너리 기반 1ms 결정론적 연성 해석 |
+| **🚗 차량 동역학** | • **14자유도 다물체 모델**: 차체 6-DOF, 4륜 독립 서스펜션 4-DOF, 휠 회전 4-DOF<br>• **Magic Formula 타이어 모델**: 4바퀴 실시간 노면 고도/경사각 레이캐스트 및 비선형 구동/제동/코너링 포스 계산<br>• **1000 Hz Co-Simulation**: FMI 2.0 표준 C++ 바이너리 기반 1ms 결정론적 연성 해석 |
 | **📡 센서 스위트** | • **3D LiDAR**: 16/32/64채널 병렬 레이캐스트 및 `sensor_msgs/PointCloud2` 발행<br>• **HD Camera**: RGB 전/후방/어라운드뷰 렌더 텍스처 및 `sensor_msgs/CompressedImage` 스트리밍<br>• **GNSS & IMU**: WGS84 위경도 변환(`NavSatFix`) 및 100Hz 6축 관성 센서 데이터(`Imu`) |
 | **🌐 통신 및 연동** | • **ROS 2 By-Wire 인터페이스**: `kimm_msgs/CarControlCmd` (가속, 제동, 조향, 기어)<br>• **비동기 TCP 게이트웨이**: `ROS-TCP-Endpoint` 기반 다중 스레드 고속 통신 |
 | **🛠️ 사용자 편의 기능** | • **실시간 텔레메트리 차트 (`TAB`)**: 속도, 롤/피치각, 서스펜션 변위, 슬립률 동적 시각화<br>• **인터랙티브 시나리오 편집 모드 (`E`)**: 주행 정지 후 과속방지턱, 드럼통, 더미차량, 동적 보행자 실시간 배치<br>• **ESC 시스템 메뉴**: 맵 전환, 파일 탐색기 기반 차량/센서 JSON 즉시 핫스왑 |
