@@ -37,7 +37,6 @@
 
 **KIMM Car Simulator**는 중소·중견 자동차 부품사, 스타트업 및 연구기관의 고가 외산 상용 시뮬레이터 도입 비용 부담을 덜고, 실차 수준의 고충실도 가상 검증 환경을 제공하기 위해 한국기계연구원(KIMM)에서 개발한 **오픈소스 자율주행 차량 디지털 트윈 시뮬레이터**이다.
 
-<<<<<<< HEAD
 * **1000 Hz 다물체 동역학**: MATLAB Simscape Multibody 기반 14자유도(14-DOF) 모델과 Magic Formula 비선형 타이어 마찰 모델을 C++ FMU로 연동하여 1ms Co-Simulation을 수행한다.
 * **센서 및 파라미터 핫스왑**: 소스코드 재컴파일 없이 JSON 파일만으로 45개 차량 물리 변수와 복수 LiDAR/Camera/GNSS/IMU 구성을 실시간 교체한다.
 * **표준 ROS 2 인터페이스**: 실제 차량 By-Wire 제어 규격(`kimm_msgs/CarControlCmd`)을 통해 Ubuntu ROS 2 자율주행 풀스택(인지-판단-제어)과 1:1 직통 통신을 지원한다.
